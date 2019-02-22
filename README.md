@@ -24,16 +24,24 @@ And yeah it will figure out all shit even in this case! And link each episode to
 # Usage
 
 For external audio:
-```$ anime-tool -audio '/path/to/video/folder' '/path/to/audio/folder' EPISODE_NUMBER```
+```
+$ anime-tool -audio '/path/to/video/folder' '/path/to/audio/folder' EPISODE_NUMBER
+```
 
 For external subtitles:
-```$ anime-tool -subs '/path/to/video/folder' '/path/to/subs/folder' EPISODE_NUMBER```
+```
+$ anime-tool -subs '/path/to/video/folder' '/path/to/subs/folder' EPISODE_NUMBER
+```
 
 For both:
-```$ anime-tool -both '/path/to/video/folder' '/path/to/audio/folder' '/path/to/subs/folder' EPISODE_NUMBER```
+```
+$ anime-tool -both '/path/to/video/folder' '/path/to/audio/folder' '/path/to/subs/folder' EPISODE_NUMBER
+```
 
 Example:
-```$ anime-tool -subs '~/Downloads/yoi-collection' '~/Downloads/yoi-collection/subs-rus' 69```
+```
+$ anime-tool -subs '~/Downloads/yoi-collection' '~/Downloads/yoi-collection/subs-rus' 69
+```
 
 # Warning
 
