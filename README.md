@@ -45,7 +45,7 @@ I impelemented an insane perl subroutine that called ```insaneFindFiles```
 
 It iterates through every symbol in filename untill it reaches number then tests if that number got's incremented on the next filename. If not - it seeks for next number in filename untill it finds the right position.
 
-It works cause all files are named identically when you download multiple episodes of one title.
+It works cause all files are numbered identically when you download multiple episodes of one title. It will work even if you have subtitles from one source and videos from another source. Numbers are still there anyway.
 
 # Bugs
 
