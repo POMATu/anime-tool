@@ -12,9 +12,9 @@ my $needed_episode;
 
 if (!($ARGV[0] =~ /^-both.*/) && !($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-sub.*/)) {
 	print "\nThis tool searches for randomly named external files and starts mpv player\n\n";
-	print "For external audio:\n\$ anime-tool -audio '/path/to/video' '/path/to/audio' EPISODE_NUMBER\n\n";
-	print "For external subs:\n\$ anime-tool -subs '/path/to/video' '/path/to/subs' EPISODE_NUMBER\n\n";
-	print "For both:\n\$ anime-tool -both '/path/to/video' '/path/to/audio' '/path/to/subs' EPISODE_NUMBER\n\n";
+	print "For external audio:\n\$ anime-tool -audio '/path/to/video/folder' '/path/to/audio/folder' EPISODE_NUMBER\n\n";
+	print "For external subs:\n\$ anime-tool -subs '/path/to/video/folder' '/path/to/subs/folder' EPISODE_NUMBER\n\n";
+	print "For both:\n\$ anime-tool -both '/path/to/video/folder' '/path/to/audio/folder' '/path/to/subs/folder' EPISODE_NUMBER\n\n";
 	print "Example:\n\$ anime-tool -subs '~/Downloads/yoi-collection' '~/Downloads/yoi-collection/subs-rus' 69\n\n";
 	print "You need to specify episode number with leading zeroes like in original files!!!\n\n";
 	exit;
