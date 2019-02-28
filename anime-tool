@@ -9,6 +9,7 @@ my $moviepath;
 my $subspath;
 my $audiopath;
 my $needed_episode;
+my $other_opts;
 
 if (!($ARGV[0] =~ /^-both.*/) && !($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-sub.*/)) {
 	print "\nThis tool searches for randomly named external files and starts mpv player\n\n";
@@ -26,6 +27,7 @@ if ($ARGV[0] =~ /^-sub.*/) {
 	$moviepath = $ARGV[1];
 	$subspath = $ARGV[2];
 	$needed_episode = $ARGV[3];
+	#$other_opts = $ARV[4] . " " . $ARGV[5];
 } 
 if ($ARGV[0] =~ /^-aud.*/) {
 	print "Using external audio file\n";
@@ -147,8 +149,14 @@ my %hashed_episodes = ();
 foreach my $filename (@filtered)
 {
 		my $episode_number = substr($filename, $startposition, $endposition-$startposition + 1);
-		$hashed_episodes{$episode_number} = $filename;
+		$hashed_episodes{$episode_number} = escape_crap($filename);
 }
 
 return %hashed_episodes;
+}
+
+sub escape_crap {
+	# that's real crap, not a fix
+	$_[0] =~ s/[']/'"'"'/g;
+	return $_[0];
 }
