@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#use Data::Dumper;
+use Data::Dumper;
 use strict;
 
 my $mode;
@@ -27,7 +27,7 @@ if ($ARGV[0] =~ /^-sub.*/) {
 	$moviepath = $ARGV[1];
 	$subspath = $ARGV[2];
 	$needed_episode = $ARGV[3];
-	#$other_opts = $ARV[4] . " " . $ARGV[5];
+	#$other_opts = $ARV[4];
 } 
 if ($ARGV[0] =~ /^-aud.*/) {
 	print "Using external audio file\n";
@@ -50,6 +50,7 @@ if ($ARGV[0] =~ /^-both.*/) {
 # getting movie data
 print "Finding movies numbers:";
 my %hashed_movies = insaneFindFiles(sort(grep(/.+[.](mkv|avi)$/, getDirFiles($moviepath))));
+#print Dumper(%hashed_movies);
 my $episodename = $hashed_movies{$needed_episode};
 my $videopath = $moviepath . "/" . $episodename;
 my $subsargs = "";
@@ -80,17 +81,25 @@ sub getDirFiles {
 	return @files;
 }
 
-sub insaneFindFiles {
-	my @filtered = @_;
+sub penetrateArray {
 	# finding number position
 my $startposition = 0;
 my $endposition = 0;
 my $startedflag = -1;
 my $number = -1;
 
+my $direction = shift @_;
+my @filtered = @_;
+
+if ($direction) {
+	@filtered = reverse @_;
+	$number = 99999;
+}
+
 foreach my $filename (@filtered)
 {
 	for my $i (0..length($filename)-1){
+		
 		# skipping till current found number position
 		if ($i<$startposition) {
 			next;
@@ -107,7 +116,6 @@ foreach my $filename (@filtered)
 
     			#print $startposition . "\n";
     		} 
-    		
     	} else {
     		# if receive character
     		#print "c";
@@ -120,6 +128,27 @@ foreach my $filename (@filtered)
     			# maybe we found number, maybe not. Now exiting, check if we are right next loop
     			my $newnumber = substr($filename, $startposition, $endposition-$startposition +1);
     			#print "\nnumber: $newnumber\n";
+    			if ($direction) {
+    			if ($number >= $newnumber+1) {
+    				# number incrementing, we may be correct
+    				$number = $newnumber;
+    				last;
+    			} else {
+
+    				#print "number is crap maybe nickname or other shit\n";
+    				$number = -1;
+
+    				# if we are at the end resetting all shit
+    				if ($i >= getLastNumberPosition($filename)) {
+    					#print "we reached end\n";
+    					$startposition = 0;
+						$endposition = 0;
+						$startedflag = -1;
+						$number = 99999;
+						last;
+    				}
+    			}
+    			} else {
     			if ($number <= $newnumber-1) {
     				# number incrementing, we may be correct
     				$number = $newnumber;
@@ -128,7 +157,17 @@ foreach my $filename (@filtered)
 
     				#print "number is crap maybe nickname or other shit\n";
     				$number = -1;
-    			}
+
+    				# if we are at the end resetting all shit
+    				if ($i >= getLastNumberPosition($filename)) {
+    					$startposition = 0;
+						$endposition = 0;
+						$startedflag = -1;
+						$number = -1;
+						last;
+    				}
+    			}	
+    			} 
     			
     		}
     	}
@@ -136,6 +175,51 @@ foreach my $filename (@filtered)
 	}
 	
 }
+
+#print "$startposition,$endposition,$number\n";
+# validating
+my $extracted = -1;
+foreach my $filename (@filtered)
+{
+	if ($extracted == substr($filename, $startposition, $endposition)) {
+		if (!($direction)) {
+			return penetrateArray(1,@filtered);
+		} else {
+			die "Cannot get fucking numbers! Seems like a bug or unpredictable input";
+		}
+	} else {
+		$extracted = substr($filename, $startposition, $endposition);
+	}
+
+}
+#print "$startposition,$endposition,$number\n";
+
+return ($startposition,$endposition,$number);
+}
+
+sub getLastNumberPosition {
+my $string = shift @_;
+my $pos = 0;
+for my $i (0..length($string)-1){
+my $char = substr($string, $i, 1);
+    	if ($char =~ /[0-9]/) {
+    		$pos = $i;
+    	}
+}
+
+return $pos;
+}
+
+sub insaneFindFiles {
+	my @filtered = @_;
+
+my @result = penetrateArray(0,@filtered);
+
+my $startposition = shift @result;
+my $endposition = shift @result;
+my $number = shift @result;
+#print "TEST: L$startposition L$endposition L$number\n\n\n";
+
 
 foreach my $filename (@filtered)
 {
@@ -147,9 +231,12 @@ print "\n";
 my %hashed_episodes = ();
 
 foreach my $filename (@filtered)
-{
+{       
+	
 		my $episode_number = substr($filename, $startposition, $endposition-$startposition + 1);
+	if ($episode_number =~ /^[0-9]+$/) {
 		$hashed_episodes{$episode_number} = escape_crap($filename);
+	}
 }
 
 return %hashed_episodes;
