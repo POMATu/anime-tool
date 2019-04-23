@@ -64,7 +64,7 @@ if ($mode =~ /.*subs.*/) {
 }
 if ($mode =~ /.*audio.*/) {
 	print "Finding audio numbers:";
-	my %hashed_audio = insaneFindFiles(sort grep(/.+[.](mka|mp3|flac|ogg|wav|aif)$/, getDirFiles($audiopath)));
+	my %hashed_audio = insaneFindFiles(sort grep(/.+[.](mka|mp3|flac|ogg|wav|aif|ac3)$/, getDirFiles($audiopath)));
 	my $audioname = $hashed_audio{$needed_episode};
 	$audioargs = "--audio-file '" . $audiopath . "/" . $audioname . "'";
 }
