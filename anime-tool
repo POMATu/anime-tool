@@ -210,8 +210,164 @@ my $char = substr($string, $i, 1);
 return $pos;
 }
 
+
+
+
+sub filterOnlyEpidodes {
+	my @dirtymix = @_;
+
+	print "\n";
+
+	# masking array
+	my @array_mask = ();
+	my $counter = 0;
+	foreach my $filename (@dirtymix) {
+		my $current_mask = "";
+		for my $i (0..length($filename)-1){
+			my $char = substr($filename, $i, 1);
+		
+			if ($char =~ /[0-9]/) {
+				# cause I love cash
+				$current_mask .= '€';
+				next;
+			}			
+			# else
+			$current_mask .= $char;
+			next;
+			
+		}	
+		$array_mask[$counter++] = $current_mask;
+		
+	}
+	#print Dumper(@array_mask);
+	
+	# generating character weights
+	my @weights = ();
+	for my $i (0..length($array_mask[0])-1){
+		push @weights, 0;
+	}
+
+	my @previousmasks = ($array_mask[0]);
+	#print Dumper(@previousmasks);
+	my $counter = 0;
+	foreach my $filename (@array_mask) {
+		#print Dumper(@previousmasks);
+		#print "$previousmask : $filename \n";
+		my $scope = length($filename)-1;
+		foreach my $mask (@previousmasks) {
+			my $current_scope = 0;
+			for my $i (0..length($filename)-1){
+				if (substr($filename, $i, 1) eq substr($mask, $i, 1)) {
+					$current_scope++;
+				} else {
+					if ($current_scope < $scope) {
+						$scope = $current_scope;
+					}
+					last;
+				}
+		}
+			
+		}
+
+		#print "$scope\n";
+		if ($scope < length($filename)-1) {
+			$weights[$scope]++;
+		}
+
+		#$previousmask = @array_mask[$counter++];
+		push @previousmasks, $array_mask[$counter++];
+	}
+
+	my $heaviest_scope = 0;
+	my $maxweight = 0;
+	foreach my $i (0..scalar(@weights)-1) {
+		if ($weights[$i] > 0) {
+			print "Scope: $i Weight: $weights[$i]\n";
+			if ($maxweight < $weights[$i]) {
+				$maxweight = $weights[$i];
+				$heaviest_scope = $i;
+			}
+		}
+	}
+
+	print "Heaviest scope: $heaviest_scope\n";
+
+	# after that crazy shit taking scope with biggest weight and dropping other crap
+	# seems that we need to iterate over all masks again
+
+	# cutting masks to scope lengths
+	my @cutted_masks = ();
+	foreach my $i (0..scalar(@array_mask)-1) {
+		$cutted_masks[$i] = substr($array_mask[$i], 0, $heaviest_scope);
+	}
+
+	#print Dumper(@cutted_masks);
+
+	my @reference_weights = ();
+	foreach my $i (0..scalar(@array_mask)-1) {
+		push @reference_weights, 0;
+	}
+
+	# comparing with each other to calculate weights again to find reference mask
+	my $counter = 0;
+	foreach my $i (0..scalar(@cutted_masks)-1) {
+		foreach my $curmask (@cutted_masks) {
+			if ($curmask eq $cutted_masks[$i]) {
+				$reference_weights[$i]++;
+			}
+		}
+	}
+
+	# finding reference mask
+	my $max_mask_weight = 0;
+	my $reference_mask = "";
+
+	#print Dumper(@reference_weights);
+	foreach my $i (0..scalar(@cutted_masks)-1) {
+		if ($reference_weights[$i] > $max_mask_weight) {
+			$max_mask_weight = $reference_weights[$i];
+			$reference_mask = $cutted_masks[$i];
+		}
+	}
+	print "Reference mask: $reference_mask\n";
+
+	#print Dumper($max_mask_weight);
+	#print "\n";
+
+	#print Dumper(@cutted_masks);
+	#print Dumper($reference_mask);
+
+	# finding keys for dropping crap
+	my @keys_to_drop = ();
+	foreach my $i (0..scalar(@cutted_masks)-1) {
+		if ($cutted_masks[$i] ne $reference_mask) {
+			push @keys_to_drop, $i;
+		}
+	}
+
+	#print Dumper(@keys_to_drop);
+
+	# finally dropping keys
+	my @clean_result = ();
+	OUTER: foreach my $i (0..scalar(@dirtymix)-1) {
+		# not adding blacklisted keys
+		foreach my $key (@keys_to_drop) {
+			if ($i == $key) {
+				print "Dropping: " . $dirtymix[$i] . "\n";
+				next OUTER;
+			}
+		}
+		push @clean_result, $dirtymix[$i];
+	}
+
+	#print Dumper(@clean_result);
+	#exit;
+
+	return sort @clean_result;
+}
+
 sub insaneFindFiles {
-	my @filtered = @_;
+	my @filtered = filterOnlyEpidodes(@_);
 
 my @result = penetrateArray(0,@filtered);
 
