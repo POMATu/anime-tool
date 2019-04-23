@@ -214,6 +214,8 @@ return $pos;
 
 
 sub filterOnlyEpidodes {
+	my $direction = shift @_;
+
 	my @dirtymix = @_;
 
 	print "\n";
@@ -227,8 +229,7 @@ sub filterOnlyEpidodes {
 			my $char = substr($filename, $i, 1);
 		
 			if ($char =~ /[0-9]/) {
-				# cause I love cash
-				$current_mask .= '€';
+				$current_mask .= '/';
 				next;
 			}			
 			# else
@@ -247,42 +248,53 @@ sub filterOnlyEpidodes {
 		push @weights, 0;
 	}
 
-	my @previousmasks = ($array_mask[0]);
-	#print Dumper(@previousmasks);
-	my $counter = 0;
-	foreach my $filename (@array_mask) {
-		#print Dumper(@previousmasks);
-		#print "$previousmask : $filename \n";
-		my $scope = length($filename)-1;
-		foreach my $mask (@previousmasks) {
-			my $current_scope = 0;
-			for my $i (0..length($filename)-1){
-				if (substr($filename, $i, 1) eq substr($mask, $i, 1)) {
-					$current_scope++;
-				} else {
-					if ($current_scope < $scope) {
-						$scope = $current_scope;
-					}
-					last;
-				}
+	if ($direction == 1) {
+		#mirroring masks
+		print "Testing mirrored mode (going backwards)\n";
+		for my $i (0..scalar(@array_mask)-1) {
+			$array_mask[$i] = join '', map substr($array_mask[$i], -$_, 1), 1..length($array_mask[$i]);
 		}
-			
-		}
-
-		#print "$scope\n";
-		if ($scope < length($filename)-1) {
-			$weights[$scope]++;
-		}
-
-		#$previousmask = @array_mask[$counter++];
-		push @previousmasks, $array_mask[$counter++];
 	}
+
+	#print Dumper(@array_mask);
+		my @previousmasks = ($array_mask[0]);
+		#print Dumper(@previousmasks);
+		my $counter = 0;
+		foreach my $filename (@array_mask) {
+			#print Dumper(@previousmasks);
+			#print "$previousmask : $filename \n";
+			my $scope = length($filename)-1;
+			foreach my $mask (@previousmasks) {
+				my $current_scope = 0;
+				for my $i (0..length($filename)-1){
+					if (substr($filename, $i, 1) eq substr($mask, $i, 1)) {
+						$current_scope++;
+					} else {
+						if ($current_scope < $scope) {
+							$scope = $current_scope;
+						}
+						last;
+					}
+			}
+				
+			}
+
+			#print "$scope\n";
+			if ($scope < length($filename)-1) {
+				$weights[$scope]++;
+			}
+
+			#$previousmask = @array_mask[$counter++];
+			push @previousmasks, $array_mask[$counter++];
+		}
+	#print Dumper(@weights);
 
 	my $heaviest_scope = 0;
 	my $maxweight = 0;
+	
 	foreach my $i (0..scalar(@weights)-1) {
 		if ($weights[$i] > 0) {
-			print "Scope: $i Weight: $weights[$i]\n";
+			print "Scope length: $i Weight: $weights[$i]\n";
 			if ($maxweight < $weights[$i]) {
 				$maxweight = $weights[$i];
 				$heaviest_scope = $i;
@@ -367,7 +379,21 @@ sub filterOnlyEpidodes {
 }
 
 sub insaneFindFiles {
-	my @filtered = filterOnlyEpidodes(@_);
+	my @args = @_;
+
+	my @filtered = filterOnlyEpidodes(0,@args);
+	my @backward = filterOnlyEpidodes(1,@args);
+	
+	if (scalar(@backward) < scalar(@filtered)) {
+		@filtered = @backward;
+		print "Using backwards result\n";
+	} else {
+		print "Using forward result\n";
+	}
+
+	print "Dropped " . (scalar(@args)-scalar(@filtered)) . " files\n";
+
+	print "Found series numbers: ";
 
 my @result = penetrateArray(0,@filtered);
 
