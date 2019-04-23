@@ -185,7 +185,7 @@ foreach my $filename (@filtered)
 		if (!($direction)) {
 			return penetrateArray(1,@filtered);
 		} else {
-			die "Cannot get fucking numbers! Seems like a bug or unpredictable input";
+		#	die "Cannot get fucking numbers! Seems like a bug or unpredictable input";
 		}
 	} else {
 		$extracted = substr($filename, $startposition, $endposition);
@@ -384,8 +384,8 @@ sub insaneFindFiles {
 	my @filtered = filterOnlyEpidodes(0,@args);
 	my @backward = filterOnlyEpidodes(1,@args);
 	
+	print Dumper(@filtered);
 	if (scalar(@backward) < scalar(@filtered)) {
-		@filtered = @backward;
 		print "Using backwards result\n";
 	} else {
 		print "Using forward result\n";
