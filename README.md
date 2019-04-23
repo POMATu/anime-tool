@@ -55,6 +55,13 @@ It iterates through every symbol in filename untill it reaches number then tests
 
 It works cause all files are numbered identically when you download multiple episodes of one title. It will work even if you have subtitles from one source and videos from another source. Numbers are still there anyway.
 
+UPD: Now it also filters all openings bonuses and other crap from filelist successfully. Now it supports names with different anime id in the name like that
+
+```
+Dropping: [Zurako]_Dantalian_no_Shoka_NCED_(BD_720p_AAC)_[3D87EDEC].mkv
+Dropping: [Zurako]_Dantalian_no_Shoka_NCOP_(BD_720p_AAC)_[EC109C5F].mkv
+```
+
 # Bugs
 
 If you find any bug feel free to create an issue. I'll need your filenames as input, maybe I missed something and it will fail on some input data. But I tried to prevent any possible caveats that I could imagine with my mind.
