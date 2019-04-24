@@ -387,7 +387,7 @@ sub insaneFindFiles {
 	my @filtered = filterOnlyEpidodes(0,@args);
 	my @backward = filterOnlyEpidodes(1,@args);
 	
-	print Dumper(@filtered);
+	#print Dumper(@filtered);
 	if (scalar(@backward) < scalar(@filtered)) {
 		print "Using backwards result\n";
 	} else {
