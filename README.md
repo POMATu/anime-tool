@@ -118,6 +118,7 @@ Reference mask: vkm.]
 ./10 - Joy.mkv
 ./01 - Flashing Before My Eyes.mkv
 ```
+* Mask: `// - `
 
 ### Pass 4: Calculating number position
 * Going all filenames from left to right `./[Zurako]_Dantalian_no_Shoka_07_(BD_720p_AAC)_[6DE45D1C].mkv`
