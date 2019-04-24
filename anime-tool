@@ -23,7 +23,7 @@ if (not defined $ARGV[0] or (not defined $subspath and not defined $audiopath)) 
 	print "For both:\n\$ anime-tool -audio='/path/to/audio/folder' -subs='/path/to/subs/folder' '/path/to/video/folder' EPISODE_NUMBER\n\n";
 	print "Example:\n\$ anime-tool -subs='~/Downloads/yoi-collection/subs-rus' '~/Downloads/yoi-collection' 69\n\n";
 	print "You need to specify episode number with leading zeroes like in original files!!!\n";
-	print "Notice: '--' and '-' both fine: '--audio=' or '-audio='\n\n";
+	print "Notice: '--' and '-' both fine: '--audio=' or '-audio=' and also shorthand: -s and -a\n\n";
 	exit;
 }
 
@@ -64,6 +64,7 @@ if ($mode =~ /.*audio.*/) {
 	print "Finding audio numbers:";
 	my %hashed_audio = insaneFindFiles(sort grep(/.+[.](mka|mp3|flac|ogg|wav|aif|ac3)$/, getDirFiles($audiopath)));
 	my $audioname = $hashed_audio{$needed_episode};
+	# well seems that if we specify no-sub and then --sub-file - subs gonna be working fine
 	$audioargs = "--no-sub --audio-file '" . $audiopath . "/" . $audioname . "'";
 }
 

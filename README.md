@@ -43,10 +43,23 @@ cd /downloads/anime
 anime-tool . 01 -a ./RUS_sound -s ./subs\ rus
 ```
 
-
 # Warning
 
 Don't forget to specify episode number with LEADING ZEROES like your videofiles are called.
+
+# Why MPV?
+
+For my experience it's the best player so far. I have not really old PC, my videocard is also really fine, however while using VLC I experienced slow-motion lags while watching 10bit 1080p rips. MPV seems to have hardware acceleration and works really fine even when I have 1000 windows with IDE opened.
+
+# MPV tips
+
+* Adjust subtitle delay by +/- 0.1 seconds: 'z' and 'x'
+* Cycle through the available audio tracks: '#'
+* Cycle through the available subtitles: 'j'
+* Toggle subtitle visibility: 'v'
+* Toggle fullscreen: 'f'
+* Exit fullscreen: 'ESC'
+* Adjust subtitle delay so that the next or previous subtitle is displayed now: 'Ctrl+Shift+Left' and 'Ctrl+Shift+Right'
 
 # Design
 
@@ -80,8 +93,6 @@ So that's was the most interesting and buggy filetree. Notice that it have 2 add
 ./[Zurako]_Dantalian_no_Shoka_02_(BD_720p_AAC)_[382AEE80].mkv
 ./[Zurako]_Dantalian_no_Shoka_10_(BD_720p_AAC)_[31DB05D4].mkv
 ./[Zurako]_Dantalian_no_Shoka_NCOP_(BD_720p_AAC)_[EC109C5F].mkv
-
-
 ```
 ### Pass 1: Generating mask for filtering
 * Replacing all numbers with '/': `./[Zurako]_Dantalian_no_Shoka_//_(BD_///p_AAC)_[/D///D/C].mkv`
