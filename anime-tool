@@ -48,6 +48,8 @@ $needed_episode = $ARGV[1];
 # getting movie data
 print "Finding movies numbers:";
 my %hashed_movies = insaneFindFiles(sort(grep(/.+[.](mkv|avi)$/, getDirFiles($moviepath))));
+#print "TEST:" . get_episode_key(0,-1,\%hashed_movies);
+#exit;
 #print Dumper(%hashed_movies);
 my $episodename = $hashed_movies{$needed_episode};
 my $videopath = $moviepath . "/" . $episodename;
@@ -424,6 +426,49 @@ foreach my $filename (@filtered)
 }
 
 return %hashed_episodes;
+}
+
+sub get_episode_key {
+	my $step = shift;
+	my $base_ep = shift;
+    my %hash = %{$_[0]};
+    
+    my $counter = 0;
+    my $max_counter = abs $step;
+
+    if ($base_ep == -1) {
+    	foreach my $num (sort keys %hash) {
+    		return $num;
+    	}
+    }
+
+    if ($step>=0) {
+		foreach my $num (sort keys %hash) {
+
+			if ($counter > 0) {
+				$counter++;
+			}
+			if ($num eq $base_ep) {
+				$counter++;
+			}
+			if ($counter>$max_counter) {
+				return $num;
+			}
+		}
+	} else {
+		foreach my $num (reverse sort keys %hash) {
+
+			if ($counter > 0) {
+				$counter++;
+			}
+			if ($num eq $base_ep) {
+				$counter++;
+			}
+			if ($counter>$max_counter) {
+				return $num;
+			}
+		}
+	}
 }
 
 sub escape_crap {
