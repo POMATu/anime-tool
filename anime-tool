@@ -181,18 +181,21 @@ foreach my $filename (@filtered)
 my $extracted = -1;
 foreach my $filename (@filtered)
 {
-	if ($extracted == substr($filename, $startposition, $endposition)) {
+
+	if ($extracted == substr($filename, $startposition, $endposition-$startposition+1)) {
 		if (!($direction)) {
 			return penetrateArray(1,@filtered);
 		} else {
-		#	die "Cannot get fucking numbers! Seems like a bug or unpredictable input";
+	
+		print "$extracted,$startposition,$endposition,$number\n";
+			die "Cannot get fucking numbers! Seems like a bug or unpredictable input";
 		}
 	} else {
-		$extracted = substr($filename, $startposition, $endposition);
+		$extracted = substr($filename, $startposition, $endposition-$startposition+1);
 	}
 
 }
-#print "$startposition,$endposition,$number\n";
+#print "$extracted,$startposition,$endposition,$number\n";
 
 return ($startposition,$endposition,$number);
 }
