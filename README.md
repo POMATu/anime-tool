@@ -23,25 +23,26 @@ And yeah it will figure out all shit even in this case! And link each episode to
 
 # Usage
 
-For external audio:
+Either will work. You can specify audio, subs or both as argument.
+
 ```
-$ anime-tool -audio '/path/to/video/folder' '/path/to/audio/folder' EPISODE_NUMBER
+anime-tool (movie) --audio="(audio)" --subs="(subs)" (episode) 
+anime-tool --audio="(audio)" --subs="(subs)" (movie) (episode) 
+anime-tool --audio="(audio)" (movie) --subs="(subs)" (episode) 
+anime-tool (movie) (episode) --audio="(audio)" --subs="(subs)"
 ```
 
-For external subtitles:
+You can also use shorthand arguments for bash autocompletion
 ```
-$ anime-tool -subs '/path/to/video/folder' '/path/to/subs/folder' EPISODE_NUMBER
-```
-
-For both:
-```
-$ anime-tool -both '/path/to/video/folder' '/path/to/audio/folder' '/path/to/subs/folder' EPISODE_NUMBER
+anime-tool (movie) -a "(audio)" -s "(subs)" (episode) 
 ```
 
-Example:
+Example
 ```
-$ anime-tool -subs '~/Downloads/yoi-collection' '~/Downloads/yoi-collection/subs-rus' 69
+cd /downloads/anime
+anime-tool . 01 -a ./RUS_sound -s ./subs\ rus
 ```
+
 
 # Warning
 
