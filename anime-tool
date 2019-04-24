@@ -13,7 +13,7 @@ my $needed_episode;
 my $other_opts;
 
 
-GetOptions(	'sub=s' => \my $subspath,
+GetOptions(	'subs=s' => \my $subspath,
 			'audio=s' => \my $audiopath);
 		  
 if (not defined $ARGV[0] or (not defined $subspath and not defined $audiopath)) {
@@ -30,23 +30,19 @@ if (not defined $ARGV[0] or (not defined $subspath and not defined $audiopath)) 
 if (defined $subspath) {
 	print "Using external subtitles\n";
 	$mode = "subs";
-	$moviepath = $ARGV[0];
-	$needed_episode = $ARGV[1];
 	#$other_opts = $ARV[4];
 } 
 if (defined $audiopath) {
 	print "Using external audio file\n";
 	$mode = "audio";
-	$moviepath = $ARGV[0];
-	$needed_episode = $ARGV[1];
 } 
 if (defined $subspath and defined $audiopath) {
 	print "Using both audio and subs\n";
 	$mode = "audiosubs";
-	$moviepath = $ARGV[0];
-	$needed_episode = $ARGV[1];
 }
 
+$moviepath = $ARGV[0];
+$needed_episode = $ARGV[1];
 
 
 # getting movie data
