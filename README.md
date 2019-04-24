@@ -62,6 +62,80 @@ Dropping: [Zurako]_Dantalian_no_Shoka_NCED_(BD_720p_AAC)_[3D87EDEC].mkv
 Dropping: [Zurako]_Dantalian_no_Shoka_NCOP_(BD_720p_AAC)_[EC109C5F].mkv
 ```
 
+# Sample trace
+
+So that's was the most interesting and buggy filetree. Notice that it have 2 additional bonus files named differently and also series are having unique id.
+
+```
+./[Zurako]_Dantalian_no_Shoka_07_(BD_720p_AAC)_[6DE45D1C].mkv
+./[Zurako]_Dantalian_no_Shoka_05_(BD_720p_AAC)_[54F8BE5B].mkv
+./[Zurako]_Dantalian_no_Shoka_NCED_(BD_720p_AAC)_[3D87EDEC].mkv
+./[Zurako]_Dantalian_no_Shoka_04_(BD_720p_AAC)_[444EED7E].mkv
+./[Zurako]_Dantalian_no_Shoka_06_(BD_720p_AAC)_[01AC9B57].mkv
+./[Zurako]_Dantalian_no_Shoka_11_(BD_720p_AAC)_[FC0B2E19].mkv
+./[Zurako]_Dantalian_no_Shoka_08_(BD_720p_AAC)_[EBA836CC].mkv
+./[Zurako]_Dantalian_no_Shoka_01_(BD_720p_AAC)_[AF5EEB7F].mkv
+./[Zurako]_Dantalian_no_Shoka_12_(BD_720p_AAC)_[8981728F].mkv
+./[Zurako]_Dantalian_no_Shoka_02_(BD_720p_AAC)_[382AEE80].mkv
+./[Zurako]_Dantalian_no_Shoka_10_(BD_720p_AAC)_[31DB05D4].mkv
+./[Zurako]_Dantalian_no_Shoka_NCOP_(BD_720p_AAC)_[EC109C5F].mkv
+
+
+```
+### Pass 1: Generating mask for filtering
+* Replacing all numbers with '/': `./[Zurako]_Dantalian_no_Shoka_//_(BD_///p_AAC)_[/D///D/C].mkv`
+* Calculating common mask scopes: `[Zurako]_Dantalian_no_Shoka_//_(BD_///p_AAC)_[`, `[Zurako]_Dantalian_no_Shoka_NC`
+* Comparing masks with each other, calculating weights for each found scope: 
+```
+Scope length: 28 Weight: 2
+Scope length: 46 Weight: 11
+```
+* Assuming that biggest weight is the rightest one
+* Using that as reference mask
+* Cutting all masks to reference mask length
+* Comparing reference mask with all mask list again, dropping not equals masks
+```
+Dropping: [Zurako]_Dantalian_no_Shoka_NCED_(BD_720p_AAC)_[3D87EDEC].mkv
+Dropping: [Zurako]_Dantalian_no_Shoka_NCOP_(BD_720p_AAC)_[EC109C5F].mkv
+```
+
+### Pass 2: Doing same shit backwards
+* Same stuff again, but we mirror all masks to compare them from right to left
+```
+Scope length: 5 Weight: 13
+Heaviest scope: 5
+Reference mask: vkm.]
+```
+* So now it can't drop anything cause there are just one mask with one weight
+
+### Pass 3: Comparing results
+* Taking smallest filelist as right result.
+* If filtering don't succeed - it just does nothing. Example unsuccessful filtering names (completely different file length and naming)
+```
+./04 - Accomplishment.mkv
+./05 - Getaway.mkv
+./11 - Future.mkv
+./10 - Joy.mkv
+./01 - Flashing Before My Eyes.mkv
+```
+
+### Pass 4: Calculating number position
+* Going all filenames from left to right `./[Zurako]_Dantalian_no_Shoka_07_(BD_720p_AAC)_[6DE45D1C].mkv`
+* Found starting position of number fragment, that's a right number actually in this case
+* Found ending position of number fragment
+* Testing if number increments each iteration
+* If not - going forward
+* If we reach end of file name - resetting and trying again
+
+### Pass 5: Validation
+* Testing that found number is different in each filename, if yes - returning hash
+* If not - sorting filelist backwards and trying again but now decreasing number every iteration (that's a workaround if we still have some wrong shit left in filelist even after filtering it may work if it that garbage-filenames are not completely randomized)
+
+### Doing same stuff for subs/audio
+* But in this case it's not important to filter wrong files, cause all we need is numbered hash. If it contains extra values - no problem that's still won't be used. But filtering still applied to all that, it's completely same routine
+
+### Launching mpv finally
+
 # Bugs
 
 If you find any bug feel free to create an issue. I'll need your filenames as input, maybe I missed something and it will fail on some input data. But I tried to prevent any possible caveats that I could imagine with my mind.
