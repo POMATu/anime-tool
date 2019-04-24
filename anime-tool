@@ -2,7 +2,8 @@
 
 use Data::Dumper;
 use strict;
-
+use Getopt::Long;
+		  
 my $mode;
 
 my $moviepath;
@@ -11,7 +12,11 @@ my $audiopath;
 my $needed_episode;
 my $other_opts;
 
-if (!($ARGV[0] =~ /^-both.*/) && !($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-sub.*/)) {
+
+GetOptions(	'sub=s' => \my $subspath,
+			'audio=s' => \my $audiopath);
+		  
+if (not defined $ARGV[0] or (not defined $subspath and not defined $audiopath)) {
 	print "\nThis tool searches for randomly named external files and starts mpv player\n\n";
 	print "For external audio:\n\$ anime-tool -audio '/path/to/video/folder' '/path/to/audio/folder' EPISODE_NUMBER\n\n";
 	print "For external subs:\n\$ anime-tool -subs '/path/to/video/folder' '/path/to/subs/folder' EPISODE_NUMBER\n\n";
@@ -21,28 +26,24 @@ if (!($ARGV[0] =~ /^-both.*/) && !($ARGV[0] =~ /^-aud.*/) && ! ($ARGV[0] =~ /^-a
 	exit;
 }
 
-if ($ARGV[0] =~ /^-sub.*/) {
+if (defined $subspath) {
 	print "Using external subtitles\n";
 	$mode = "subs";
-	$moviepath = $ARGV[1];
-	$subspath = $ARGV[2];
-	$needed_episode = $ARGV[3];
+	$moviepath = $ARGV[0];
+	$needed_episode = $ARGV[1];
 	#$other_opts = $ARV[4];
 } 
-if ($ARGV[0] =~ /^-aud.*/) {
+if (defined $audiopath) {
 	print "Using external audio file\n";
 	$mode = "audio";
-	$moviepath = $ARGV[1];
-	$audiopath = $ARGV[2];
-	$needed_episode = $ARGV[3];
+	$moviepath = $ARGV[0];
+	$needed_episode = $ARGV[1];
 } 
-if ($ARGV[0] =~ /^-both.*/) {
+if (defined $subspath and defined $audiopath) {
 	print "Using both audio and subs\n";
 	$mode = "audiosubs";
-	$moviepath = $ARGV[1];
-	$audiopath = $ARGV[2];
-	$subspath = $ARGV[3];
-	$needed_episode = $ARGV[4];
+	$moviepath = $ARGV[0];
+	$needed_episode = $ARGV[1];
 }
 
 
