@@ -51,7 +51,7 @@ my %hashed_movies = insaneFindFiles(sort(grep(/.+[.](mkv|avi)$/, getDirFiles($mo
 
 # if episode is not passed then take first one in folder
 if (not defined $needed_episode) {
-	$needed_episode = (sort keys %hashed_movies)[0]
+	$needed_episode = get_episode_key(0,0,\%hashed_movies);
 };
 
 #print Dumper(%hashed_movies);
