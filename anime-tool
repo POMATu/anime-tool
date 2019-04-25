@@ -4,7 +4,7 @@ use Data::Dumper;
 use strict;
 use Getopt::Long;
 		  
-my $mode;
+my $mode = '';
 
 my $moviepath = '.'; # By default its current folder
 my $subspath;
@@ -32,15 +32,11 @@ if ($continue or $next or $previous) {
 } else {
 	if (defined $subspath) {
 		print "Using external subtitles\n";
-		$mode = "subs";
+		$mode = $mode."subs";
 	} 
 	if (defined $audiopath) {
 		print "Using external audio file\n";
-		$mode = "audio";
-	} 
-	if (defined $subspath and defined $audiopath) {
-		print "Using both audio and subs\n";
-		$mode = "audiosubs";
+		$mode = $mode."audio";
 	}
 };
 
@@ -437,46 +433,27 @@ return %hashed_episodes;
 }
 
 sub get_episode_key {
-	my $step = shift;
-	my $base_ep = shift;
+    my $base_ep = shift;
+    my $step = shift;
     my %hash = %{$_[0]};
     
-    my $counter = 0;
-    my $max_counter = abs $step;
-
-    if ($base_ep == -1) {
-    	foreach my $num (sort keys %hash) {
-    		return $num;
-    	}
+    # get index of of base episode
+    my @sorted_episodes = sort keys %hash;
+    my ($index) = grep { $sorted_episodes[$_] eq $base_ep } 0 .. $#sorted_episodes;
+    $index = 0 if not defined $index;
+    
+    # return first episode number if oute of range
+    if ($index + $step <= 0) {
+        return $sorted_episodes[0];
     }
 
-    if ($step>=0) {
-		foreach my $num (sort keys %hash) {
+    # return last episode number if out of range
+    if ($index + $step >= $#sorted_episodes) {
+        return $sorted_episodes[$#sorted_episodes];
+    }
 
-			if ($counter > 0) {
-				$counter++;
-			}
-			if ($num eq $base_ep) {
-				$counter++;
-			}
-			if ($counter>$max_counter) {
-				return $num;
-			}
-		}
-	} else {
-		foreach my $num (reverse sort keys %hash) {
-
-			if ($counter > 0) {
-				$counter++;
-			}
-			if ($num eq $base_ep) {
-				$counter++;
-			}
-			if ($counter>$max_counter) {
-				return $num;
-			}
-		}
-	}
+    # return episode + (-) step
+    return $sorted_episodes[$index + $step]
 }
 
 sub escape_crap {
