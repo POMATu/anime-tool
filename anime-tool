@@ -4,7 +4,7 @@ use Data::Dumper;
 use strict;
 use Getopt::Long;
 		  
-my $mode;
+my $mode = '';
 
 my $moviepath = '.'; # By default its current folder
 my $subspath;
@@ -32,15 +32,11 @@ if ($continue or $next or $previous) {
 } else {
 	if (defined $subspath) {
 		print "Using external subtitles\n";
-		$mode = "subs";
+		$mode = $mode."subs";
 	} 
 	if (defined $audiopath) {
 		print "Using external audio file\n";
-		$mode = "audio";
-	} 
-	if (defined $subspath and defined $audiopath) {
-		print "Using both audio and subs\n";
-		$mode = "audiosubs";
+		$mode = $mode."audio";
 	}
 };
 
