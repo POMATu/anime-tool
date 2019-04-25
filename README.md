@@ -23,24 +23,22 @@ And yeah it will figure out all shit even in this case! And link each episode to
 
 # Usage
 
-Either will work. You can specify audio, subs or both as argument.
+Either will work. You can specify audio, subs or both as argument. Order doesn't matter. `=` sign is not required.
+You can also use shorthand arguments for bash autocompletion.
+Movie (default current directory) and episode (default first found) are optional, but either audio or subtitles are required.
+```
+anime-tool --movie="(movie)" --audio="(audio)" --subs="(subs)" --episode="(episode)"
+anime-tool -movie="(movie)" -audio="(audio)" -subs="(subs)" -episode="(episode)"
+anime-tool -m="(movie)" -a="(audio)" -s="(subs)" -e="(episode)"
+anime-tool -m (movie) -a (audio) -s (subs) -e (episode)
 
-```
-anime-tool (movie) --audio="(audio)" --subs="(subs)" (episode) 
-anime-tool --audio="(audio)" --subs="(subs)" (movie) (episode) 
-anime-tool --audio="(audio)" (movie) --subs="(subs)" (episode) 
-anime-tool (movie) (episode) --audio="(audio)" --subs="(subs)"
-```
-
-You can also use shorthand arguments for bash autocompletion
-```
-anime-tool (movie) -a "(audio)" -s "(subs)" (episode) 
+anime-tool -a (audio) -s (subs)
 ```
 
 Example
 ```
 cd /downloads/anime
-anime-tool . 01 -a ./RUS_sound -s ./subs\ rus
+anime-tool -a ./RUS_sound -s ./subs\ rus -e 01
 ```
 
 # Warning
