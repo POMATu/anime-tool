@@ -3,6 +3,7 @@
 use Data::Dumper;
 use strict;
 use Getopt::Long;
+use Roman;
 		  
 my $mode = '';
 
@@ -40,6 +41,7 @@ if ($continue or $next or $previous) {
 	}
 };
 
+
 # if nothing passed as argument and continue subroutine doesnt load anything
 if (not defined $subspath and not defined $audiopath) {
 	show_help()
@@ -55,7 +57,7 @@ if (not defined $needed_episode) {
 };
 
 #print Dumper(%hashed_movies);
-my $episodename = $hashed_movies{$needed_episode};
+my $episodename = $hashed_movies{int($needed_episode)};
 my $videopath = $moviepath . "/" . $episodename;
 my $subsargs = "";
 my $audioargs = "";
@@ -63,13 +65,13 @@ my $audioargs = "";
 if ($mode =~ /.*subs.*/) {
 	print "Finding subs numbers:";
 	my %hashed_subs = insaneFindFiles(sort grep(/.+[.](ass|srt)$/, getDirFiles($subspath)));
-	my $subsname = $hashed_subs{$needed_episode};
+	my $subsname = $hashed_subs{int($needed_episode)};
 	$subsargs = "--sub-file '" . $subspath . "/" . $subsname . "'";
 }
 if ($mode =~ /.*audio.*/) {
 	print "Finding audio numbers:";
 	my %hashed_audio = insaneFindFiles(sort grep(/.+[.](mka|mp3|flac|ogg|wav|aif|ac3)$/, getDirFiles($audiopath)));
-	my $audioname = $hashed_audio{$needed_episode};
+	my $audioname = $hashed_audio{int($needed_episode)};
 	# well seems that if we specify no-sub and then --sub-file - subs gonna be working fine
 	$audioargs = "--no-sub --audio-file '" . $audiopath . "/" . $audioname . "'";
 }
@@ -94,13 +96,16 @@ my $startedflag = -1;
 my $number = -1;
 
 my $direction = shift @_;
-my @filtered = @_;
+my @filtered = sort @_;
 
 if ($direction) {
 	@filtered = reverse @_;
 	$number = 99999;
 }
 
+# assuring we totally reach required number
+for my $h (0..countNumberGroups(@filtered)) {
+$number = -1;
 foreach my $filename (@filtered)
 {
 	for my $i (0..length($filename)-1){
@@ -156,6 +161,9 @@ foreach my $filename (@filtered)
     			} else {
     			if ($number <= $newnumber-1) {
     				# number incrementing, we may be correct
+    				#print $number . "\n";
+    				#print length($filename) . " $startposition\n";
+    				#print "$filename\n";
     				$number = $newnumber;
     				last;
     			} else {
@@ -179,6 +187,8 @@ foreach my $filename (@filtered)
     	
 	}
 	
+}
+#last;
 }
 
 #print "$startposition,$endposition,$number\n";
@@ -205,6 +215,30 @@ foreach my $filename (@filtered)
 return ($startposition,$endposition,$number);
 }
 
+sub countNumberGroups {
+	my @arr = @_;
+
+	my $maxcounter = 0;
+	for my $line (@arr) {
+		my $counter = 0;
+
+		my $previouschar = " ";
+		for my $i (0..length($line)-1){
+			my $char = substr($line, $i, 1);
+	    		if (($char =~ /[0-9]/) and not ($previouschar =~ /[0-9]/)) {
+	    			$counter++;
+	    		}
+	    	$previouschar = $char;
+	    }
+
+	    if ($counter>$maxcounter) {
+	    	$maxcounter = $counter;
+	    }
+}
+
+    return $maxcounter;
+}
+
 sub getLastNumberPosition {
 my $string = shift @_;
 my $pos = 0;
@@ -219,6 +253,20 @@ return $pos;
 }
 
 
+sub regexpFallback {
+	my $regexbase = '(\d+)[^\d]+';
+	# todo: make fallback pass
+
+	my @arr = @_;
+	my $tempregex = $regexbase;
+
+	foreach my $filename (@arr)
+	{
+		while ($filename =~ $tempregex) {
+
+		}
+	}
+}
 
 
 sub filterOnlyEpidodes {
@@ -389,21 +437,30 @@ sub filterOnlyEpidodes {
 sub insaneFindFiles {
 	my @args = @_;
 
+	#print Dumper(keys %preservedfilenames);
+	#exit;
+
 	my @filtered = filterOnlyEpidodes(0,@args);
 	my @backward = filterOnlyEpidodes(1,@args);
 	
 	#print Dumper(@filtered);
+	#exit;
+
 	if (scalar(@backward) < scalar(@filtered)) {
 		print "Using backwards result\n";
+		@filtered = @backward;
 	} else {
 		print "Using forward result\n";
 	}
+
 
 	print "Dropped " . (scalar(@args)-scalar(@filtered)) . " files\n";
 
 	print "Found series numbers: ";
 
-my @result = penetrateArray(0,@filtered);
+	my %preservedfilenames = humanitiesReplaceArray(@filtered);
+
+my @result = penetrateArray(0,keys %preservedfilenames);
 
 my $startposition = shift @result;
 my $endposition = shift @result;
@@ -411,25 +468,99 @@ my $number = shift @result;
 #print "TEST: L$startposition L$endposition L$number\n\n\n";
 
 
-foreach my $filename (@filtered)
+foreach my $filename (keys %preservedfilenames)
 {
-print substr($filename, $startposition, $endposition-$startposition + 1) . ",";
+print int(substr($filename, $startposition, $endposition-$startposition + 1)) . ","; # now we are using ints
 }
 print "\n";
 
 # generating array
 my %hashed_episodes = ();
 
-foreach my $filename (@filtered)
+foreach my $filename (keys %preservedfilenames)
 {       
 	
 		my $episode_number = substr($filename, $startposition, $endposition-$startposition + 1);
 	if ($episode_number =~ /^[0-9]+$/) {
-		$hashed_episodes{$episode_number} = escape_crap($filename);
+		$hashed_episodes{int($episode_number)} = escape_crap($preservedfilenames{$filename}); # restoring original filename
 	}
 }
 
+#print Dumper(%hashed_episodes);
+#exit;
 return %hashed_episodes;
+}
+
+sub humanitiesReplaceArray {
+	my %preservedfilenames = ();
+
+	my @filenames = @_;
+
+#	print Dumper(@filenames);
+
+	foreach my $humanitiesfilename (@filenames) {
+		#if (defined $humanitiesfilename) {
+			my $techname = humanitiesReplaceSingleLine($humanitiesfilename);
+			#print Dumper($techname);
+			# strange bug filtering wrong array key
+		#	if (defined $techname && ref($techname) ne 'HASH') {
+				$preservedfilenames{$techname} = $humanitiesfilename;
+				#print $preservedfilenames{$techname} . " " . $humanitiesfilename . "\n";
+		#	}
+
+		#	print Dumper(%preservedfilenames);
+		#}
+	}
+
+	#print Dumper(%preservedfilenames);
+	#exit;
+
+	return %preservedfilenames;
+
+}
+
+# filtering romanian shit
+sub humanitiesReplaceSingleLine {
+	my $line = shift;
+
+my %hash = {};
+
+my $longestlength = 0;
+# generating another insane array by string length
+for my $i (1..3999) {
+   my $cur = uc roman($i);
+   $hash{$cur} = length $cur;
+
+   if (length($cur) > $longestlength) {
+   	$longestlength = length($cur);
+   }
+}
+
+#print $longestlength;
+#iterating replacement routine from longest lengths so we don't get conflicts and double replacements
+
+for (my $i = $longestlength; $i>0; $i--) {
+	foreach my $key (keys %hash) {
+		if ($hash{$key} == $i) {
+			my $arabic = arabic($key);
+			# string should be simillar length
+			$arabic = sprintf("%0".$longestlength ."d", $arabic);
+
+			#while (length($arabic)<$longestlength) {
+			#	$arabic .= "_";
+			#}
+			$line =~ s/$key/$arabic/g;
+			# lowercase too
+			$key = lc $key;
+			$line =~ s/$key/$arabic/g;
+
+			#print "$line\n";
+		}
+	}
+}
+
+
+return $line;
 }
 
 sub get_episode_key {
