@@ -544,11 +544,12 @@ for (my $i = $longestlength; $i>0; $i--) {
 		if ($hash{$key} == $i) {
 			my $arabic = arabic($key);
 			# string should be simillar length
-			$arabic = sprintf("%0".$longestlength ."d", $arabic);
+			$arabic = "_" . sprintf("%0".$longestlength ."d", $arabic) . "_"; # bugfix so numbers dont get glued
 
 			#while (length($arabic)<$longestlength) {
 			#	$arabic .= "_";
 			#}
+
 			$line =~ s/$key/$arabic/g;
 			# lowercase too
 			$key = lc $key;
