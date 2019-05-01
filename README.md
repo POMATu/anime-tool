@@ -130,7 +130,16 @@ Reference mask: vkm.]
 ```
 * Mask: `// - `
 
-### Pass 4: Calculating number position
+### Pass 4: converting Roman numerals to arabic numerals
+* Preserving original filenames to stack
+* Generating Roman numerals array (1-3999)
+* Sorting Roman numerals from highest length to lowest with preceeding zeroes of maximum Roman numerals length so filenames length gonna be simmilar
+* Replacing uppercase and lowercase Roman numerals in all filename (filename get's human-unreadable format, but we not gonna read that, script can still process that fine)
+```
+[Zurako]__000000000000500_anta_000000000000051_an_no_Shoka_01_(B_000000000000500__720p_AA_000000000000100_)_[AF5EEB7F]._000000000001000_k_000000000000005_
+```
+
+### Pass 5: Calculating number position
 * Going all filenames from left to right `./[Zurako]_Dantalian_no_Shoka_07_(BD_720p_AAC)_[6DE45D1C].mkv`
 * Found starting position of number fragment, that's a right number actually in this case
 * Found ending position of number fragment
@@ -138,9 +147,12 @@ Reference mask: vkm.]
 * If not - going forward
 * If we reach end of file name - resetting and trying again
 
-### Pass 5: Validation
+### Pass 6: Validation
 * Testing that found number is different in each filename, if yes - returning hash
 * If not - sorting filelist backwards and trying again but now decreasing number every iteration (that's a workaround if we still have some wrong shit left in filelist even after filtering it may work if it that garbage-filenames are not completely randomized)
+
+### Restoring original filenames from stack
+* Getting original not messed up filenames, but now we know it's numbers
 
 ### Doing same stuff for subs/audio
 * But in this case it's not important to filter wrong files, cause all we need is numbered hash. If it contains extra values - no problem that's still won't be used. But filtering still applied to all that, it's completely same routine
