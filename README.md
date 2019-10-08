@@ -1,4 +1,4 @@
-# Disclamer
+# Disclaimer
 
 This project is deprecated and also bullshit. I wasnt able to do that with different algorythms neither regexp. Humanities people name files so unpredictable and randomly, sometimes even with mistakes or incorrect roman numbers (IIII) making it impossible to parse with any software.
 
