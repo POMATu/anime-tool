@@ -1,3 +1,11 @@
+# Disclamer
+
+This project is deprecated and also bullshit. I wasnt able to do that with different algorythms neither regexp. Humanities people name files so unpredictable and randomly, sometimes even with mistakes or incorrect roman numbers (IIII) making it impossible to parse with any software.
+
+I think I will return to this problem and try making AI Deep Learning software for achieving this goal. Should be best task to learn AI development, it's just a parsing of text.
+
+So for now please dont use this shit, you have been warned.
+
 # Anime tool
 
 I wrote this script cause I got really annoyed by typing console commands everytime I wan't to watch next anime episode with external subs or external audio file. 
