@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# this tool used to create filetrees for bug reports
+# this tool can be better, that's really dirty
+
+find "$*" -type d -exec mkdir -p $HOME"/animetest/{}" \;
+find "$*" -type f -exec touch $HOME/animetest/"{}" \;
