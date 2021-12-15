@@ -7,4 +7,4 @@ Took me 2 years of mpv console arguments butthurt to start this again
 
 Development in progress...
 
-![PoC for this evening](https://assets.digitalocean.com/articles/alligator/boo.svg "PoC for this evening")
+![PoC for this evening](img/alpha.png"PoC for this evening")
