@@ -1,14 +1,37 @@
 import java.awt.datatransfer.DataFlavor
-import java.awt.event.{ActionEvent, ActionListener, ComponentAdapter, ComponentEvent}
-import java.awt.{Color, FlowLayout, Rectangle}
+import java.awt.event._
+import java.awt.{Color, FlowLayout, Point, Rectangle}
 import java.io.File
 import java.net.URI
+
 import sys.process._
 import javax.swing._
 import javax.swing.event._
 import java.lang.ProcessBuilder
 
+import javax.swing.DefaultListSelectionModel
+
+import scala.collection.mutable.ListBuffer
+
 object Main extends App {
+  val audioDelayLabel = new JLabel("Audio Delay")
+  val subDelayLabel = new JLabel("Subtitles Delay")
+  val clabel1 = new JLabel("Video")
+  val clabel2 = new JLabel("Audio")
+  val clabel3 = new JLabel("Subtitles")
+  val up1btn = new JButton("\u25B2")
+  val down1btn = new JButton("\u25BC")
+
+
+
+  val up2btn = new JButton("\u25B2")
+  val del2btn = new JButton("DEL")
+  val up3btn = new JButton("\u25B2")
+  val down3btn = new JButton("\u25BC")
+
+  val audioDelayText = new JTextField(20)
+  val subDelayText = new JTextField(20)
+
   val videoModel = new DefaultListModel[ShortFile]
   val audioModel = new DefaultListModel[ShortFile]
   val subModel = new DefaultListModel[ShortFile]
@@ -19,17 +42,43 @@ object Main extends App {
   videoList.setDropMode(DropMode.INSERT)
   videoList.setTransferHandler(ListHandler(videoModel))
   videoList.setBorder(BorderFactory.createLineBorder(Color.black))
-  videoList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(audioList, subList))
+  videoList.setSelectionModel(new ToggleSelectionModel(videoList,audioList,subList))
+  //videoList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(audioList, subList))
+  videoList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+  videoList.addMouseListener(new RightClickMouseAdapter(videoList))
 
   audioList.setDropMode(DropMode.INSERT)
   audioList.setTransferHandler(ListHandler(audioModel))
   audioList.setBorder(BorderFactory.createLineBorder(Color.black))
-  audioList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,subList))
+  audioList.setSelectionModel(new ToggleSelectionModel(audioList,videoList, subList))
+  //audioList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,subList))
+  audioList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+  audioList.addMouseListener(new RightClickMouseAdapter(audioList))
+
 
   subList.setDropMode(DropMode.INSERT)
   subList.setTransferHandler(ListHandler(subModel))
   subList.setBorder(BorderFactory.createLineBorder(Color.black))
-  subList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,audioList))
+  subList.setSelectionModel(new ToggleSelectionModel(subList,videoList,audioList))
+  //subList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,audioList))
+  subList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+  subList.addMouseListener(new RightClickMouseAdapter(subList))
+
+  val clear1btn = new JButton("CLR")
+  clear1btn.addActionListener(ClearActionListener(videoModel))
+  val clear2btn = new JButton("CLR")
+  clear2btn.addActionListener(ClearActionListener(audioModel))
+  val clear3btn = new JButton("CLR")
+  clear3btn.addActionListener(ClearActionListener(subModel))
+
+  val del1btn = new JButton("DEL")
+  del1btn.addActionListener(DelActionListener(videoList, videoModel))
+
+  val down2btn = new JButton("\u25BC")
+  del2btn.addActionListener(DelActionListener(audioList, audioModel))
+
+  val del3btn = new JButton("DEL")
+  del3btn.addActionListener(DelActionListener(subList, subModel))
 
   val playButton = new JButton("\u25B6 Play")
   playButton.addActionListener((_: ActionEvent) => {
@@ -111,31 +160,27 @@ object Main extends App {
 
     val audioDelayContainerRect = getBoundsInBounds(1,3,genericPaddingLeft,playRect)
 
-    val audioDelayLabel = new JLabel("Audio Delay")
+
+
+
     audioDelayLabel.setBounds(getBoundsInBoundsV(0, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayLabel)
-    val audioDelayText = new JTextField(20)
     audioDelayText.setBounds(getBoundsInBoundsV(1, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayText)
 
     val subDelayContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
-    val subDelayLabel = new JLabel("Subtitles Delay")
     subDelayLabel.setBounds(getBoundsInBoundsV(0, 2,genericPaddingLeft,subDelayContainerRect))
     panel.add(subDelayLabel)
-    val subDelayText = new JTextField(20)
     subDelayText.setBounds(getBoundsInBoundsV(1, 2,genericPaddingLeft,subDelayContainerRect))
     panel.add(subDelayText)
 
     val cLabelsRect = getNextBounds(10,verticalPadding,playRect)
-    val clabel1 = new JLabel("Video")
     clabel1.setBounds(getBoundsInBounds(0, 3, genericPaddingLeft, cLabelsRect))
     panel.add(clabel1)
 
-    val clabel2 = new JLabel("Audio")
     clabel2.setBounds(getBoundsInBounds(1, 3, genericPaddingLeft, cLabelsRect))
     panel.add(clabel2)
 
-    val clabel3 = new JLabel("Subtitles")
     clabel3.setBounds(getBoundsInBounds(2, 3, genericPaddingLeft, cLabelsRect))
     panel.add(clabel3)
 
@@ -144,45 +189,30 @@ object Main extends App {
     val buttons2Rect = getBoundsInBounds(1, 3, genericPaddingLeft, buttonsRect)
     val buttons3Rect = getBoundsInBounds(2, 3, genericPaddingLeft, buttonsRect)
 
-    val up1btn = new JButton("\u25B2")
     up1btn.setBounds(getBoundsInBounds(0,4,0, buttons1Rect))
     panel.add(up1btn)
-    val down1btn = new JButton("\u25BC")
     down1btn.setBounds(getBoundsInBounds(1,4,genericPaddingLeft, buttons1Rect))
     panel.add(down1btn)
-    val del1btn = new JButton("DEL")
     del1btn.setBounds(getBoundsInBounds(2,4,0, buttons1Rect))
     panel.add(del1btn)
-    val clear1btn = new JButton("CLR")
     clear1btn.setBounds(getBoundsInBounds(3,4,0, buttons1Rect))
-    clear1btn.addActionListener(ClearActionListener(videoModel))
     panel.add(clear1btn)
 
-    val up2btn = new JButton("\u25B2")
     up2btn.setBounds(getBoundsInBounds(0,4,0, buttons2Rect))
     panel.add(up2btn)
-    val down2btn = new JButton("\u25BC")
     down2btn.setBounds(getBoundsInBounds(1,4,genericPaddingLeft, buttons2Rect))
     panel.add(down2btn)
-    val del2btn = new JButton("DEL")
     del2btn.setBounds(getBoundsInBounds(2,4,0, buttons2Rect))
     panel.add(del2btn)
-    val clear2btn = new JButton("CLR")
     clear2btn.setBounds(getBoundsInBounds(3,4,0, buttons2Rect))
-    clear2btn.addActionListener(ClearActionListener(audioModel))
     panel.add(clear2btn)
 
-    val up3btn = new JButton("\u25B2")
     up3btn.setBounds(getBoundsInBounds(0,4,0, buttons3Rect))
     panel.add(up3btn)
-    val down3btn = new JButton("\u25BC")
     down3btn.setBounds(getBoundsInBounds(1,4,genericPaddingLeft, buttons3Rect))
     panel.add(down3btn)
-    val del3btn = new JButton("DEL")
     del3btn.setBounds(getBoundsInBounds(2,4,0, buttons3Rect))
     panel.add(del3btn)
-    val clear3btn = new JButton("CLR")
-    clear3btn.addActionListener(ClearActionListener(subModel))
     clear3btn.setBounds(getBoundsInBounds(3,4,0, buttons3Rect))
     panel.add(clear3btn)
 
@@ -206,14 +236,76 @@ object Main extends App {
         val minIndex = lsm.getMinSelectionIndex
         val i = minIndex
         println("Selected: " + i)
-        list1.setSelectedIndex(i)
-        list2.setSelectedIndex(i)
+        if (list1.getModel.getSize - 1 < i)
+          list1.clearSelection()
+        else
+          list1.setSelectedIndex(i)
+
+        if (list2.getModel.getSize -1 < i)
+          list2.clearSelection()
+        else
+          list2.setSelectedIndex(i)
       }
     }
   }
 
+  class RightClickMouseAdapter(list: JList[ShortFile]) extends MouseAdapter {
+
+    import javax.swing.JList
+    import javax.swing.SwingUtilities
+
+    override def mousePressed(e: MouseEvent): Unit = {
+      if (SwingUtilities.isRightMouseButton(e)) list.getModel.asInstanceOf[DefaultListModel[ShortFile]].remove(getRow(e.getPoint))
+    }
+
+    private def getRow(point: Point) = list.locationToIndex(point)
+  }
+
+  class ToggleSelectionModel(selfList: JList[ShortFile],list1: JList[ShortFile], list2: JList[ShortFile]) extends DefaultListSelectionModel() {
+
+    private var frozen = false
+
+    def freeze(freeze: Boolean) = this.frozen = freeze
+
+    override def setSelectionInterval(index0: Int, index1: Int): Unit = {
+      //println(index0)
+      //println(index1)
+        if (isSelectedIndex(index0)) {
+          if (!frozen)
+            super.removeSelectionInterval(index0, index1)
+        } else {
+            super.setSelectionInterval(index0, index1)
+            if (!frozen) {
+              if (list1.getModel.getSize - 1 < index0)
+                list1.clearSelection()
+              else {
+                list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(true)
+                list1.setSelectedIndex(index0)
+                list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(false)
+              }
+              if (list2.getModel.getSize - 1 < index0)
+                list1.clearSelection()
+              else {
+                list2.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(true)
+                list2.setSelectedIndex(index0)
+                list2.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(false)
+              }
+            }
+        }
+    }
+/*
+    override def setValueIsAdjusting(isAdjusting: Boolean): Unit = {
+      if (isAdjusting == false) gestureStarted = false
+    }
+    */
+  }
+
   case class ClearActionListener(model: DefaultListModel[ShortFile]) extends ActionListener {
       override def actionPerformed(e: ActionEvent): Unit = model.clear()
+  }
+
+  case class DelActionListener(list: JList[ShortFile], model: DefaultListModel[ShortFile]) extends ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = model.remove(list.getSelectedIndex)
   }
 
   case class ShortFile(uri: URI) extends File(uri) {
