@@ -103,6 +103,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="io.github.vincenzopalazzo:material-ui-swing:1.1.2" level="project" />
   </component>
   <component name="SbtModule">
     <option name="buildForURI" value="file:$MODULE_DIR$/../../" />

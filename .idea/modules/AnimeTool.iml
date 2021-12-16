@@ -14,5 +14,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.jiconfont:jiconfont-font_awesome:4.7.0.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.jiconfont:jiconfont:1.0.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.github.jiconfont:jiconfont-swing:1.0.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.jhlabs:filters:2.0.235:jar" level="project" />
+    <orderEntry type="library" name="sbt: io.github.vincenzopalazzo:material-ui-swing:1.1.2:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.swinglabs:swing-worker:1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.swinglabs:swingx:1.6.1:jar" level="project" />
   </component>
 </module>

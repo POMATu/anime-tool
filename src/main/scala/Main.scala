@@ -1,47 +1,69 @@
 import java.awt.datatransfer.DataFlavor
 import java.awt.event._
-import java.awt.{Color, FlowLayout, Point, Rectangle}
+import java.awt._
 import java.io.File
+import java.lang.reflect.Type
 import java.net.URI
 
 import sys.process._
 import javax.swing._
+import mdlaf.themes.{AbstractMaterialTheme, JMarsDarkTheme, MaterialLiteTheme, MaterialOceanicTheme}
 import javax.swing.event._
-import java.lang.ProcessBuilder
+import java.lang.{Comparable, ProcessBuilder}
+import java.util
+import java.util.{Collections, Comparator}
 
-import javax.swing.DefaultListSelectionModel
+import javax.swing.GroupLayout.Alignment
+import javax.swing.{DefaultListSelectionModel, JLabel}
+import jiconfont.icons.font_awesome.FontAwesome
+import mdlaf.MaterialLookAndFeel
 
 import scala.collection.mutable.ListBuffer
+import jiconfont.swing.IconFontSwing
 
 object Main extends App {
-  val audioDelayLabel = new JLabel("Audio Delay")
-  val subDelayLabel = new JLabel("Subtitles Delay")
-  val clabel1 = new JLabel("Video")
-  val clabel2 = new JLabel("Audio")
-  val clabel3 = new JLabel("Subtitles")
-  val up1btn = new JButton("\u25B2")
-  val down1btn = new JButton("\u25BC")
+
+  val theme = new MaterialOceanicTheme
+  //theme.getBorderList.
+  UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
+  IconFontSwing.register(FontAwesome.getIconFont)
+
+
+  val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, new JButton),SwingConstants.LEFT)
+  audioDelayLabel.setFont(theme.getButtonFont)
+  val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, new JButton),SwingConstants.LEFT)
+  subDelayLabel.setFont(theme.getButtonFont)
+
+  val clabel1 = new JLabel("")
+  clabel1.setFont(theme.getButtonFont)
+  val clabel2 = new JLabel("")
+  clabel2.setFont(theme.getButtonFont)
+  val clabel3 = new JLabel("")
+  clabel3.setFont(theme.getButtonFont)
 
 
 
-  val up2btn = new JButton("\u25B2")
-  val del2btn = new JButton("DEL")
-  val up3btn = new JButton("\u25B2")
-  val down3btn = new JButton("\u25BC")
 
-  val audioDelayText = new JTextField(20)
-  val subDelayText = new JTextField(20)
 
-  val videoModel = new DefaultListModel[ShortFile]
-  val audioModel = new DefaultListModel[ShortFile]
-  val subModel = new DefaultListModel[ShortFile]
+  //val audioDelaySpinnerLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.CLOCK_O, new JButton),SwingConstants.RIGHT)
+  val audioDelayText = new JSpinner()
+  audioDelayText.setAlignmentX(SwingConstants.RIGHT)
+  //audioDelayText.setForeground(theme.getButtonTextColor)
+  //audioDelayText.setAlignmentX(SwingConstants.LEFT)
+  //audioDelayText.setBorder(BorderFactory.createLineBorder(theme.getButtonTextColor))
+  val subDelayText = new JSpinner()
+  subDelayText.setAlignmentX(SwingConstants.RIGHT)
+
+  val videoModel = new SortableListModel[ShortFile]
+  val audioModel = new SortableListModel[ShortFile]
+  val subModel = new SortableListModel[ShortFile]
   val videoList = new JList[ShortFile](videoModel)
   val audioList = new JList[ShortFile](audioModel)
   val subList =  new JList[ShortFile](subModel)
 
   videoList.setDropMode(DropMode.INSERT)
   videoList.setTransferHandler(ListHandler(videoModel))
-  videoList.setBorder(BorderFactory.createLineBorder(Color.black))
+  //videoList.setBorder(BorderFactory.createLineBorder(Color.black))
   videoList.setSelectionModel(new ToggleSelectionModel(videoList,audioList,subList))
   //videoList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(audioList, subList))
   videoList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -49,7 +71,7 @@ object Main extends App {
 
   audioList.setDropMode(DropMode.INSERT)
   audioList.setTransferHandler(ListHandler(audioModel))
-  audioList.setBorder(BorderFactory.createLineBorder(Color.black))
+  //audioList.setBorder(BorderFactory.createLineBorder(Color.black))
   audioList.setSelectionModel(new ToggleSelectionModel(audioList,videoList, subList))
   //audioList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,subList))
   audioList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -58,29 +80,46 @@ object Main extends App {
 
   subList.setDropMode(DropMode.INSERT)
   subList.setTransferHandler(ListHandler(subModel))
-  subList.setBorder(BorderFactory.createLineBorder(Color.black))
+  //subList.setBorder(BorderFactory.createLineBorder(Color.black))
   subList.setSelectionModel(new ToggleSelectionModel(subList,videoList,audioList))
   //subList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,audioList))
   subList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
   subList.addMouseListener(new RightClickMouseAdapter(subList))
 
-  val clear1btn = new JButton("CLR")
+  val up1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  up1btn.addActionListener(UpActionListener(videoList))
+
+  val up2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  up2btn.addActionListener(UpActionListener(audioList))
+  val up3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  up3btn.addActionListener(UpActionListener(subList))
+
+
+  val down1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  down1btn.addActionListener(DownActionListener(videoList))
+  val down2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  down2btn.addActionListener(DownActionListener(audioList))
+  val down3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  down3btn.addActionListener(DownActionListener(subList))
+
+
+  val clear1btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
   clear1btn.addActionListener(ClearActionListener(videoModel))
-  val clear2btn = new JButton("CLR")
+  val clear2btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
   clear2btn.addActionListener(ClearActionListener(audioModel))
-  val clear3btn = new JButton("CLR")
+  val clear3btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
   clear3btn.addActionListener(ClearActionListener(subModel))
 
-  val del1btn = new JButton("DEL")
-  del1btn.addActionListener(DelActionListener(videoList, videoModel))
+  val del1btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
+  val del2btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
+  del1btn.addActionListener(SortActionListener(videoList, videoModel))
 
-  val down2btn = new JButton("\u25BC")
-  del2btn.addActionListener(DelActionListener(audioList, audioModel))
+  del2btn.addActionListener(SortActionListener(audioList, audioModel))
 
-  val del3btn = new JButton("DEL")
-  del3btn.addActionListener(DelActionListener(subList, subModel))
+  val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
+  del3btn.addActionListener(SortActionListener(subList, subModel))
 
-  val playButton = new JButton("\u25B6 Play")
+  val playButton = new JButton("Play",makeIcon(FontAwesome.PLAY, new JButton))
   playButton.addActionListener((_: ActionEvent) => {
     println("Summoning your waifu...")
     new ProcessBuilder(
@@ -92,6 +131,7 @@ object Main extends App {
   })
 
   val frame = new JFrame("AnimeTool [mpv]")
+  //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
   frame.setSize(800, 600)
   frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
@@ -103,6 +143,17 @@ object Main extends App {
 
   frame.setVisible(true)
   frame.addComponentListener(ResizeListener())
+
+
+  private def makeIcon(icon : FontAwesome, element: Any): Icon = {
+      if (element.getClass.equals(new JLabel().getClass))
+        return IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize), theme.getButtonTextColor)
+
+      if (element.getClass.equals(new JButton().getClass))
+        return IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize*1.5), theme.getButtonTextColor)
+
+      IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize*0.5), theme.getButtonTextColor)
+  }
 
   case class ResizeListener() extends ComponentAdapter {
       override def componentResized(e : ComponentEvent): Unit = {
@@ -163,17 +214,20 @@ object Main extends App {
 
 
 
-    audioDelayLabel.setBounds(getBoundsInBoundsV(0, 2,genericPaddingLeft,audioDelayContainerRect))
+    audioDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayLabel)
-    audioDelayText.setBounds(getBoundsInBoundsV(1, 2,genericPaddingLeft,audioDelayContainerRect))
+    //audioDelaySpinnerLabel.setBounds(getBoundsInBounds(1, 3,genericPaddingLeft,audioDelayContainerRect))
+    //panel.add(audioDelaySpinnerLabel)
+    audioDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayText)
 
     val subDelayContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
-    subDelayLabel.setBounds(getBoundsInBoundsV(0, 2,genericPaddingLeft,subDelayContainerRect))
+    subDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,subDelayContainerRect))
     panel.add(subDelayLabel)
-    subDelayText.setBounds(getBoundsInBoundsV(1, 2,genericPaddingLeft,subDelayContainerRect))
+    subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
     panel.add(subDelayText)
 
+    /*
     val cLabelsRect = getNextBounds(10,verticalPadding,playRect)
     clabel1.setBounds(getBoundsInBounds(0, 3, genericPaddingLeft, cLabelsRect))
     panel.add(clabel1)
@@ -183,8 +237,9 @@ object Main extends App {
 
     clabel3.setBounds(getBoundsInBounds(2, 3, genericPaddingLeft, cLabelsRect))
     panel.add(clabel3)
+    */
 
-    val buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
+    val buttonsRect = getNextBounds(40,verticalPadding,playRect)
     val buttons1Rect = getBoundsInBounds(0, 3, genericPaddingLeft, buttonsRect)
     val buttons2Rect = getBoundsInBounds(1, 3, genericPaddingLeft, buttonsRect)
     val buttons3Rect = getBoundsInBounds(2, 3, genericPaddingLeft, buttonsRect)
@@ -255,7 +310,7 @@ object Main extends App {
     import javax.swing.SwingUtilities
 
     override def mousePressed(e: MouseEvent): Unit = {
-      if (SwingUtilities.isRightMouseButton(e)) list.getModel.asInstanceOf[DefaultListModel[ShortFile]].remove(getRow(e.getPoint))
+      if (SwingUtilities.isRightMouseButton(e)) list.getModel.asInstanceOf[SortableListModel[ShortFile]].remove(getRow(e.getPoint))
     }
 
     private def getRow(point: Point) = list.locationToIndex(point)
@@ -276,15 +331,18 @@ object Main extends App {
         } else {
             super.setSelectionInterval(index0, index1)
             if (!frozen) {
-              if (list1.getModel.getSize - 1 < index0)
-                list1.clearSelection()
-              else {
-                list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(true)
-                list1.setSelectedIndex(index0)
-                list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(false)
+                if (list1.getModel.getSize - 1 < index0) {
+                  list1.clearSelection()
+                }
+                else {
+                  list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(true)
+                  list1.setSelectedIndex(index0)
+                  list1.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(false)
+                }
+
+              if (list2.getModel.getSize - 1 < index0) {
+                list2.clearSelection()
               }
-              if (list2.getModel.getSize - 1 < index0)
-                list1.clearSelection()
               else {
                 list2.getSelectionModel.asInstanceOf[ToggleSelectionModel].freeze(true)
                 list2.setSelectedIndex(index0)
@@ -300,19 +358,71 @@ object Main extends App {
     */
   }
 
-  case class ClearActionListener(model: DefaultListModel[ShortFile]) extends ActionListener {
+  case class ClearActionListener(model: SortableListModel[ShortFile]) extends ActionListener {
       override def actionPerformed(e: ActionEvent): Unit = model.clear()
   }
 
-  case class DelActionListener(list: JList[ShortFile], model: DefaultListModel[ShortFile]) extends ActionListener {
-    override def actionPerformed(e: ActionEvent): Unit = model.remove(list.getSelectedIndex)
+  case class SortActionListener(list: JList[ShortFile], model: SortableListModel[ShortFile]) extends ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = {
+       model.sort()
+    }
+  }
+
+  case class UpActionListener(list: JList[ShortFile]) extends ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = {
+      val i =list.getSelectedIndex
+
+      if (i == 0)
+        return
+
+      val model = list.getModel.asInstanceOf[SortableListModel[ShortFile]]
+
+      val swap = model.get(i)
+      model.set(i, model.get(i-1))
+      model.set(i-1,swap)
+
+      list.setSelectedIndex(i-1)
+    }
+  }
+
+  case class DownActionListener(list: JList[ShortFile]) extends ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = {
+      val i =list.getSelectedIndex
+
+      if (i == list.getModel.getSize -1)
+        return
+
+      val model = list.getModel.asInstanceOf[SortableListModel[ShortFile]]
+
+      val swap = model.get(i)
+      model.set(i, model.get(i+1))
+      model.set(i+1,swap)
+
+      list.setSelectedIndex(i+1)
+    }
+  }
+
+  class SortableListModel[ShortFile] extends DefaultListModel[ShortFile] {
+
+    import java.util.Collections
+
+    def sort(): Unit = {
+      val list = new util.ArrayList[ShortFile]()
+      for (i <- 0 until this.getSize) list.add(this.getElementAt(i))
+
+      Collections.sort(list, (t: ShortFile, t1: ShortFile) => t.toString.compareTo(t1.toString))
+
+      for (i <- 0 until list.size()) {
+        this.set(i,list.get(i))
+      }
+    }
   }
 
   case class ShortFile(uri: URI) extends File(uri) {
     override def toString: String = this.getName
   }
 
-  case class ListHandler(model: DefaultListModel[ShortFile]) extends TransferHandler {
+  case class ListHandler(model: SortableListModel[ShortFile]) extends TransferHandler {
     override def canImport(support: TransferHandler.TransferSupport): Boolean
       = support.isDrop && support.isDataFlavorSupported(DataFlavor.stringFlavor)
 

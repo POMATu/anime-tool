@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: com.github.jiconfont:jiconfont-swing:1.0.1:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.jiconfont/jiconfont-swing/jars/jiconfont-swing-1.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.jiconfont/jiconfont-swing/srcs/jiconfont-swing-1.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

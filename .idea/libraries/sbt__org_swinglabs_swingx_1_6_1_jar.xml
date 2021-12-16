@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: org.swinglabs:swingx:1.6.1:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.swinglabs/swingx/jars/swingx-1.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.swinglabs/swingx/srcs/swingx-1.6.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

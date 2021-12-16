@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="580d1cf5-3a05-4ce0-afa7-d10051f7d9c2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/io_github_vincenzopalazzo_material_ui_swing_1_1_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__com_github_jiconfont_jiconfont_1_0_0_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__com_github_jiconfont_jiconfont_font_awesome_4_7_0_1_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__com_github_jiconfont_jiconfont_swing_1_0_1_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__com_jhlabs_filters_2_0_235_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__io_github_vincenzopalazzo_material_ui_swing_1_1_2_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__org_swinglabs_swing_worker_1_1_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/sbt__org_swinglabs_swingx_1_6_1_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/AnimeTool-build.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/AnimeTool-build.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/AnimeTool.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/AnimeTool.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/Main.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Main.scala" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -20,30 +32,62 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="SBT">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AnimeTool" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="AnimeTool" type="f1a62948:ProjectNode" />
+                <item name="AnimeTool" type="2d1252cf:ModuleNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Main.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="244" column="32" lean-forward="true" selection-start-line="244" selection-start-column="32" selection-end-line="244" selection-end-column="32" />
+            <state relative-caret-position="262">
+              <caret line="398" column="18" selection-start-line="398" selection-start-column="18" selection-end-line="398" selection-end-column="18" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
-                <element signature="e#9176#9200#0" expanded="true" />
+                <element signature="e#12078#12102#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.sbt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="83" selection-start-line="8" selection-start-column="83" selection-end-line="8" selection-end-column="83" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/license.txt">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/javax/swing/JList.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
+            <state relative-caret-position="10170">
               <caret line="808" column="15" selection-start-line="808" selection-start-column="15" selection-end-line="808" selection-end-column="15" />
-              <folding>
-                <element signature="e#27097#27098#0" expanded="true" />
-                <element signature="e#27147#27148#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -51,7 +95,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/javax/swing/DefaultListSelectionModel.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
+            <state relative-caret-position="3390">
               <caret line="255" selection-start-line="255" selection-end-line="255" />
             </state>
           </provider>
@@ -64,7 +108,6 @@
       <find>JList</find>
       <find>println</find>
       <find>File</find>
-      <find>model</find>
       <find>clicked</find>
       <find>val list</find>
       <find>file</find>
@@ -75,6 +118,16 @@
       <find>setSelectionInterval</find>
       <find>As</find>
       <find>asInstanceOf</find>
+      <find>down2</find>
+      <find>DelActionListener</find>
+      <find>model</find>
+      <find>ShortFile</find>
+      <find>DefaultListModel</find>
+      <find>Right</find>
+      <find>spin</find>
+      <find>addAction</find>
+      <find>down</find>
+      <find>DownActio</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -83,6 +136,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/Main.scala" />
       </list>
     </option>
@@ -134,24 +188,35 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="AnimeTool" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1639672165119" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1639694466076" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="project.structure.side.proportion" value="0.39502487" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -206,14 +271,8 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="3279193711000" />
-        <entry key="$PROJECT_DIR$/build.sbt" value="3671720110" />
+        <entry key="$PROJECT_DIR$/build.sbt" value="3828274541" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="3771982881" />
-      </map>
-    </option>
-    <option name="projectSyncType">
-      <map>
-        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
       </map>
     </option>
   </component>
@@ -230,18 +289,19 @@
       <workItem from="1639583993719" duration="15956000" />
       <workItem from="1639600254943" duration="3928000" />
       <workItem from="1639604235420" duration="2374000" />
-      <workItem from="1639609831408" duration="10973000" />
+      <workItem from="1639609831408" duration="13171000" />
+      <workItem from="1639680686818" duration="13769000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33231000" />
+    <option name="totallyTimeSpent" value="49198000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="25" width="1853" height="1055" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.257886" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26065302" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -250,13 +310,13 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25701943" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.40064794" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Build" order="7" weight="0.3297414" />
-      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="8" />
+      <window_info anchor="bottom" id="Build" order="7" weight="0.32937366" />
+      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="8" weight="0.32937366" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32937366" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
@@ -268,7 +328,7 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Maven" order="4" weight="0.32982844" />
-      <window_info anchor="right" id="sbt" order="5" />
+      <window_info anchor="right" id="sbt" order="5" visible="true" weight="0.016602103" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Database" order="7" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
@@ -286,31 +346,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/license.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/javax/swing/JList.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10170">
+          <caret line="808" column="15" selection-start-line="808" selection-start-column="15" selection-end-line="808" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/javax/swing/DefaultListSelectionModel.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
+        <state relative-caret-position="3390">
           <caret line="255" selection-start-line="255" selection-end-line="255" />
         </state>
       </provider>
     </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/javax/swing/JList.class">
+    <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="808" column="15" selection-start-line="808" selection-start-column="15" selection-end-line="808" selection-end-column="15" />
-          <folding>
-            <element signature="e#27097#27098#0" expanded="true" />
-            <element signature="e#27147#27148#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="120">
+          <caret line="8" column="83" selection-start-line="8" selection-start-column="83" selection-end-line="8" selection-end-column="83" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/Main.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="244" column="32" lean-forward="true" selection-start-line="244" selection-start-column="32" selection-end-line="244" selection-end-column="32" />
+        <state relative-caret-position="262">
+          <caret line="398" column="18" selection-start-line="398" selection-start-column="18" selection-end-line="398" selection-end-column="18" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
-            <element signature="e#9176#9200#0" expanded="true" />
+            <element signature="e#12078#12102#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -367,12 +433,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>AnimeTool</last-edited>
+          <last-edited>AnimeTool-build</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
-                <option value="0.6" />
+                <option value="0.39502487" />
               </list>
             </option>
           </splitter-proportions>
@@ -380,11 +445,11 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>sbt: org.scala-lang:scala-library:2.12.6:jar</last-edited>
+          <last-edited>io.github.vincenzopalazzo:material-ui-swing:1.1.2</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.39502487" />
               </list>
             </option>
           </splitter-proportions>
