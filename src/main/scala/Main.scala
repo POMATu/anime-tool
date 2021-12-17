@@ -79,14 +79,24 @@ object Main extends App {
   fontsLayout.setGap(10)
   fontsLayout.setBorderGap(10)
   val fontsPanel = new JPanel(fontsLayout)
+  fontsPanel.setTransferHandler(new FontsHandler)
 
   val fontsText = new JTextField("")
+  fontsText.setEditable(false)
+  fontsText.setTransferHandler(new FontsHandler)
 
   val fontsLabel = new JLabel("Fonts Folder",makeIcon(FontAwesome.FONT,classOf[JButton]),SwingConstants.LEFT)
+  fontsLabel.setTransferHandler(new FontsHandler)
   //fontsText.setPreferredSize(new Dimension(Int.MaxValue,Int.MaxValue))
   fontsPanel.add(fontsLabel)
   val test : Float = 3
   fontsPanel.add(fontsText,test)
+
+  val fontsClear = new JButton(makeIcon(FontAwesome.TRASH,classOf[JButton]))
+  fontsClear.addActionListener(new ActionListener {
+    override def actionPerformed(actionEvent: ActionEvent): Unit = fontsText.setText("")
+  })
+  fontsPanel.add(fontsClear)
 
  /* val fontsPanel = new MyPanel(
     Array(fontsLabel, fontsText),
@@ -236,7 +246,9 @@ object Main extends App {
     if (!subDelayText.getValue.toString.trim.isEmpty)
       args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000
 
-    if (!fontsText.getText.trim.isEmpty)
+    if (fontsText.getText.trim.isEmpty)
+      clearFontsFolder()
+    else
       if (!injectFonts(fontsText.getText.trim)) return false
 
 
@@ -261,14 +273,18 @@ object Main extends App {
   }
 
   def clearFontsFolder() = {
-    val fontsdir = new File(getFontsFolder())
-    for (f <- fontsdir.listFiles()) {
-      try {
-        f.delete()
-        println("Deleted old font " + f.getName)
-      } catch {
-        case _ =>
+    try {
+      val fontsdir = new File(getFontsFolder())
+      for (f <- fontsdir.listFiles()) {
+        try {
+          f.delete()
+          println("Deleted old font " + f.getName)
+        } catch {
+          case _ =>
+        }
       }
+    } catch {
+      case _ =>
     }
   }
 
@@ -373,7 +389,7 @@ object Main extends App {
    // panel.add(subDelayText)
 
 
-    val cLabelsRect = getNextBounds(60,verticalPadding,playRect)
+    val cLabelsRect = getNextBounds(70,verticalPadding,playRect)
     fontsPanel.setBounds(cLabelsRect)
     panel.add(fontsPanel)
     //fontsPanel.replaceAll()
@@ -572,6 +588,38 @@ object Main extends App {
 
   case class ShortFile(uri: URI) extends File(uri) {
     override def toString: String = this.getName
+  }
+
+  class FontsHandler extends TransferHandler {
+    override def canImport(support: TransferHandler.TransferSupport): Boolean
+    = support.isDrop && support.isDataFlavorSupported(DataFlavor.stringFlavor)
+
+    override def importData(support: TransferHandler.TransferSupport): Boolean =
+      canImport(support) && {
+        val transferable = support.getTransferable
+
+        transferable.getTransferData(DataFlavor.stringFlavor) match {
+          case line: String =>
+            //println(line)
+            val data = line.split("\n")
+            for (item <- data) {
+              if (item.trim.nonEmpty) {
+                val file = new File(new URI(item.trim))
+                if (file.exists) {
+                  fontsText.setText(file.getAbsolutePath)
+                  println("Added fonts dir: " + file.getAbsolutePath)
+                  return true
+                }
+
+              }
+            }
+            true
+          case _ => {
+            println("Error during import")
+            false
+          }
+        }
+      }
   }
 
   case class ListHandler(model: SortableListModel[ShortFile]) extends TransferHandler {
