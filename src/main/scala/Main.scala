@@ -29,9 +29,9 @@ object Main extends App {
   IconFontSwing.register(FontAwesome.getIconFont)
 
 
-  val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, new JButton),SwingConstants.LEFT)
+  val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.LEFT)
   audioDelayLabel.setFont(theme.getButtonFont)
-  val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, new JButton),SwingConstants.LEFT)
+  val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
   subDelayLabel.setFont(theme.getButtonFont)
 
   val clabel1 = new JLabel("")
@@ -86,40 +86,40 @@ object Main extends App {
   subList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
   subList.addMouseListener(new RightClickMouseAdapter(subList))
 
-  val up1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  val up1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP,classOf[JButton]))
   up1btn.addActionListener(UpActionListener(videoList))
 
-  val up2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  val up2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, classOf[JButton]))
   up2btn.addActionListener(UpActionListener(audioList))
-  val up3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, new JButton))
+  val up3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP, classOf[JButton]))
   up3btn.addActionListener(UpActionListener(subList))
 
 
-  val down1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  val down1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, classOf[JButton]))
   down1btn.addActionListener(DownActionListener(videoList))
-  val down2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  val down2btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, classOf[JButton]))
   down2btn.addActionListener(DownActionListener(audioList))
-  val down3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, new JButton))
+  val down3btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_DOWN, classOf[JButton]))
   down3btn.addActionListener(DownActionListener(subList))
 
 
-  val clear1btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
+  val clear1btn = new JButton(makeIcon(FontAwesome.FILE, classOf[JButton]))
   clear1btn.addActionListener(ClearActionListener(videoModel))
-  val clear2btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
+  val clear2btn = new JButton(makeIcon(FontAwesome.FILE, classOf[JButton]))
   clear2btn.addActionListener(ClearActionListener(audioModel))
-  val clear3btn = new JButton(makeIcon(FontAwesome.FILE, new JButton))
+  val clear3btn = new JButton(makeIcon(FontAwesome.FILE, classOf[JButton]))
   clear3btn.addActionListener(ClearActionListener(subModel))
 
-  val del1btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
-  val del2btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
+  val del1btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
+  val del2btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
   del1btn.addActionListener(SortActionListener(videoList, videoModel))
 
   del2btn.addActionListener(SortActionListener(audioList, audioModel))
 
-  val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, new JButton))
+  val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
   del3btn.addActionListener(SortActionListener(subList, subModel))
 
-  val playButton = new JButton("Play",makeIcon(FontAwesome.PLAY, new JButton))
+  val playButton = new JButton("Play",makeIcon(FontAwesome.PLAY, classOf[JButton]))
   playButton.addActionListener((_: ActionEvent) => {
     println("Summoning your waifu...")
     new ProcessBuilder(
@@ -146,13 +146,13 @@ object Main extends App {
 
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
-      if (element.getClass.equals(new JLabel().getClass))
-        return IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize), theme.getButtonTextColor)
 
-      if (element.getClass.equals(new JButton().getClass))
-        return IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize*1.5), theme.getButtonTextColor)
-
-      IconFontSwing.buildIcon(icon,Math.round(theme.getButtonFont.getSize*0.5), theme.getButtonTextColor)
+    val sz = element match {
+      case _: JButton => theme.getButtonFont.getSize*1.5
+      case _: JLabel =>  theme.getButtonFont.getSize
+      case _ => theme.getButtonFont.getSize
+    }
+    IconFontSwing.buildIcon(icon,Math.round(sz), theme.getButtonTextColor)
   }
 
   case class ResizeListener() extends ComponentAdapter {
@@ -435,8 +435,12 @@ object Main extends App {
           val data = line.split("[,\\s]")
           for (item <- data) {
             if (item.trim.nonEmpty) {
-              model.add(model.getSize, ShortFile(new URI(item.trim)))
-              println(item)
+              val file = ShortFile(new URI(item.trim))
+              if (file.exists && file.isFile) {
+                model.add(model.getSize, file)
+                println("Imported file: " + item)
+              }
+
             }
           }
           true
