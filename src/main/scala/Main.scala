@@ -25,6 +25,7 @@ import mdlaf.MaterialLookAndFeel
 
 import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
+import org.jdesktop.swingx.HorizontalLayout
 
 object Main extends App {
 
@@ -37,10 +38,33 @@ object Main extends App {
   IconFontSwing.register(FontAwesome.getIconFont)
 
 
-  val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.LEFT)
+  val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  audioDelayLayout.setGap(5)
+  audioDelayLayout.setBorderGap(5)
+  val audioDelayPanel = new JPanel(audioDelayLayout)
+  audioDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio Delay (ms)"))
+
+  /*val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.RIGHT)
   audioDelayLabel.setFont(theme.getButtonFont)
-  val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
-  subDelayLabel.setFont(theme.getButtonFont)
+  audioDelayPanel.add(audioDelayLabel)*/
+
+  val audioDelayText = new JSpinner(new SpinnerNumberModel(0,Int.MinValue,Int.MaxValue,100))
+  audioDelayText.setAlignmentX(SwingConstants.RIGHT)
+  audioDelayPanel.add(audioDelayText,3 : Float)
+
+
+  val subDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  subDelayLayout.setGap(5)
+  subDelayLayout.setBorderGap(5)
+  val subDelayPanel = new JPanel(subDelayLayout)
+  subDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub Delay (ms)"))
+  val subDelayText = new JSpinner(new SpinnerNumberModel(0,Int.MinValue,Int.MaxValue,100))
+  subDelayText.setAlignmentX(SwingConstants.RIGHT)
+
+  subDelayPanel.add(subDelayText, 3 : Float)
+
+  //val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
+  //subDelayLabel.setFont(theme.getButtonFont)
 
   val clabel1 = new JLabel("")
   clabel1.setFont(theme.getButtonFont)
@@ -50,17 +74,33 @@ object Main extends App {
   clabel3.setFont(theme.getButtonFont)
 
 
+  val fontsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  fontsLayout.setGap(10)
+  fontsLayout.setBorderGap(10)
+  val fontsPanel = new JPanel(fontsLayout)
+
+  val fontsText = new JTextField("")
+
+  val fontsLabel = new JLabel("Fonts Folder",makeIcon(FontAwesome.FONT,classOf[JButton]),SwingConstants.LEFT)
+  //fontsText.setPreferredSize(new Dimension(Int.MaxValue,Int.MaxValue))
+  fontsPanel.add(fontsLabel)
+  val test : Float = 3
+  fontsPanel.add(fontsText,test)
+
+ /* val fontsPanel = new MyPanel(
+    Array(fontsLabel, fontsText),
+    fontsText
+  )*/
+  fontsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Fonts Inject"))
 
 
 
   //val audioDelaySpinnerLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.CLOCK_O, new JButton),SwingConstants.RIGHT)
-  val audioDelayText = new JSpinner()
-  audioDelayText.setAlignmentX(SwingConstants.RIGHT)
+
   //audioDelayText.setForeground(theme.getButtonTextColor)
   //audioDelayText.setAlignmentX(SwingConstants.LEFT)
   //audioDelayText.setBorder(BorderFactory.createLineBorder(theme.getButtonTextColor))
-  val subDelayText = new JSpinner()
-  subDelayText.setAlignmentX(SwingConstants.RIGHT)
+
 
   val videoModel = new SortableListModel[ShortFile]
   val audioModel = new SortableListModel[ShortFile]
@@ -237,7 +277,7 @@ object Main extends App {
 
     val startRect = new Rectangle(genericPaddingLeft, 0, panel.getWidth - genericPaddingLeft, 1)
 
-    val playRect = getNextBounds(40,verticalPadding,startRect)
+    val playRect = getNextBounds(58,verticalPadding,startRect)
 
     playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
 
@@ -245,35 +285,31 @@ object Main extends App {
 
     val audioDelayContainerRect = getBoundsInBounds(1,3,genericPaddingLeft,playRect)
 
+    audioDelayPanel.setBounds(audioDelayContainerRect)
+    panel.add(audioDelayPanel)
 
 
-
-    audioDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,audioDelayContainerRect))
-    panel.add(audioDelayLabel)
+    //audioDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,audioDelayContainerRect))
+    //panel.add(audioDelayLabel)
     //audioDelaySpinnerLabel.setBounds(getBoundsInBounds(1, 3,genericPaddingLeft,audioDelayContainerRect))
     //panel.add(audioDelaySpinnerLabel)
-    audioDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,audioDelayContainerRect))
-    panel.add(audioDelayText)
+    //audioDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,audioDelayContainerRect))
+    //panel.add(audioDelayText)
 
     val subDelayContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
-    subDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,subDelayContainerRect))
-    panel.add(subDelayLabel)
-    subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
-    panel.add(subDelayText)
+    subDelayPanel.setBounds(subDelayContainerRect)
+    panel.add(subDelayPanel)
+   // subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
+   // panel.add(subDelayText)
 
-    /*
-    val cLabelsRect = getNextBounds(10,verticalPadding,playRect)
-    clabel1.setBounds(getBoundsInBounds(0, 3, genericPaddingLeft, cLabelsRect))
-    panel.add(clabel1)
 
-    clabel2.setBounds(getBoundsInBounds(1, 3, genericPaddingLeft, cLabelsRect))
-    panel.add(clabel2)
+    val cLabelsRect = getNextBounds(60,verticalPadding,playRect)
+    fontsPanel.setBounds(cLabelsRect)
+    panel.add(fontsPanel)
+    //fontsPanel.replaceAll()
 
-    clabel3.setBounds(getBoundsInBounds(2, 3, genericPaddingLeft, cLabelsRect))
-    panel.add(clabel3)
-    */
 
-    val buttonsRect = getNextBounds(40,verticalPadding,playRect)
+    val buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
     val buttons1Rect = getBoundsInBounds(0, 3, genericPaddingLeft, buttonsRect)
     val buttons2Rect = getBoundsInBounds(1, 3, genericPaddingLeft, buttonsRect)
     val buttons3Rect = getBoundsInBounds(2, 3, genericPaddingLeft, buttonsRect)
@@ -514,6 +550,48 @@ object Main extends App {
           case _ =>
         }
       }
+  }
+
+
+  class MyPanel extends JPanel {
+    private var elements : Array[Component] = null
+    private var fill: Component = null
+
+    def this(elements: Array[Component], fill: Component)
+    {
+      this()
+      this.elements = elements
+      this.fill = fill
+    }
+
+    def replaceAll() = {
+      this.removeAll()
+      for (element <- elements) {
+        element match {
+          case x if x == this.fill => this.add (fill)
+          case _ => this.add(element)
+        }
+      }
+      this.revalidate()
+      var usedWidth = 0
+      for (element <- elements) {
+        element match {
+          case x if x == this.fill =>
+          case _ => usedWidth += element.getBounds().width
+        }
+      }
+      val before = this.fill.getBounds
+      //println(fill.getBounds)
+      this.remove(fill)
+      before.width = this.getWidth - usedWidth
+      fill.setBounds(before)
+      //fill.setPreferredSize(new Dimension(before.width,before.height))
+      this.add(fill)
+      //println(fill.getBounds)
+      this.revalidate()
+      //this.repaint()
+    }
+
   }
 /*
   class EventJFrame(str: String) extends JFrame(str: String) with WindowListener with WindowFocusListener with WindowStateListener {

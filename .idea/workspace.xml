@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="580d1cf5-3a05-4ce0-afa7-d10051f7d9c2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/scala/RelativeLayout.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/Main.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Main.scala" afterDir="false" />
     </list>
@@ -50,11 +51,60 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Main.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="536">
-              <caret line="648" column="4" selection-start-line="648" selection-start-column="4" selection-end-line="648" selection-end-column="4" />
+            <state relative-caret-position="373">
+              <caret line="59" column="108" selection-start-line="59" selection-start-column="108" selection-end-line="59" selection-end-column="108" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
-                <element signature="e#13084#13108#0" expanded="true" />
+                <element signature="e#14581#14605#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/RelativeLayout.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="214">
+              <caret line="327" column="24" selection-start-line="327" selection-start-column="24" selection-end-line="327" selection-end-column="24" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2015#2033#0" expanded="true" />
+                <element signature="e#3255#3256#0" expanded="true" />
+                <element signature="e#3286#3287#0" expanded="true" />
+                <element signature="e#3509#3510#0" expanded="true" />
+                <element signature="e#3538#3539#0" expanded="true" />
+                <element signature="e#4067#4068#0" expanded="true" />
+                <element signature="e#4094#4095#0" expanded="true" />
+                <element signature="e#4523#4524#0" expanded="true" />
+                <element signature="e#4549#4550#0" expanded="true" />
+                <element signature="e#4717#4718#0" expanded="true" />
+                <element signature="e#4761#4762#0" expanded="true" />
+                <element signature="e#4983#4984#0" expanded="true" />
+                <element signature="e#5015#5016#0" expanded="true" />
+                <element signature="e#5289#5290#0" expanded="true" />
+                <element signature="e#5351#5352#0" expanded="true" />
+                <element signature="e#5506#5507#0" expanded="true" />
+                <element signature="e#5538#5539#0" expanded="true" />
+                <element signature="e#6341#6342#0" expanded="true" />
+                <element signature="e#6368#6369#0" expanded="true" />
+                <element signature="e#6629#6630#0" expanded="true" />
+                <element signature="e#6661#6662#0" expanded="true" />
+                <element signature="e#6784#6785#0" expanded="true" />
+                <element signature="e#6814#6815#0" expanded="true" />
+                <element signature="e#6997#6998#0" expanded="true" />
+                <element signature="e#7035#7036#0" expanded="true" />
+                <element signature="e#7166#7167#0" expanded="true" />
+                <element signature="e#7203#7204#0" expanded="true" />
+                <element signature="e#7747#7748#0" expanded="true" />
+                <element signature="e#7799#7800#0" expanded="true" />
+                <element signature="e#8135#8136#0" expanded="true" />
+                <element signature="e#8191#8192#0" expanded="true" />
+                <element signature="e#24396#24397#0" expanded="true" />
+                <element signature="e#24470#24471#0" expanded="true" />
+                <element signature="e#24618#24619#0" expanded="true" />
+                <element signature="e#24645#24646#0" expanded="true" />
+                <element signature="e#24793#24794#0" expanded="true" />
+                <element signature="e#24820#24821#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,14 +144,15 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>DelSe</find>
-      <find>getSelectionMo</find>
-      <find>setSelectionInterval</find>
-      <find>As</find>
-      <find>asInstanceOf</find>
-      <find>down2</find>
       <find>DelActionListener</find>
       <find>model</find>
       <find>ShortFile</find>
@@ -126,6 +177,12 @@
       <find>getNextB</find>
       <find>place</find>
       <find>eventJfram</find>
+      <find>fonts</find>
+      <find>JTextField</find>
+      <find>Jtext</find>
+      <find>audio</find>
+      <find>spinner</find>
+      <find>JSpimm</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,6 +192,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/build.sbt" />
+        <option value="$PROJECT_DIR$/src/main/scala/RelativeLayout.java" />
         <option value="$PROJECT_DIR$/src/main/scala/Main.scala" />
       </list>
     </option>
@@ -207,7 +265,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1639758360884" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1639769003836" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -289,12 +347,12 @@
       <workItem from="1639600254943" duration="3928000" />
       <workItem from="1639604235420" duration="2374000" />
       <workItem from="1639609831408" duration="13171000" />
-      <workItem from="1639680686818" duration="23984000" />
+      <workItem from="1639680686818" duration="34441000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59413000" />
+    <option name="totallyTimeSpent" value="69870000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="25" width="1853" height="1055" extended-state="6" />
@@ -310,7 +368,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23542117" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -343,13 +401,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/src/main/scala/Main.scala</url>
-          <line>613</line>
+          <line>691</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/src/main/scala/Main.scala</url>
-          <line>620</line>
+          <line>698</line>
           <properties />
           <option name="timeStamp" value="2" />
         </line-breakpoint>
@@ -388,13 +446,60 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/RelativeLayout.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="327" column="24" selection-start-line="327" selection-start-column="24" selection-end-line="327" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2015#2033#0" expanded="true" />
+            <element signature="e#3255#3256#0" expanded="true" />
+            <element signature="e#3286#3287#0" expanded="true" />
+            <element signature="e#3509#3510#0" expanded="true" />
+            <element signature="e#3538#3539#0" expanded="true" />
+            <element signature="e#4067#4068#0" expanded="true" />
+            <element signature="e#4094#4095#0" expanded="true" />
+            <element signature="e#4523#4524#0" expanded="true" />
+            <element signature="e#4549#4550#0" expanded="true" />
+            <element signature="e#4717#4718#0" expanded="true" />
+            <element signature="e#4761#4762#0" expanded="true" />
+            <element signature="e#4983#4984#0" expanded="true" />
+            <element signature="e#5015#5016#0" expanded="true" />
+            <element signature="e#5289#5290#0" expanded="true" />
+            <element signature="e#5351#5352#0" expanded="true" />
+            <element signature="e#5506#5507#0" expanded="true" />
+            <element signature="e#5538#5539#0" expanded="true" />
+            <element signature="e#6341#6342#0" expanded="true" />
+            <element signature="e#6368#6369#0" expanded="true" />
+            <element signature="e#6629#6630#0" expanded="true" />
+            <element signature="e#6661#6662#0" expanded="true" />
+            <element signature="e#6784#6785#0" expanded="true" />
+            <element signature="e#6814#6815#0" expanded="true" />
+            <element signature="e#6997#6998#0" expanded="true" />
+            <element signature="e#7035#7036#0" expanded="true" />
+            <element signature="e#7166#7167#0" expanded="true" />
+            <element signature="e#7203#7204#0" expanded="true" />
+            <element signature="e#7747#7748#0" expanded="true" />
+            <element signature="e#7799#7800#0" expanded="true" />
+            <element signature="e#8135#8136#0" expanded="true" />
+            <element signature="e#8191#8192#0" expanded="true" />
+            <element signature="e#24396#24397#0" expanded="true" />
+            <element signature="e#24470#24471#0" expanded="true" />
+            <element signature="e#24618#24619#0" expanded="true" />
+            <element signature="e#24645#24646#0" expanded="true" />
+            <element signature="e#24793#24794#0" expanded="true" />
+            <element signature="e#24820#24821#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/Main.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="648" column="4" selection-start-line="648" selection-start-column="4" selection-end-line="648" selection-end-column="4" />
+        <state relative-caret-position="373">
+          <caret line="59" column="108" selection-start-line="59" selection-start-column="108" selection-end-line="59" selection-end-column="108" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
-            <element signature="e#13084#13108#0" expanded="true" />
+            <element signature="e#14581#14605#0" expanded="true" />
           </folding>
         </state>
       </provider>
