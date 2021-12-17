@@ -13,6 +13,7 @@ import javax.swing._
 import mdlaf.themes.{AbstractMaterialTheme, JMarsDarkTheme, MaterialLiteTheme, MaterialOceanicTheme}
 import javax.swing.event._
 import java.lang.{Comparable, ProcessBuilder}
+import java.nio.file._
 import java.util
 import java.util.{Collections, Comparator}
 
@@ -180,13 +181,7 @@ object Main extends App {
 
   val playButton = new JButton("Play",makeIcon(FontAwesome.PLAY, classOf[JButton]))
   playButton.addActionListener((_: ActionEvent) => {
-    println("Summoning your waifu...")
-    new ProcessBuilder(
-      "mpv",
-      videoList.getSelectedValue.getAbsolutePath,
-      "--audio-file=" + audioList.getSelectedValue.getAbsolutePath,
-      "--sub-file=" + subList.getSelectedValue.getAbsolutePath,
-    ).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start
+      play()
   })
 
   val textArea = new JTextArea()
@@ -218,6 +213,81 @@ object Main extends App {
 
   println("AnimeTool init")
 
+  def play() : Boolean = {
+    if (videoList.getSelectedIndex < 0) {
+      println("You havent selected any video file")
+      return false
+    }
+
+    var args = ListBuffer[String]("mpv", videoList.getSelectedValue.getAbsolutePath)
+
+    if (audioList.getSelectedIndex >= 0)
+      args += "--audio-file=" + audioList.getSelectedValue.getAbsolutePath
+
+    if (subList.getSelectedIndex >= 0)
+      args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath
+
+    if (subList.getSelectedIndex >= 0)
+      args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath
+
+    if (!audioDelayText.getValue.toString.trim.isEmpty)
+      args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000
+
+    if (!subDelayText.getValue.toString.trim.isEmpty)
+      args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000
+
+    if (!fontsText.getText.trim.isEmpty)
+      if (!injectFonts(fontsText.getText.trim)) return false
+
+
+    println("Summoning your waifu... " + args.toString())
+
+    val p = new ProcessBuilder(
+      args.toSeq:_*
+    ).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+
+    p.waitFor()
+    clearFontsFolder()
+    true
+  }
+
+  def getFontsFolder() : String = {
+    val home = System.getProperty("user.home")
+    val fontspath = Paths.get(home, ".fonts", "animetool")
+    val fontsdir = new File(fontspath.toString)
+    if (!fontsdir.exists())
+      fontsdir.mkdirs
+    fontsdir.getAbsolutePath
+  }
+
+  def clearFontsFolder() = {
+    val fontsdir = new File(getFontsFolder())
+    for (f <- fontsdir.listFiles()) {
+      try {
+        f.delete()
+        println("Deleted old font " + f.getName)
+      } catch {
+        case _ =>
+      }
+    }
+  }
+
+  def injectFonts(path: String): Boolean = {
+    val source = new File(path)
+    if (!source.exists()) {
+      println("Fonts source " + path + " doesnt exists")
+      return false
+    }
+
+    println("Clearing old fonts")
+    clearFontsFolder()
+
+    for (f <- source.listFiles()) {
+      Files.copy(f.toPath, Paths.get(getFontsFolder(), f.getName), StandardCopyOption.REPLACE_EXISTING)
+      println("Injected font " + f.getName)
+    }
+    true
+  }
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
 

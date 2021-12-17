@@ -2,7 +2,7 @@ name := "AnimeTool"
 
 version := "0.1"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.13.6"
 
 libraryDependencies += "io.github.vincenzopalazzo" % "material-ui-swing" % "1.1.2"
 
