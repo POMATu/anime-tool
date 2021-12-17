@@ -584,7 +584,8 @@ object Main extends App {
 
       transferable.getTransferData(DataFlavor.stringFlavor) match {
         case line: String =>
-          val data = line.split("[,\\s]")
+          //println(line)
+          val data = line.split("\n")
           for (item <- data) {
             if (item.trim.nonEmpty) {
               val file = ShortFile(new URI(item.trim))
@@ -596,7 +597,10 @@ object Main extends App {
             }
           }
           true
-        case _ => false
+        case _ => {
+          println("Error during import")
+          false
+        }
       }
     }
   }
