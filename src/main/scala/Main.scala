@@ -1,11 +1,14 @@
 import java.awt.datatransfer.DataFlavor
 import java.awt.event._
 import java.awt._
+import java.awt.geom.Rectangle2D
 import java.io.File
 import java.lang.reflect.Type
 import java.net.URI
 
 import sys.process._
+import java.io._
+
 import javax.swing._
 import mdlaf.themes.{AbstractMaterialTheme, JMarsDarkTheme, MaterialLiteTheme, MaterialOceanicTheme}
 import javax.swing.event._
@@ -14,6 +17,7 @@ import java.util
 import java.util.{Collections, Comparator}
 
 import javax.swing.GroupLayout.Alignment
+import javax.swing.text.DefaultCaret
 import javax.swing.{DefaultListSelectionModel, JLabel}
 import jiconfont.icons.font_awesome.FontAwesome
 import mdlaf.MaterialLookAndFeel
@@ -22,6 +26,9 @@ import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
 
 object Main extends App {
+
+  val stdout = System.out
+  val stderr = System.err
 
   val theme = new MaterialOceanicTheme
   //theme.getBorderList.
@@ -69,6 +76,10 @@ object Main extends App {
   videoList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
   videoList.addMouseListener(new RightClickMouseAdapter(videoList))
 
+  val videoListScrollPane = new JScrollPane
+  videoListScrollPane.add(videoList)
+  videoListScrollPane.setViewportView(videoList)
+
   audioList.setDropMode(DropMode.INSERT)
   audioList.setTransferHandler(ListHandler(audioModel))
   //audioList.setBorder(BorderFactory.createLineBorder(Color.black))
@@ -77,6 +88,9 @@ object Main extends App {
   audioList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
   audioList.addMouseListener(new RightClickMouseAdapter(audioList))
 
+  val audioListScrollPane = new JScrollPane
+  audioListScrollPane.add(audioList)
+  audioListScrollPane.setViewportView(audioList)
 
   subList.setDropMode(DropMode.INSERT)
   subList.setTransferHandler(ListHandler(subModel))
@@ -85,6 +99,10 @@ object Main extends App {
   //subList.getSelectionModel.addListSelectionListener(new SharedListSelectionHandler(videoList,audioList))
   subList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
   subList.addMouseListener(new RightClickMouseAdapter(subList))
+
+  val subListScrollPane = new JScrollPane
+  subListScrollPane.add(subList)
+  subListScrollPane.setViewportView(subList)
 
   val up1btn = new JButton(makeIcon(FontAwesome.CHEVRON_CIRCLE_UP,classOf[JButton]))
   up1btn.addActionListener(UpActionListener(videoList))
@@ -130,7 +148,20 @@ object Main extends App {
     ).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start
   })
 
-  val frame = new JFrame("AnimeTool [mpv]")
+  val textArea = new JTextArea()
+  textArea.setBackground(Color.BLACK)
+  textArea.setForeground(Color.LIGHT_GRAY)
+  textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12))
+
+  val consoleScrollPane = new JScrollPane
+  consoleScrollPane.add(textArea)
+  consoleScrollPane.setViewportView(textArea)
+
+  System.setOut(new PrintStream(DualOutputStream(false)))
+  System.setErr(new PrintStream(DualOutputStream(true)))
+
+  val frame = new EventJFrame("AnimeTool [mpv]")
+  frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
   frame.setSize(800, 600)
@@ -143,6 +174,8 @@ object Main extends App {
 
   frame.setVisible(true)
   frame.addComponentListener(ResizeListener())
+
+  println("AnimeTool init")
 
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
@@ -271,16 +304,25 @@ object Main extends App {
     clear3btn.setBounds(getBoundsInBounds(3,4,0, buttons3Rect))
     panel.add(clear3btn)
 
+    val consoleHeight = 80
     val listRect = getNextBounds(-1,verticalPadding,buttonsRect)
+    listRect.height -= (consoleHeight + verticalPadding)
 
-    videoList.setBounds(getBoundsInBounds(0,3,genericPaddingLeft, listRect))
-    panel.add(videoList)
+    videoListScrollPane.setBounds(getBoundsInBounds(0,3,genericPaddingLeft, listRect))
+    panel.add(videoListScrollPane)
 
-    audioList.setBounds(getBoundsInBounds(1,3,genericPaddingLeft, listRect))
-    panel.add(audioList)
+    audioListScrollPane.setBounds(getBoundsInBounds(1,3,genericPaddingLeft, listRect))
+    panel.add(audioListScrollPane)
 
-    subList.setBounds(getBoundsInBounds(2,3,genericPaddingLeft, listRect))
-    panel.add(subList)
+    subListScrollPane.setBounds(getBoundsInBounds(2,3,genericPaddingLeft, listRect))
+    panel.add(subListScrollPane)
+
+    val consoleRect = getNextBounds(-1, verticalPadding,listRect)
+    consoleRect.width -= genericPaddingLeft
+    consoleScrollPane.setBounds(consoleRect)
+    panel.add(consoleScrollPane)
+
+
   }
 
   class SharedListSelectionHandler(list1: JList[ShortFile], list2: JList[ShortFile]) extends ListSelectionListener {
@@ -438,7 +480,7 @@ object Main extends App {
               val file = ShortFile(new URI(item.trim))
               if (file.exists && file.isFile) {
                 model.add(model.getSize, file)
-                println("Imported file: " + item)
+                println("Imported file: " + file.getAbsolutePath)
               }
 
             }
@@ -446,6 +488,144 @@ object Main extends App {
           true
         case _ => false
       }
+    }
+  }
+
+  case class DualOutputStream(error: Boolean) extends OutputStream {
+      override def write(b: Int): Unit = {
+        try {
+          if (error)
+            stderr.print(b.toChar)
+          else
+            stdout.print(b.toChar)
+        } catch {
+          case _ =>
+        }
+
+        try {
+          textArea.append(String.valueOf(b.toChar))
+          //textArea.setCaretPosition(textArea.getDocument.getLength)
+          textArea.getCaret.setDot(Integer.MAX_VALUE)
+        } catch {
+          case _ =>
+        }
+      }
+  }
+
+  class EventJFrame(str: String) extends JFrame(str: String) with WindowListener with WindowFocusListener with WindowStateListener {
+
+    import java.awt.Frame
+    import java.awt.event.WindowEvent
+
+    def displayStateMessage(prefix: String, e: WindowEvent): Unit = {
+      val state = e.getNewState
+      val oldState = e.getOldState
+      val msg = prefix + "New state: " + convertStateToString(state) + "Old state: " + convertStateToString(oldState)
+      println(msg)
+    }
+
+    import java.awt.Frame
+    import java.awt.event.ActionEvent
+    import java.awt.event.ActionListener
+    import java.awt.event.WindowEvent
+
+    import javax.swing.JScrollPane
+    import javax.swing.JTextArea
+    import java.awt.BorderLayout
+    import java.awt.Dimension
+
+    def addListeners(): Unit = {
+      addWindowListener(this)
+      addWindowFocusListener(this)
+      addWindowStateListener(this)
+      checkWM
+    }
+
+    def checkWM(): Unit = {
+      val tk = frame.getToolkit
+      if (!tk.isFrameStateSupported(Frame.ICONIFIED)) displayMessage("Your window manager doesn't support ICONIFIED.")
+      else displayMessage("Your window manager supports ICONIFIED.")
+      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_VERT)) displayMessage("Your window manager doesn't support MAXIMIZED_VERT.")
+      else displayMessage("Your window manager supports MAXIMIZED_VERT.")
+      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_HORIZ)) displayMessage("Your window manager doesn't support MAXIMIZED_HORIZ.")
+      else displayMessage("Your window manager supports MAXIMIZED_HORIZ.")
+      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_BOTH)) displayMessage("Your window manager doesn't support MAXIMIZED_BOTH.")
+      else displayMessage("Your window manager supports MAXIMIZED_BOTH.")
+    }
+
+    def windowClosing(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowClosing.")
+      //A pause so user can see the message before
+      //the window actually closes.
+      val task = new ActionListener() {
+        var alreadyDisposed = false
+        override
+
+        def actionPerformed(e: ActionEvent): Unit = {
+          if (frame.isDisplayable) {
+            alreadyDisposed = true
+            frame.dispose
+          }
+        }
+      }
+
+    }
+
+    def windowClosed(e: WindowEvent): Unit = { //This will only be seen on standard output.
+      displayMessage("WindowListener method called: windowClosed.")
+    }
+
+    def windowOpened(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowOpened.")
+    }
+
+    def windowIconified(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowIconified.")
+    }
+
+    def windowDeiconified(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowDeiconified.")
+    }
+
+    def windowActivated(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowActivated.")
+    }
+
+    def windowDeactivated(e: WindowEvent): Unit = {
+      displayMessage("WindowListener method called: windowDeactivated.")
+    }
+
+    def windowGainedFocus(e: WindowEvent): Unit = {
+      displayMessage("WindowFocusListener method called: windowGainedFocus.")
+    }
+
+    def windowLostFocus(e: WindowEvent): Unit = {
+      displayMessage("WindowFocusListener method called: windowLostFocus.")
+    }
+
+    def windowStateChanged(e: WindowEvent): Unit = {
+      displayStateMessage("WindowStateListener method called: windowStateChanged.", e)
+      placeComponents(panel)
+    }
+
+    def displayMessage(msg: String): Unit = {
+      //display.append(msg + newline)
+      println(msg)
+    }
+
+    def convertStateToString(state: Int): String = {
+      if (state == Frame.NORMAL) return "NORMAL"
+      var strState = " "
+      if ((state & Frame.ICONIFIED) != 0) strState += "ICONIFIED"
+      //MAXIMIZED_BOTH is a concatenation of two bits, so
+      //we need to test for an exact match.
+      if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) strState += "MAXIMIZED_BOTH"
+      else {
+        if ((state & Frame.MAXIMIZED_VERT) != 0) strState += "MAXIMIZED_VERT"
+        if ((state & Frame.MAXIMIZED_HORIZ) != 0) strState += "MAXIMIZED_HORIZ"
+        if (" " == strState) strState = "UNKNOWN"
+      }
+      strState.trim
     }
   }
 
