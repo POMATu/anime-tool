@@ -16,6 +16,7 @@ import java.lang.{Comparable, ProcessBuilder}
 import java.util
 import java.util.{Collections, Comparator}
 
+import Main.panel
 import javax.swing.GroupLayout.Alignment
 import javax.swing.text.DefaultCaret
 import javax.swing.{DefaultListSelectionModel, JLabel}
@@ -160,8 +161,8 @@ object Main extends App {
   System.setOut(new PrintStream(DualOutputStream(false)))
   System.setErr(new PrintStream(DualOutputStream(true)))
 
-  val frame = new EventJFrame("AnimeTool [mpv]")
-  frame.addListeners()
+  val frame = new JFrame("AnimeTool [mpv]")
+  //frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
   frame.setSize(800, 600)
@@ -190,7 +191,6 @@ object Main extends App {
 
   case class ResizeListener() extends ComponentAdapter {
       override def componentResized(e : ComponentEvent): Unit = {
-        panel.removeAll()
         placeComponents(panel)
     }
   }
@@ -230,11 +230,12 @@ object Main extends App {
 
   private def placeComponents(panel: JPanel): Unit = {
     panel.setLayout(null)
+    panel.removeAll()
 
     val genericPaddingLeft = 5
     val verticalPadding = 5
 
-    val startRect = new Rectangle(genericPaddingLeft, 0, frame.getWidth - genericPaddingLeft, 1)
+    val startRect = new Rectangle(genericPaddingLeft, 0, panel.getWidth - genericPaddingLeft, 1)
 
     val playRect = getNextBounds(40,verticalPadding,startRect)
 
@@ -322,7 +323,7 @@ object Main extends App {
     consoleScrollPane.setBounds(consoleRect)
     panel.add(consoleScrollPane)
 
-
+    frame.revalidate()
   }
 
   class SharedListSelectionHandler(list1: JList[ShortFile], list2: JList[ShortFile]) extends ListSelectionListener {
@@ -401,7 +402,10 @@ object Main extends App {
   }
 
   case class ClearActionListener(model: SortableListModel[ShortFile]) extends ActionListener {
-      override def actionPerformed(e: ActionEvent): Unit = model.clear()
+      override def actionPerformed(e: ActionEvent): Unit = {
+        model.clear()
+
+      }
   }
 
   case class SortActionListener(list: JList[ShortFile], model: SortableListModel[ShortFile]) extends ActionListener {
@@ -511,7 +515,7 @@ object Main extends App {
         }
       }
   }
-
+/*
   class EventJFrame(str: String) extends JFrame(str: String) with WindowListener with WindowFocusListener with WindowStateListener {
 
     import java.awt.Frame
@@ -604,8 +608,22 @@ object Main extends App {
     }
 
     def windowStateChanged(e: WindowEvent): Unit = {
+      val task = new ActionListener() {
+        override def actionPerformed(e: ActionEvent): Unit = {
+          println(frame.getWidth)
+          //placeComponents(panel)
+          val bounds = panel.getBounds()
+          bounds.width += 1
+          panel.setBounds(bounds)
+        }
+      }
+      val timer = new Timer(500, task) //fire every half second
+      timer.setInitialDelay(1000) //first delay 2 seconds
+
+      timer.setRepeats(false)
+      timer.start()
+
       displayStateMessage("WindowStateListener method called: windowStateChanged.", e)
-      placeComponents(panel)
     }
 
     def displayMessage(msg: String): Unit = {
@@ -628,5 +646,6 @@ object Main extends App {
       strState.trim
     }
   }
+  */
 
 }
