@@ -1,11 +1,13 @@
 <component name="libraryTable">
   <library name="sbt: io.github.vincenzopalazzo:material-ui-swing:1.1.2:jar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/io.github.vincenzopalazzo/material-ui-swing/jars/material-ui-swing-1.1.2.jar!/" />
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/vincenzopalazzo/material-ui-swing/1.1.2/material-ui-swing-1.1.2.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/vincenzopalazzo/material-ui-swing/1.1.2/material-ui-swing-1.1.2-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/io.github.vincenzopalazzo/material-ui-swing/srcs/material-ui-swing-1.1.2-sources.jar!/" />
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/vincenzopalazzo/material-ui-swing/1.1.2/material-ui-swing-1.1.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

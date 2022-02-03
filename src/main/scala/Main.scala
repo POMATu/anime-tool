@@ -28,6 +28,8 @@ import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
 import org.jdesktop.swingx.HorizontalLayout
 
+import scala.util.{Success, Try}
+
 object Main extends App {
 
   val stdout = System.out
@@ -624,19 +626,33 @@ object Main extends App {
 
   case class ListHandler(model: SortableListModel[ShortFile]) extends TransferHandler {
     override def canImport(support: TransferHandler.TransferSupport): Boolean
-      = support.isDrop && support.isDataFlavorSupported(DataFlavor.stringFlavor)
+      = {
+
+      support.isDrop && support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+    }
 
     override def importData(support: TransferHandler.TransferSupport): Boolean =
       canImport(support) && {
-      val transferable = support.getTransferable
+        val transferable = support.getTransferable
 
-      transferable.getTransferData(DataFlavor.stringFlavor) match {
-        case line: String =>
-          //println(line)
-          val data = line.split("\n")
-          for (item <- data) {
-            if (item.trim.nonEmpty) {
-              val file = ShortFile(new URI(item.trim))
+        val try_files = Try(transferable.getTransferData(DataFlavor.javaFileListFlavor))
+          .map {
+            case list: util.AbstractList[File] =>
+              println(list)
+              list.toArray( Array[File]() )
+          }
+
+        val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
+          .map {
+            case text: String =>
+              text.split("\n").map(l => new File(new URI(l)))
+          }
+
+        val file_list = try_files.orElse(try_uris).getOrElse( throw new Exception("meh") )
+
+          for (item <- file_list) {
+            if (item.toString.trim.nonEmpty) {
+              val file = ShortFile(item.toURI)
               if (file.exists && file.isFile) {
                 model.add(model.getSize, file)
                 println("Imported file: " + file.getAbsolutePath)
@@ -645,12 +661,7 @@ object Main extends App {
             }
           }
           true
-        case _ => {
-          println("Error during import")
-          false
-        }
       }
-    }
   }
 
   case class DualOutputStream(error: Boolean) extends OutputStream {
