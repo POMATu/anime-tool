@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtNativePackager._
+
 name := "AnimeTool"
 
 version := "0.1"
@@ -17,19 +19,9 @@ enablePlugins(JDKPackagerPlugin)
 
 mainClass in Compile := Some("Main")
 
+// change java path to yours for exe installer
 (antPackagerTasks in JDKPackager) := Some(file("C:\\Program Files\\Java\\jdk1.8.0_321\\lib\\ant-javafx.jar"))
 
-//mappings in Universal := {
-//  // universalMappings: Seq[(File,String)]
-//  val universalMappings = (mappings in Universal).value
-//  val fatJar = (assembly in Compile).value
-//
-//  // removing means filtering
-//  // notice the "!" - it means NOT, so only keep those that do NOT have a name ending with "jar"
-//  val filtered = universalMappings filter {
-//    case (file, name) =>  ! name.endsWith(".jar")
-//  }
-//
-//  // add the fat jar to our sequence of things that we've filtered
-//  filtered :+ (fatJar -> ("lib/" + fatJar.getName))
-//}
+// Build with
+// sbt ;clean;jdkPackager:packageBin
+// sbt ;clean;universal:packageBin
