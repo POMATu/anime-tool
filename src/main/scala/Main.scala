@@ -73,6 +73,19 @@ object Main extends App {
 
   subDelayPanel.add(subDelayText, 3 : Float)
 
+  val optionsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  optionsLayout.setGap(5)
+  optionsLayout.setBorderGap(5)
+
+  val optionsPanel = new JPanel(optionsLayout)
+  optionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Convenience Options"))
+
+  val fullscreenOption = new JCheckBox("Fullscreen")
+  fullscreenOption.setSelected(true)
+  val subsVisible = new JCheckBox("Subs Visible")
+
+  optionsPanel.add(fullscreenOption)
+  optionsPanel.add(subsVisible)
   //val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
   //subDelayLabel.setFont(theme.getButtonFont)
 
@@ -322,6 +335,12 @@ object Main extends App {
     if (!subDelayText.getValue.toString.trim.isEmpty)
       args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000
 
+    if (fullscreenOption.isSelected)
+      args += "--fs"
+
+    if (!subsVisible.isSelected)
+      args += "--no-sub-visibility"
+
     if (fontsText.getText.trim.isEmpty)
       clearFontsFolder()
     else
@@ -490,6 +509,9 @@ object Main extends App {
     audioDelayPanel.setBounds(audioDelayContainerRect)
     panel.add(audioDelayPanel)
 
+    val optionsContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
+    optionsPanel.setBounds(optionsContainerRect)
+    panel.add(optionsPanel)
 
     //audioDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,audioDelayContainerRect))
     //panel.add(audioDelayLabel)
