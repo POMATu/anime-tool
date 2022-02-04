@@ -55,7 +55,9 @@ public class BackgroundImageList<T> extends JList<T> {
             Graphics2D g2d = (Graphics2D) g.create();
             int x = getWidth()/3; //getWidth() - background.getWidth();
             int y = getHeight()/3; // getHeight() - background.getHeight();
-            g2d.drawImage(background, x, y, getWidth()/3, getHeight()/3, this);
+            float ratio = ((float)background.getHeight())/((float)background.getWidth());
+            //System.out.println(ratio);
+            g2d.drawImage(background, x, y, getWidth()/3,  Math.round((getWidth()/3)*ratio), this);
             g2d.dispose();
         }
         super.paintComponent(g);
