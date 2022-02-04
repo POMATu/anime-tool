@@ -18,6 +18,7 @@ import java.util
 import java.util.{Collections, Comparator}
 
 import Main.panel
+import javax.imageio.ImageIO
 import javax.swing.GroupLayout.Alignment
 import javax.swing.text.DefaultCaret
 import javax.swing.{DefaultListSelectionModel, JLabel}
@@ -223,6 +224,7 @@ object Main extends App {
   System.setErr(new PrintStream(DualOutputStream(true)))
 
   val frame = new JFrame("AnimeTool [mpv]")
+  frame.setIconImage(ImageIO.read(getClass.getResource("icon.png")))
   //frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
