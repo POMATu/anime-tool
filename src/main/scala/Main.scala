@@ -118,9 +118,13 @@ object Main extends App {
   val videoModel = new SortableListModel[ShortFile]
   val audioModel = new SortableListModel[ShortFile]
   val subModel = new SortableListModel[ShortFile]
-  val videoList = new JList[ShortFile](videoModel)
-  val audioList = new JList[ShortFile](audioModel)
-  val subList =  new JList[ShortFile](subModel)
+  val videoList = new BackgroundImageList[ShortFile](videoModel,IconFontSwing.buildImage(FontAwesome.FILE_VIDEO_O,800, theme.getButtonTextColor ))
+  val audioList = new BackgroundImageList[ShortFile](audioModel,IconFontSwing.buildImage(FontAwesome.FILE_AUDIO_O,800, theme.getButtonTextColor ))
+  val subList =  new BackgroundImageList[ShortFile](subModel,IconFontSwing.buildImage(FontAwesome.FILE_TEXT_O,800, theme.getButtonTextColor ))
+
+  //videoList.setOpaque(false)
+  //videoList.setBackground(new Color(0, 0, 0, 0))
+  //videoList.setForeground(Color.WHITE)
 
   videoList.setDropMode(DropMode.INSERT)
   videoList.setTransferHandler(ListHandler(videoModel))
@@ -131,6 +135,9 @@ object Main extends App {
   videoList.addMouseListener(new RightClickMouseAdapter(videoList))
 
   val videoListScrollPane = new JScrollPane
+  videoListScrollPane.setOpaque(false)
+  videoListScrollPane.getViewport.setOpaque(false)
+
   videoListScrollPane.add(videoList)
   videoListScrollPane.setViewportView(videoList)
 
@@ -143,6 +150,9 @@ object Main extends App {
   audioList.addMouseListener(new RightClickMouseAdapter(audioList))
 
   val audioListScrollPane = new JScrollPane
+  audioListScrollPane.setOpaque(false)
+  audioListScrollPane.getViewport.setOpaque(false)
+
   audioListScrollPane.add(audioList)
   audioListScrollPane.setViewportView(audioList)
 
@@ -155,6 +165,9 @@ object Main extends App {
   subList.addMouseListener(new RightClickMouseAdapter(subList))
 
   val subListScrollPane = new JScrollPane
+  subListScrollPane.setOpaque(false)
+  subListScrollPane.getViewport.setOpaque(false)
+
   subListScrollPane.add(subList)
   subListScrollPane.setViewportView(subList)
 
@@ -265,7 +278,28 @@ object Main extends App {
     true
   }
 
-  def getFontsFolder() : String = {
+  import java.awt.Graphics2D
+  import java.awt.image.BufferedImage
+
+  /**
+   * Converts a given Image into a BufferedImage
+   *
+   * @param img The Image to be converted
+   * @return The converted BufferedImage
+   */
+  def toBufferedImage(img: Image): BufferedImage = {
+    if (img.isInstanceOf[BufferedImage]) return img.asInstanceOf[BufferedImage]
+    // Create a buffered image with transparency
+    val bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB)
+    // Draw the image on to the buffered image
+    val bGr = bimage.createGraphics
+    bGr.drawImage(img, 0, 0, null)
+    bGr.dispose()
+    // Return the buffered image
+    bimage
+  }
+
+  def getFontsFolder() = {
     val home = System.getProperty("user.home")
     val fontspath = Paths.get(home, ".fonts", "animetool")
     val fontsdir = new File(fontspath.toString)
