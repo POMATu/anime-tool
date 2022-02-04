@@ -15,6 +15,7 @@ import javax.swing.event._
 import java.lang.{Comparable, ProcessBuilder}
 import java.nio.file._
 import java.util
+import java.util.regex.Pattern
 import java.util.{Collections, Comparator}
 
 import Main.panel
@@ -27,6 +28,7 @@ import mdlaf.MaterialLookAndFeel
 
 import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
+import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.HorizontalLayout
 
@@ -223,7 +225,7 @@ object Main extends App {
   System.setOut(new PrintStream(DualOutputStream(false)))
   System.setErr(new PrintStream(DualOutputStream(true)))
 
-  val frame = new JFrame("AnimeTool [mpv]")
+  val frame = new JFrame("AnimeTool")
   frame.setIconImage(ImageIO.read(getClass.getResource("icon.png")))
   //frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
@@ -239,7 +241,46 @@ object Main extends App {
   frame.setVisible(true)
   frame.addComponentListener(ResizeListener())
 
+  if (!SystemUtils.IS_OS_LINUX) {
+    println("Font Injection not supported on your OS. If you wanna use this wonderful feature - install linux")
+  }
+
+  frame.setTitle("AnimeTool [" + checkMpv() + "]")
   println("AnimeTool init")
+
+  def checkMpv() : String = {
+    try {
+      var args = ListBuffer[String]("mpv", "--version")
+
+      val process = new ProcessBuilder(
+        args.toSeq: _*
+      ).start()
+
+      import java.nio.charset.StandardCharsets
+      val result = IOUtils.toString(process.getInputStream, StandardCharsets.UTF_8)
+      process.waitFor()
+
+        try {
+          val p = Pattern.compile(".*\\b(mpv [^ ]+?) .*")
+          val m = p.matcher(result)
+          if (m.find()) {
+            println(m.group(1))
+            m.group(1)
+          } else {
+            "mpv"
+          }
+
+        } catch {
+          case _ => "mpv"
+        }
+      } catch {
+      case _ => {
+        JOptionPane.showMessageDialog(frame, "\nError 0x0000001 (Its already clear how to solve it nd)\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n")
+        System.exit(1)
+        ""
+      }
+    }
+  }
 
   def play() : Boolean = {
     if (videoList.getSelectedIndex < 0) {

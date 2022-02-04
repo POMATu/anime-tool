@@ -12,6 +12,8 @@ libraryDependencies += "com.github.jiconfont" % "jiconfont-font_awesome" % "4.7.
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.0"
 
+libraryDependencies += "commons-io" % "commons-io" % "2.11.0"
+
 //import NativePackagerHelper._
 
 enablePlugins(JavaAppPackaging)
