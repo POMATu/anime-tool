@@ -19,6 +19,7 @@ import java.util.regex.Pattern
 import java.util.{Collections, Comparator}
 
 import Main.panel
+import com.sun.javafx.css.converters.FontConverter.FontStyleConverter
 import javax.imageio.ImageIO
 import javax.swing.GroupLayout.Alignment
 import javax.swing.text.DefaultCaret
@@ -43,6 +44,8 @@ object Main extends App {
   //theme.getBorderList.
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
   IconFontSwing.register(FontAwesome.getIconFont)
+
+  val APPICON = ImageIO.read(getClass.getResource("icon.png"))
 
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
@@ -208,7 +211,14 @@ object Main extends App {
   val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
   del3btn.addActionListener(SortActionListener(subList, subModel))
 
-  val playButton = new JButton("Play",makeIcon(FontAwesome.PLAY, classOf[JButton]))
+  //val playIcon = new StretchIcon(APPICON)
+  val playIcon = new ImageIcon(APPICON)
+  val playButton = new JButton("",playIcon)
+
+  playButton.setFont(playButton.getFont.deriveFont(30: Float).deriveFont(Font.BOLD))
+  //playButton.setFont(DEFAULT_FONT
+  //playButton.setHorizontalTextPosition(SwingConstants.RIGHT)
+  //playButton.setHorizontalAlignment(SwingConstants.LEFT)
   playButton.addActionListener((_: ActionEvent) => {
       play()
   })
@@ -225,7 +235,6 @@ object Main extends App {
   System.setOut(new PrintStream(DualOutputStream(false)))
   System.setErr(new PrintStream(DualOutputStream(true)))
 
-  val APPICON = ImageIO.read(getClass.getResource("icon.png"))
 
   val frame = new JFrame("AnimeTool")
   frame.setIconImage(APPICON)
@@ -470,6 +479,7 @@ object Main extends App {
     val playRect = getNextBounds(58,verticalPadding,startRect)
 
     playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
+    playIcon.setImage(resize(APPICON, playRect.height*2/3, playRect.height*2/3))
 
     panel.add(playButton)
 
