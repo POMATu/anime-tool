@@ -408,7 +408,9 @@ object Main extends App {
 
     panel.add(playButton)
 
-    val audioDelayContainerRect = getBoundsInBounds(1,3,genericPaddingLeft,playRect)
+    val allDelayContainerRect = getBoundsInBounds(1,3,genericPaddingLeft,playRect)
+
+    val audioDelayContainerRect = getBoundsInBounds(0,2,0,allDelayContainerRect)
 
     audioDelayPanel.setBounds(audioDelayContainerRect)
     panel.add(audioDelayPanel)
@@ -421,7 +423,7 @@ object Main extends App {
     //audioDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,audioDelayContainerRect))
     //panel.add(audioDelayText)
 
-    val subDelayContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
+    val subDelayContainerRect = getBoundsInBounds(1,2,0,allDelayContainerRect)
     subDelayPanel.setBounds(subDelayContainerRect)
     panel.add(subDelayPanel)
    // subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
