@@ -26,6 +26,7 @@ import mdlaf.MaterialLookAndFeel
 
 import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
+import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.HorizontalLayout
 
 import scala.util.{Success, Try}
@@ -424,14 +425,20 @@ object Main extends App {
    // subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
    // panel.add(subDelayText)
 
+    var buttonsRect : Rectangle = null
+    if (SystemUtils.IS_OS_LINUX) {
+      val cLabelsRect = getNextBounds(70, verticalPadding, playRect)
+      fontsPanel.setBounds(cLabelsRect)
+      panel.add(fontsPanel)
 
-    val cLabelsRect = getNextBounds(70,verticalPadding,playRect)
-    fontsPanel.setBounds(cLabelsRect)
-    panel.add(fontsPanel)
+      buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
+    } else {
+      buttonsRect = getNextBounds(40,verticalPadding,playRect)
+    }
     //fontsPanel.replaceAll()
 
 
-    val buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
+
     val buttons1Rect = getBoundsInBounds(0, 3, genericPaddingLeft, buttonsRect)
     val buttons2Rect = getBoundsInBounds(1, 3, genericPaddingLeft, buttonsRect)
     val buttons3Rect = getBoundsInBounds(2, 3, genericPaddingLeft, buttonsRect)

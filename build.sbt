@@ -10,6 +10,8 @@ libraryDependencies += "io.github.vincenzopalazzo" % "material-ui-swing" % "1.1.
 
 libraryDependencies += "com.github.jiconfont" % "jiconfont-font_awesome" % "4.7.0.1"
 
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.0"
+
 //import NativePackagerHelper._
 
 enablePlugins(JavaAppPackaging)
