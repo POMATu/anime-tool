@@ -225,8 +225,10 @@ object Main extends App {
   System.setOut(new PrintStream(DualOutputStream(false)))
   System.setErr(new PrintStream(DualOutputStream(true)))
 
+  val APPICON = ImageIO.read(getClass.getResource("icon.png"))
+
   val frame = new JFrame("AnimeTool")
-  frame.setIconImage(ImageIO.read(getClass.getResource("icon.png")))
+  frame.setIconImage(APPICON)
   //frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
@@ -275,7 +277,13 @@ object Main extends App {
         }
       } catch {
       case _ => {
-        JOptionPane.showMessageDialog(frame, "\nError 0x0000001 (Its already clear how to solve it nd)\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n")
+        JOptionPane.showMessageDialog(
+          frame,
+          "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n",
+        "Fatal Error 0x000001",
+        JOptionPane.INFORMATION_MESSAGE,
+          new ImageIcon(resize(APPICON,128,128))
+        )
         System.exit(1)
         ""
       }
@@ -341,6 +349,22 @@ object Main extends App {
     bGr.dispose()
     // Return the buffered image
     bimage
+  }
+
+  import javax.imageio.ImageIO
+  import java.awt.Graphics2D
+  import java.awt.image.BufferedImage
+  import java.io.IOException
+
+  def resize(inputImage: BufferedImage, scaledWidth: Int, scaledHeight: Int): BufferedImage = { // reads input image
+    // creates output image
+    val outputImage = new BufferedImage(scaledWidth, scaledHeight, inputImage.getType)
+    // scales the input image to the output image
+    val g2d = outputImage.createGraphics
+    g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null)
+    g2d.dispose()
+
+    outputImage
   }
 
   def getFontsFolder() = {
