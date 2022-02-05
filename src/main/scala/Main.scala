@@ -281,7 +281,7 @@ object Main extends App {
   frame.addComponentListener(ResizeListener())
 
   if (!SystemUtils.IS_OS_LINUX) {
-    println("Font Injection not supported on your OS. If you wanna use this wonderful feature - install linux")
+    println("Font Injection not supported on your OS. If you wanna use this wonderful feature - install Linux")
   }
 
   frame.setTitle("AnimeTool [" + checkMpv() + "]")
