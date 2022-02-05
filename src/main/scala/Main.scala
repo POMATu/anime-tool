@@ -2,6 +2,7 @@ import java.awt.datatransfer.DataFlavor
 import java.awt.event._
 import java.awt._
 import java.awt.geom.Rectangle2D
+import java.awt.image.BufferedImage
 import java.io.File
 import java.lang.reflect.Type
 import java.net.URI
@@ -45,7 +46,13 @@ object Main extends App {
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
   IconFontSwing.register(FontAwesome.getIconFont)
 
-  val APPICON = ImageIO.read(getClass.getResource("icon.png"))
+  var APPICON : BufferedImage = null
+  try {
+    val stream: InputStream = getClass.getResourceAsStream("/icon.png")
+    APPICON = ImageIO.read(stream)
+  } catch {
+    case _ =>
+  }
 
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
@@ -225,8 +232,12 @@ object Main extends App {
   del3btn.addActionListener(SortActionListener(subList, subModel))
 
   //val playIcon = new StretchIcon(APPICON)
-  val playIcon = new ImageIcon(APPICON)
-  val playButton = new JButton("",playIcon)
+  var playButton = new JButton("Play")
+  var playIcon: ImageIcon = null
+  if (APPICON != null) {
+    playIcon = new ImageIcon(APPICON)
+    playButton = new JButton("", playIcon)
+  }
 
   playButton.setFont(playButton.getFont.deriveFont(30: Float).deriveFont(Font.BOLD))
   //playButton.setFont(DEFAULT_FONT
@@ -250,7 +261,8 @@ object Main extends App {
 
 
   val frame = new JFrame("AnimeTool")
-  frame.setIconImage(APPICON)
+  if (APPICON != null)
+    frame.setIconImage(APPICON)
   //frame.addListeners()
   //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
@@ -270,7 +282,8 @@ object Main extends App {
   }
 
   frame.setTitle("AnimeTool [" + checkMpv() + "]")
-  println("AnimeTool init")
+  val currentDirectory = new java.io.File(".").getCanonicalPath
+  println("AnimeTool init: " + currentDirectory)
 
   def checkMpv() : String = {
     try {
@@ -299,13 +312,24 @@ object Main extends App {
         }
       } catch {
       case _ => {
-        JOptionPane.showMessageDialog(
-          frame,
-          "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n",
-        "Fatal Error 0x000001",
-        JOptionPane.INFORMATION_MESSAGE,
-          new ImageIcon(resize(APPICON,128,128))
-        )
+        val errortext = "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n"
+        val title = "Fatal Error 0x000001"
+        if (APPICON != null) {
+          JOptionPane.showMessageDialog(
+            frame,
+            errortext,
+            title,
+            JOptionPane.ERROR_MESSAGE,
+            new ImageIcon(resize(APPICON, 128, 128))
+          )
+        } else {
+          JOptionPane.showMessageDialog(
+            frame,
+            errortext,
+            title,
+            JOptionPane.ERROR_MESSAGE
+          )
+        }
         System.exit(1)
         ""
       }
@@ -498,7 +522,8 @@ object Main extends App {
     val playRect = getNextBounds(58,verticalPadding,startRect)
 
     playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
-    playIcon.setImage(resize(APPICON, playRect.height*2/3, playRect.height*2/3))
+    if (playIcon != null)
+      playIcon.setImage(resize(APPICON, playRect.height*2/3, playRect.height*2/3))
 
     panel.add(playButton)
 
