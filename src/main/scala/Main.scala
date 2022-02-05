@@ -46,6 +46,9 @@ object Main extends App {
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
   IconFontSwing.register(FontAwesome.getIconFont)
 
+  val workingDirectory = new java.io.File(".").getCanonicalPath
+
+
   var APPICON : BufferedImage = null
   try {
     val stream: InputStream = getClass.getResourceAsStream("/icon.png")
@@ -282,8 +285,7 @@ object Main extends App {
   }
 
   frame.setTitle("AnimeTool [" + checkMpv() + "]")
-  val currentDirectory = new java.io.File(".").getCanonicalPath
-  println("AnimeTool init: " + currentDirectory)
+  println("AnimeTool init: " + workingDirectory)
 
   def checkMpv() : String = {
     try {
@@ -312,7 +314,7 @@ object Main extends App {
         }
       } catch {
       case _ => {
-        val errortext = "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n"
+        val errortext = "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory ("+workingDirectory+") or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n"
         val title = "Fatal Error 0x000001"
         if (APPICON != null) {
           JOptionPane.showMessageDialog(
