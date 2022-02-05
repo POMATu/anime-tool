@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtNativePackager._
 
 name := "AnimeTool"
 
-version := "0.1"
+version := "2.0"
 
 scalaVersion := "2.13.6"
 

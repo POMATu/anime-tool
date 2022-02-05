@@ -50,7 +50,7 @@ Source: "C:\mpv\*"; DestDir: "{app}\app"; Flags: ignoreversion recursesubdirs cr
 
 [Icons]
 Name: "{group}\AnimeTool"; Filename: "{app}\AnimeTool.exe"; IconFilename: "{app}\AnimeTool.ico"; Check: returnTrue()
-Name: "{commondesktop}\AnimeTool"; Filename: "{app}\AnimeTool.exe";  IconFilename: "{app}\AnimeTool.ico"; Check: returnTrue()
+Name: "{userdesktop}\AnimeTool"; Filename: "{app}\AnimeTool.exe";  IconFilename: "{app}\AnimeTool.ico"; Check: returnTrue()
 
 
 [Run]

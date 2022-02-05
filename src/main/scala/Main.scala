@@ -822,9 +822,14 @@ object Main extends App {
           for (item <- file_list) {
             if (item.toString.trim.nonEmpty) {
               val file = ShortFile(item.toURI)
+              var worked = false;
               if (file.exists && file.isFile) {
                 model.add(model.getSize, file)
                 println("Imported file: " + file.getAbsolutePath)
+                worked = true;
+              }
+              if (worked && model.equals(subModel)) {
+                subsVisible.setSelected(true)
               }
 
             }
