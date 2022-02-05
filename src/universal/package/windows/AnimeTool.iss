@@ -3,11 +3,11 @@
 [Setup]
 AppId={{app}}
 AppName=AnimeTool
-AppVersion=
+AppVersion=Rolling
 AppVerName=AnimeTool 
 AppPublisher=pomatu
 AppComments=AnimeTool
-AppCopyright=Copyright (C) 2022
+AppCopyright=Copyleft (C) 2022
 ;AppPublisherURL=http://java.com/
 ;AppSupportURL=http://java.com/
 ;AppUpdatesURL=http://java.com/
@@ -38,9 +38,15 @@ ArchitecturesInstallIn64BitMode=x64
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[InstallDelete]
+Type: filesandordirs; Name: "{app}"
+
 [Files]
 Source: "AnimeTool\AnimeTool.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "AnimeTool\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+;please place MPV nightly build to c:\mpv so its included into the bundle
+Source: "C:\mpv\*"; DestDir: "{app}\app"; Flags: ignoreversion recursesubdirs createallsubdirs
+
 
 [Icons]
 Name: "{group}\AnimeTool"; Filename: "{app}\AnimeTool.exe"; IconFilename: "{app}\AnimeTool.ico"; Check: returnTrue()
