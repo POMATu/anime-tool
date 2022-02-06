@@ -20,7 +20,7 @@ import java.util.regex.Pattern
 import java.util.{Collections, Comparator}
 
 import Main.panel
-import com.sun.javafx.css.converters.FontConverter.FontStyleConverter
+//import com.sun.javafx.css.converters.FontConverter.FontStyleConverter
 import javax.imageio.ImageIO
 import javax.swing.GroupLayout.Alignment
 import javax.swing.text.DefaultCaret
