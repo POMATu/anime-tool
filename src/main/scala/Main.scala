@@ -36,6 +36,13 @@ import org.jdesktop.swingx.HorizontalLayout
 
 import scala.util.{Success, Try}
 
+/*new import*/
+import java.nio.charset.StandardCharsets
+import java.awt.Graphics2D
+import java.awt.image.BufferedImage
+import javax.swing.JList
+import javax.swing.SwingUtilities
+
 object Main extends App {
 
   val stdout = System.out
@@ -295,7 +302,6 @@ object Main extends App {
         args.toSeq: _*
       ).start()
 
-      import java.nio.charset.StandardCharsets
       val result = IOUtils.toString(process.getInputStream, StandardCharsets.UTF_8)
       process.waitFor()
 
@@ -375,17 +381,13 @@ object Main extends App {
 
     println("Summoning your waifu... " + args.toString())
 
-    val p = new ProcessBuilder(
-      args.toSeq:_*
-    ).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+    val p = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
 
     p.waitFor()
     clearFontsFolder()
     true
   }
 
-  import java.awt.Graphics2D
-  import java.awt.image.BufferedImage
 
   /**
    * Converts a given Image into a BufferedImage
@@ -642,8 +644,6 @@ object Main extends App {
 
   class RightClickMouseAdapter(list: JList[ShortFile]) extends MouseAdapter {
 
-    import javax.swing.JList
-    import javax.swing.SwingUtilities
 
     override def mousePressed(e: MouseEvent): Unit = {
       if (SwingUtilities.isRightMouseButton(e)) list.getModel.asInstanceOf[SortableListModel[ShortFile]].remove(getRow(e.getPoint))
@@ -859,7 +859,6 @@ object Main extends App {
       }
   }
 
-
   class MyPanel extends JPanel {
     private var elements : Array[Component] = null
     private var fill: Component = null
@@ -900,137 +899,4 @@ object Main extends App {
     }
 
   }
-/*
-  class EventJFrame(str: String) extends JFrame(str: String) with WindowListener with WindowFocusListener with WindowStateListener {
-
-    import java.awt.Frame
-    import java.awt.event.WindowEvent
-
-    def displayStateMessage(prefix: String, e: WindowEvent): Unit = {
-      val state = e.getNewState
-      val oldState = e.getOldState
-      val msg = prefix + "New state: " + convertStateToString(state) + "Old state: " + convertStateToString(oldState)
-      println(msg)
-    }
-
-    import java.awt.Frame
-    import java.awt.event.ActionEvent
-    import java.awt.event.ActionListener
-    import java.awt.event.WindowEvent
-
-    import javax.swing.JScrollPane
-    import javax.swing.JTextArea
-    import java.awt.BorderLayout
-    import java.awt.Dimension
-
-    def addListeners(): Unit = {
-      addWindowListener(this)
-      addWindowFocusListener(this)
-      addWindowStateListener(this)
-      checkWM
-    }
-
-    def checkWM(): Unit = {
-      val tk = frame.getToolkit
-      if (!tk.isFrameStateSupported(Frame.ICONIFIED)) displayMessage("Your window manager doesn't support ICONIFIED.")
-      else displayMessage("Your window manager supports ICONIFIED.")
-      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_VERT)) displayMessage("Your window manager doesn't support MAXIMIZED_VERT.")
-      else displayMessage("Your window manager supports MAXIMIZED_VERT.")
-      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_HORIZ)) displayMessage("Your window manager doesn't support MAXIMIZED_HORIZ.")
-      else displayMessage("Your window manager supports MAXIMIZED_HORIZ.")
-      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_BOTH)) displayMessage("Your window manager doesn't support MAXIMIZED_BOTH.")
-      else displayMessage("Your window manager supports MAXIMIZED_BOTH.")
-    }
-
-    def windowClosing(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowClosing.")
-      //A pause so user can see the message before
-      //the window actually closes.
-      val task = new ActionListener() {
-        var alreadyDisposed = false
-        override
-
-        def actionPerformed(e: ActionEvent): Unit = {
-          if (frame.isDisplayable) {
-            alreadyDisposed = true
-            frame.dispose
-          }
-        }
-      }
-
-    }
-
-    def windowClosed(e: WindowEvent): Unit = { //This will only be seen on standard output.
-      displayMessage("WindowListener method called: windowClosed.")
-    }
-
-    def windowOpened(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowOpened.")
-    }
-
-    def windowIconified(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowIconified.")
-    }
-
-    def windowDeiconified(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowDeiconified.")
-    }
-
-    def windowActivated(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowActivated.")
-    }
-
-    def windowDeactivated(e: WindowEvent): Unit = {
-      displayMessage("WindowListener method called: windowDeactivated.")
-    }
-
-    def windowGainedFocus(e: WindowEvent): Unit = {
-      displayMessage("WindowFocusListener method called: windowGainedFocus.")
-    }
-
-    def windowLostFocus(e: WindowEvent): Unit = {
-      displayMessage("WindowFocusListener method called: windowLostFocus.")
-    }
-
-    def windowStateChanged(e: WindowEvent): Unit = {
-      val task = new ActionListener() {
-        override def actionPerformed(e: ActionEvent): Unit = {
-          println(frame.getWidth)
-          //placeComponents(panel)
-          val bounds = panel.getBounds()
-          bounds.width += 1
-          panel.setBounds(bounds)
-        }
-      }
-      val timer = new Timer(500, task) //fire every half second
-      timer.setInitialDelay(1000) //first delay 2 seconds
-
-      timer.setRepeats(false)
-      timer.start()
-
-      displayStateMessage("WindowStateListener method called: windowStateChanged.", e)
-    }
-
-    def displayMessage(msg: String): Unit = {
-      //display.append(msg + newline)
-      println(msg)
-    }
-
-    def convertStateToString(state: Int): String = {
-      if (state == Frame.NORMAL) return "NORMAL"
-      var strState = " "
-      if ((state & Frame.ICONIFIED) != 0) strState += "ICONIFIED"
-      //MAXIMIZED_BOTH is a concatenation of two bits, so
-      //we need to test for an exact match.
-      if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) strState += "MAXIMIZED_BOTH"
-      else {
-        if ((state & Frame.MAXIMIZED_VERT) != 0) strState += "MAXIMIZED_VERT"
-        if ((state & Frame.MAXIMIZED_HORIZ) != 0) strState += "MAXIMIZED_HORIZ"
-        if (" " == strState) strState = "UNKNOWN"
-      }
-      strState.trim
-    }
-  }
-  */
-
 }

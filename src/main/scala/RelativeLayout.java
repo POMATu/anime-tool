@@ -49,41 +49,41 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
     private final static int MINIMUM = 0;
     private final static int PREFERRED = 1;
 
-    private HashMap<Component, Float> constraints = new HashMap<Component, Float>();
+    private  static HashMap<Component, Float> constraints = new HashMap<Component, Float>();
 
     /**
      *  The axis of the Components within the Container.
      */
-    private int axis;
+    private static int axis;
 
     /**
      *  The alignment of the Components on the other axis of the Container.
      *  For X-AXIS this would refer to the Y alignemt.
      *  For Y-AXIS this would refer to the X alignment.
      */
-    private float alignment = CENTER;
+    private  static float alignment = CENTER;
 
     /**
      *  This is the gap (in pixels) which specifies the space between components
      *  It can be changed at any time and should be a non-negative integer.
      */
-    private int gap;
+    private static int gap;
 
     /**
      *  The gap (in pixels) used before the leading component and after the
      *  trailing component.
      *  It can be changed at any time and should be a non-negative integer.
      */
-    private int borderGap;
+    private static int borderGap;
 
     //  Fill space available for relative components
-    private boolean fill = false;
+    private static boolean fill = false;
 
     //  Gap to prevent the component from completely filling the space available
-    private int fillGap;
+    private static int fillGap;
 
     //  Specify the rounding policy when rounding problems happen.
-    private int roundingPolicy = LARGEST;
+    private static int roundingPolicy = LARGEST;
 
     /**
      * Creates a relative layout with the components layed out on the X-Axis
@@ -146,7 +146,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  Gets the gap between components.
      *  @return	   the gap between components
      */
-    public int getGap()
+    public static int getGap()
     {
         return gap;
     }
@@ -166,7 +166,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *
      *  @return	   the leading/trailing gap
      */
-    public int getBorderGap()
+    public static int getBorderGap()
     {
         return borderGap;
     }
@@ -186,7 +186,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  Gets the alignment of the components on the opposite axis.
      *  @return	   the alignment
      */
-    public float getAlignment()
+    public static float getAlignment()
     {
         return alignment;
     }
@@ -214,7 +214,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  Gets the fill property for the component size on the opposite edge.
      *  @return	   the fill property
      */
-    public boolean isFill()
+    public static boolean isFill()
     {
         return fill;
     }
@@ -233,7 +233,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  Gets the fill gap amount.
      *  @return	   the fill gap value
      */
-    public int getFillGap()
+    public static int getFillGap()
     {
         return fillGap;
     }
@@ -251,7 +251,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  Gets the rounding policy.
      *  @return	   the rounding policy
      */
-    public int getRoundingPolicy()
+    public static int getRoundingPolicy()
     {
         return roundingPolicy;
     }
@@ -279,7 +279,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
      *  @return  the constraint for the specified component, or null
      *           if component is null or is not present in this layout
      */
-    public Float getConstraints(Component component)
+    public static Float getConstraints(Component component)
     {
         return (Float)constraints.get(component);
     }
@@ -480,7 +480,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
     /*
      *  Align the component on the Y-Axis
      */
-    private int getLocationY(Component component, int height)
+    private static int getLocationY(Component component, int height)
     {
         //  Use the Container alignment policy
 
@@ -791,7 +791,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
         return size;
     }
 
-    private int getVisibleComponents(Container container)
+    private static int getVisibleComponents(Container container)
     {
         int visibleComponents = 0;
 
@@ -804,7 +804,7 @@ public class RelativeLayout implements LayoutManager2, java.io.Serializable
         return visibleComponents;
     }
 
-    private Dimension getDimension(Component component, int type)
+    private static Dimension getDimension(Component component, int type)
     {
         switch (type)
         {
