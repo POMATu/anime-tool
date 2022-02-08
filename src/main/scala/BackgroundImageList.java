@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class BackgroundImageList<T> extends JList<T> {
-    private BufferedImage background;
+    private static BufferedImage background;
 
     private ListModel<T> model;
 
