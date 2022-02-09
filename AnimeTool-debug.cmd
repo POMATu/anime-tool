@@ -1,3 +1,4 @@
 @echo off
 cd bin
-java -jar AnimeTool.jar 
+java -jar AnimeTool.jar
+pause

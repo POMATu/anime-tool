@@ -7,3 +7,4 @@ del /F /Q *.zip
 ..\innounp -b -x AnimeToolInstaller-win64.exe
 ren {app} AnimeTool
 "C:\Program Files\7-Zip\7z.exe" a -mx9 AnimeToolPortable-win64.zip AnimeTool
+AnimeToolPortable-win64.zip
