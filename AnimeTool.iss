@@ -42,7 +42,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Type: filesandordirs; Name: "{app}"
 
 [Files]
-Source: "C:\oracle-jre8-portable\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\openjre11\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "out\artifacts\AnimeTool_jar\AnimeTool.jar"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "AnimeTool.vbs"; DestDir: "{app}"; Flags: ignoreversion
 Source: "AnimeTool.cmd"; DestDir: "{app}"; Flags: ignoreversion
