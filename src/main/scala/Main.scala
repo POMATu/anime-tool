@@ -7,7 +7,8 @@ import java.net.URI
 import sys.process._
 import java.io._
 import javax.swing._
-import mdlaf.themes.{MaterialOceanicTheme}
+import mdlaf.themes.MaterialOceanicTheme
+
 import javax.swing.event._
 import java.nio.file._
 import java.util
@@ -17,10 +18,13 @@ import javax.imageio.ImageIO
 import javax.swing.{DefaultListSelectionModel, JLabel}
 import jiconfont.icons.font_awesome.FontAwesome
 import mdlaf.MaterialLookAndFeel
+
 import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.SystemUtils
+
+import java.awt.font.TextAttribute
 import scala.util.{Success, Try}
 /*new import*/
 import java.nio.charset.StandardCharsets
@@ -61,6 +65,7 @@ object Main extends App {
   val stdout = System.out
   val stderr = System.err
   val theme = new MaterialOceanicTheme
+
   val workingDirectory = new java.io.File(".").getCanonicalPath
   var APPICON : BufferedImage = null
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
@@ -79,9 +84,9 @@ object Main extends App {
   val audioDelayPanel = new JPanel(audioDelayLayout)
   audioDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio Delay (ms)"))
 
-  val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.RIGHT)
-  audioDelayLabel.setFont(theme.getButtonFont)
-  audioDelayPanel.add(audioDelayLabel)
+  //val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.RIGHT)
+  //audioDelayLabel.setFont(theme.getButtonFont)
+  //audioDelayPanel.add(audioDelayLabel)
 
   val audioDelayText = new JSpinner(new SpinnerNumberModel(0,Int.MinValue,Int.MaxValue,100))
   audioDelayText.setAlignmentX(SwingConstants.RIGHT)
@@ -171,6 +176,7 @@ object Main extends App {
   //videoList.setBackground(new Color(0, 0, 0, 0))
   //videoList.setForeground(Color.WHITE)
 
+  videoList.setSelectionBackground(Color.BLUE)
   videoList.setDropMode(DropMode.INSERT)
   videoList.setTransferHandler(ListHandler(videoModel))
   //videoList.setBorder(BorderFactory.createLineBorder(Color.black))
@@ -185,6 +191,7 @@ object Main extends App {
   videoListScrollPane.add(videoList)
   videoListScrollPane.setViewportView(videoList)
 
+  audioList.setSelectionBackground(Color.BLUE)
   audioList.setDropMode(DropMode.INSERT)
   audioList.setTransferHandler(ListHandler(audioModel))
   //audioList.setBorder(BorderFactory.createLineBorder(Color.black))
@@ -199,6 +206,7 @@ object Main extends App {
   audioListScrollPane.add(audioList)
   audioListScrollPane.setViewportView(audioList)
 
+  subList.setSelectionBackground(Color.BLUE)
   subList.setDropMode(DropMode.INSERT)
   subList.setTransferHandler(ListHandler(subModel))
   //subList.setBorder(BorderFactory.createLineBorder(Color.black))
