@@ -118,8 +118,9 @@ object Main extends App {
   optionsPanel.add(fullscreenOption)
   optionsPanel.add(subsVisible)
 
-  val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
-  subDelayLabel.setFont(theme.getButtonFont)
+  //val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
+  //subDelayLabel.setFont(theme.getButtonFont)
+
 
   val clabel1 = new JLabel("")
   clabel1.setFont(theme.getButtonFont)
@@ -165,6 +166,14 @@ object Main extends App {
   audioDelayText.setForeground(theme.getButtonTextColor)
   audioDelayText.setAlignmentX(SwingConstants.LEFT)
   audioDelayText.setBorder(BorderFactory.createLineBorder(theme.getButtonTextColor))*/
+
+  val videoSourceLabel = new JLabel("Video Source",makeIcon(FontAwesome.FILE_VIDEO_O, classOf[JButton]),SwingConstants.LEFT)
+  val audioSourceLabel = new JLabel("Audio Source",makeIcon(FontAwesome.FILE_AUDIO_O, classOf[JButton]),SwingConstants.LEFT)
+  val subSourceLabel = new JLabel("Subs Source",makeIcon(FontAwesome.FILE_TEXT_O, classOf[JButton]),SwingConstants.LEFT)
+
+
+
+
   val videoModel = new SortableListModel[ShortFile]
   val audioModel = new SortableListModel[ShortFile]
   val subModel = new SortableListModel[ShortFile]
@@ -581,8 +590,19 @@ object Main extends App {
     clear3btn.setBounds(getBoundsInBounds(3,4,0, buttons3Rect))
     panel.add(clear3btn)
 
+    val listLabelsRect = getNextBounds(20,verticalPadding,buttonsRect)
+    val videoSourceLabelRect = getBoundsInBounds(0, 3, genericPaddingLeft, listLabelsRect)
+    videoSourceLabel.setBounds(videoSourceLabelRect)
+    panel.add(videoSourceLabel)
+    val audioSourceLabelRect = getBoundsInBounds(1, 3, genericPaddingLeft, listLabelsRect)
+    audioSourceLabel.setBounds(audioSourceLabelRect)
+    panel.add(audioSourceLabel)
+    val subSourceLabelRect = getBoundsInBounds(2, 3, genericPaddingLeft, listLabelsRect)
+    subSourceLabel.setBounds(subSourceLabelRect)
+    panel.add(subSourceLabel)
+
     val consoleHeight = 80
-    val listRect = getNextBounds(-1,verticalPadding,buttonsRect)
+    val listRect = getNextBounds(-1,verticalPadding,listLabelsRect)
 
     listRect.height -= (consoleHeight + verticalPadding)
 
