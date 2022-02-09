@@ -65,6 +65,7 @@ object Main extends App {
   val stdout = System.out
   val stderr = System.err
   val theme = new MaterialOceanicTheme
+  var mpvProc : java.lang.Process = null
 
   val workingDirectory = new java.io.File(".").getCanonicalPath
   var APPICON : BufferedImage = null
@@ -356,6 +357,7 @@ object Main extends App {
   }
 
   def play() : Boolean = {
+
     if (videoList.getSelectedIndex < 0) {
       println("You havent selected any video file")
       return false
@@ -389,12 +391,29 @@ object Main extends App {
     else
       if (!injectFonts(fontsText.getText.trim)) return false
 
-    println("Summoning your waifu... " + args.toString())
+    killPrevMpv
+    println("Summoning your waifu... " + args.toString() + "\n")
 
-    val p = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
-    p.waitFor()
-    clearFontsFolder()
+    new Thread(new Runnable {
+      override def run(): Unit = {
+        mpvProc = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+        mpvProc.waitFor()
+        //mpvProc = null
+        clearFontsFolder()
+      }
+    }).start()
+
     true
+  }
+
+  def killPrevMpv: Unit = {
+    if (mpvProc != null) {
+      try {
+        mpvProc.destroy()
+      } catch {
+        case _ =>
+      }
+    }
   }
 
   /**
