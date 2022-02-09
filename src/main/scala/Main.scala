@@ -60,6 +60,9 @@ import mdlaf.themes.{AbstractMaterialTheme, JMarsDarkTheme, MaterialLiteTheme, M
 import java.lang.{Comparable, ProcessBuilder}
 */
 
+import java.awt.KeyEventDispatcher
+import java.awt.KeyboardFocusManager
+import java.awt.event.KeyEvent
 
 object Main extends App {
   val stdout = System.out
@@ -309,7 +312,53 @@ object Main extends App {
   frame.setTitle("AnimeTool [" + checkMpv() + "]")
   println("AnimeTool init: " + workingDirectory)
 
-  def checkMpv() : String = {
+
+
+  KeyboardFocusManager.getCurrentKeyboardFocusManager.addKeyEventDispatcher(new KeyEventDispatcher() {
+    override def dispatchKeyEvent(e: KeyEvent): Boolean = {
+      //System.out.println("Got key event: " + e.toString )
+
+      if (e.getID == KeyEvent.KEY_PRESSED) {
+        val result = e.getKeyCode match {
+          case KeyEvent.VK_DOWN => {
+            selectAnyList(1)
+            true // block futher processing of events cuz we catched it
+          }
+          case KeyEvent.VK_UP => {
+            selectAnyList(-1)
+            true // block futher processing of events cuz we catched it
+          }
+          case KeyEvent.VK_SPACE => play
+          case KeyEvent.VK_ENTER => play
+          case _ => false // returning false so UI can process futher
+        }
+        result
+      } else {
+        false
+      }
+    }
+  })
+
+  def selectAnyList(increment: Int): Unit = {
+    if (videoModel.size() > 0) {
+      if (videoList.getSelectedIndex >= 0)
+        videoList.setSelectedIndex(videoList.getSelectedIndex + increment)
+      else
+        videoList.setSelectedIndex(0)
+    } else if (audioModel.size() > 0) {
+      if (audioList.getSelectedIndex >= 0)
+        audioList.setSelectedIndex(audioList.getSelectedIndex + increment)
+      else
+        audioList.setSelectedIndex(0)
+    } else if (subModel.size() > 0) {
+      if (subList.getSelectedIndex >= 0)
+        subList.setSelectedIndex(subList.getSelectedIndex + increment)
+      else
+        subList.setSelectedIndex(0)
+    }
+  }
+
+  def checkMpv() = {
     try {
       var args = ListBuffer[String]("mpv", "--version")
 
