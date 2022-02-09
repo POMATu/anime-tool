@@ -638,8 +638,9 @@ object Main extends App {
       //println(index0)
       //println(index1)
         if (isSelectedIndex(index0)) {
-          if (!frozen)
+        /*  if (!frozen)
             { super.removeSelectionInterval(index0, index1) }
+         */
         } else {
             super.setSelectionInterval(index0, index1)
             if (!frozen) {
