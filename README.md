@@ -18,7 +18,7 @@ _Yes mate,_ **another video used as audio**
 UI in Linux:
 ![linux](img/linux.png)
 
-_Yes mate,_ sub fonts are injected temporarly so that **Yo*Ur* Sy*St*Em F*oN*tS W*o*N*t* G*eT* *Fu*N*n*Y
+_Yes mate,_ sub fonts are injected temporarly so that Yo*Ur* Sy*St*Em F*oN*tS W*o*N*t* G*eT* *Fu*N*n*Y
 
 
 # Whats working
