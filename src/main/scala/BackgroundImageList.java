@@ -39,7 +39,7 @@ public class BackgroundImageList<T> extends JList<T> {
         super(model);
         //try {
             this.background = toBufferedImage(background);//ImageIO.read(new File("Z:\\video.png"));
-        System.out.println(background.toString());
+        //System.out.println(background.toString());
         this.model = model;
 
         //} catch (IOException ex) {
