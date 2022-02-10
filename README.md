@@ -4,13 +4,16 @@ AnimeTool is pending ressurection now with manual concept
 
 **Took me 2 years of mpv console arguments butthurt to start this again**
 
-# AnimeTool
+<img src="src/main/resources/icon.png" alt="icon" width="150"/>
 
-![](src/main/resources/icon.png | width=100)
+# AnimeTool
 
 [Download latest Release From Here](https://github.com/POMATu/anime-tool/releases)
 
-![PoC for this evening](img/alpha1.png)
+UI in Windows:
+![PoC for this evening](img/windows.png)
+
+_Yes mate,_ **another video used as audio**
 
 # Whats working
 
