@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class BackgroundImageList<T> extends JList<T> {
-    private static BufferedImage background;
+    private BufferedImage background;
 
     private ListModel<T> model;
 
@@ -39,6 +39,7 @@ public class BackgroundImageList<T> extends JList<T> {
         super(model);
         //try {
             this.background = toBufferedImage(background);//ImageIO.read(new File("Z:\\video.png"));
+        System.out.println(background.toString());
         this.model = model;
 
         //} catch (IOException ex) {
