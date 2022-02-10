@@ -8,7 +8,7 @@ AnimeTool is pending ressurection now with manual concept
 
 # AnimeTool
 
-[Download latest Release From Here](https://github.com/POMATu/anime-tool/releases)
+[**> Download latest Release From Here <**](https://github.com/POMATu/anime-tool/releases)
 
 UI in Windows:
 ![windows](img/windows.png)
@@ -18,7 +18,7 @@ _Yes mate,_ **another video used as audio**
 UI in Linux:
 ![linux](img/linux.png)
 
-_Yes mate,_ sub fonts are injected temporarly so that **YoUr SyStEm FoNtS WoNt GeT FuNnY**
+_Yes mate,_ sub fonts are injected temporarly so that **Yo*Ur* Sy*St*Em F*oN*tS W*o*N*t* G*eT* *Fu*N*n*Y
 
 
 # Whats working
@@ -56,6 +56,12 @@ _Yes mate,_ sub fonts are injected temporarly so that **YoUr SyStEm FoNtS WoNt G
 BTW with mpv you can use video-as-audio, or probably video-as-subs too. Just drop another video to audio or subs list, mpv will take it from container automatically
 
 Keep in mind it plays only selected fields, so if you deselected something - you need to select rows again 
+
+# AnimeTool Hotkeys
+* arrow up/down - navigate thru all lists
+* space/enter - start playing selected row
+
+*Hotkeys were designed for usage with xbox controller via gopher app, will add more hotkeys later*
 
 # How to control MPV with hotkeys
 * q - exit
