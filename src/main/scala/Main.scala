@@ -448,34 +448,43 @@ object Main extends App {
   }
 
   def clearFontsFolder() = {
-    try {
-      val FontsDir = new File(getFontsFolder())
-      for (f <- FontsDir.listFiles()) {
-        try {
-          f.delete()
-          println("Deleted old font " + f.getName)
+    if (SystemUtils.IS_OS_LINUX) {
+      try {
+        val FontsDir = new File(getFontsFolder())
+        for (f <- FontsDir.listFiles()) {
+          try {
+            f.delete()
+            println("Deleted old font " + f.getName)
+          }
+          catch {
+            case _: Throwable => println("error 0x000002c")
+          }
         }
-        catch { case _: Throwable => println("error 0x000002c") }
+      }
+      catch {
+        case _: Throwable => println("error 0x000002d")
       }
     }
-    catch { case _: Throwable => println("error 0x000002d") }
   }
 
   def injectFonts(path: String): Boolean = {
-    val source = new File(path)
-    if (!source.exists()) {
-      println("Fonts source " + path + " doesnt exists")
-      return false
-    }
+    if (SystemUtils.IS_OS_LINUX) {
+      val source = new File(path)
+      if (!source.exists()) {
+        println("Fonts source " + path + " doesnt exists")
+        return false
+      }
 
-    println("Clearing old fonts")
-    clearFontsFolder()
+      println("Clearing old fonts")
+      clearFontsFolder()
 
-    for (f <- source.listFiles()) {
-      Files.copy(f.toPath, Paths.get(getFontsFolder(), f.getName), StandardCopyOption.REPLACE_EXISTING)
-      println("Injected font " + f.getName)
+      for (f <- source.listFiles()) {
+        Files.copy(f.toPath, Paths.get(getFontsFolder(), f.getName), StandardCopyOption.REPLACE_EXISTING)
+        println("Injected font " + f.getName)
+      }
+      true
     }
-    true
+    false
   }
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
