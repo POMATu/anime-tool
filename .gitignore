@@ -4,4 +4,4 @@ target/**
 /out/**
 /Output/**
 .bsp
-/src/main/scala/META-INF/
+**/META-INF/
