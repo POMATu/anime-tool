@@ -676,11 +676,12 @@ object Main extends App {
     override def setSelectionInterval(index0: Int, index1: Int): Unit = {
       //println(index0)
       //println(index1)
-        if (isSelectedIndex(index0)) {
-        /*  if (!frozen)
-            { super.removeSelectionInterval(index0, index1) }
-         */
-        } else {
+        /*if (isSelectedIndex(index0)) {
+          println(index0)
+          if (!frozen)
+            { super.setSelectionInterval(index0, index1) }
+
+        } else { */
             super.setSelectionInterval(index0, index1)
             if (!frozen) {
                 if (list1.getModel.getSize - 1 < index0) {
@@ -701,7 +702,7 @@ object Main extends App {
                 }
             }
         }
-    }
+  //  }
     /*
     override def setValueIsAdjusting(isAdjusting: Boolean): Unit = {
       if (isAdjusting == false) gestureStarted = false
