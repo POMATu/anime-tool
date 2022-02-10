@@ -6,7 +6,9 @@ AnimeTool is pending ressurection now with manual concept
 
 # AnimeTool
 
-[Release ready v2.0](https://github.com/POMATu/anime-tool/releases)
+![](src/main/resources/icon.png | width=100)
+
+[Download latest Release From Here](https://github.com/POMATu/anime-tool/releases)
 
 ![PoC for this evening](img/alpha1.png)
 
