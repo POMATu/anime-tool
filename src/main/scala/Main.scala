@@ -1,85 +1,46 @@
-import java.awt.datatransfer.DataFlavor
-import java.awt.event._
-import java.awt._
-import java.awt.image.BufferedImage
-import java.io.File
-import java.net.URI
-import sys.process._
-import java.io._
-import javax.swing._
-import mdlaf.themes.MaterialOceanicTheme
-
-import javax.swing.event._
-import java.nio.file._
-import java.util
-import java.util.regex.Pattern
-import java.util.{Collections, Comparator}
-import javax.imageio.ImageIO
-import javax.swing.{DefaultListSelectionModel, JLabel}
 import jiconfont.icons.font_awesome.FontAwesome
-import mdlaf.MaterialLookAndFeel
-
-import scala.collection.mutable.ListBuffer
 import jiconfont.swing.IconFontSwing
+import mdlaf.MaterialLookAndFeel
+import mdlaf.themes.MaterialOceanicTheme
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.SystemUtils
 
-import java.awt.font.TextAttribute
-import scala.util.{Success, Try}
-/*new import*/
+import java.awt.datatransfer.DataFlavor
+import java.awt.event.{WindowEvent, ActionEvent, ActionListener, MouseAdapter, ComponentAdapter, KeyEvent, ComponentEvent, MouseEvent, WindowListener, WindowFocusListener, WindowStateListener}
+import java.awt.image.BufferedImage
+import java.awt.{Color, Dimension, Font, KeyboardFocusManager, KeyEventDispatcher, Image, Rectangle, Point, Component, Frame}
+import java.io.{File, InputStream, OutputStream, PrintStream}
+import java.lang.ProcessBuilder
+import java.net.URI
 import java.nio.charset.StandardCharsets
-import javax.swing.JList
-import javax.swing.SwingUtilities
-/*new import 2*/
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import java.awt.Dimension
-import java.lang.{ProcessBuilder}
-
-/* unused import
-import java.awt.BorderLayout
-import java.awt.event.WindowEvent
-import javax.imageio.ImageIO
-import java.awt.Graphics2D
-import java.awt.image.BufferedImage
-import java.io.IOException
+import java.nio.file.{Files, Paths, StandardCopyOption}
+import java.util
 import java.util.Collections
-import java.awt.Frame
-import java.awt.Graphics2D
-import java.awt.image.BufferedImage
-import org.jdesktop.swingx.HorizontalLayout
-import javax.swing.GroupLayout.Alignment
-import javax.swing.text.DefaultCaret
-import Main.panel
-import com.sun.javafx.css.converters.FontConverter.FontStyleConverter
-import java.awt.geom.Rectangle2D
-import java.lang.reflect.Type
-import mdlaf.themes.{AbstractMaterialTheme, JMarsDarkTheme, MaterialLiteTheme, MaterialOceanicTheme}
-import java.lang.{Comparable, ProcessBuilder}
-*/
-
-import java.awt.KeyEventDispatcher
-import java.awt.KeyboardFocusManager
-import java.awt.event.KeyEvent
+import java.util.regex.Pattern
+import javax.imageio.ImageIO
+import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
+import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JFrame, JLabel, JList, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
+import scala.collection.mutable.ListBuffer
+import scala.language.postfixOps
+import scala.util.Try
 
 object Main extends App {
+
   val stdout = System.out
   val stderr = System.err
   val theme = new MaterialOceanicTheme
+  /*val MpvProcessWorkerMpvProcessWorker = new ProcessBuilder().start()*/
   var mpvProc : java.lang.Process = null
-
   val workingDirectory = new java.io.File(".").getCanonicalPath
-  var APPICON : BufferedImage = null
+  val ImageStream: InputStream = getClass.getResourceAsStream("/icon.png")
+  var AppIconInit : BufferedImage = null
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
   IconFontSwing.register(FontAwesome.getIconFont)
   try
   {
-    val stream: InputStream = getClass.getResourceAsStream("/icon.png")
-    APPICON = ImageIO.read(stream)
+    AppIconInit = ImageIO.read(ImageStream)
   }
-  catch {case _ =>}
+  catch {case _: Throwable => println("error 0x000002a") }
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   audioDelayLayout.setGap(5)
@@ -126,12 +87,12 @@ object Main extends App {
   //subDelayLabel.setFont(theme.getButtonFont)
 
 
-  val clabel1 = new JLabel("")
-  clabel1.setFont(theme.getButtonFont)
-  val clabel2 = new JLabel("")
-  clabel2.setFont(theme.getButtonFont)
-  val clabel3 = new JLabel("")
-  clabel3.setFont(theme.getButtonFont)
+  val label1 = new JLabel("")
+  label1.setFont(theme.getButtonFont)
+  val label2 = new JLabel("")
+  label2.setFont(theme.getButtonFont)
+  val label3 = new JLabel("")
+  label3.setFont(theme.getButtonFont)
 
   val fontsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   fontsLayout.setGap(10)
@@ -264,11 +225,11 @@ object Main extends App {
   val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
   del3btn.addActionListener(SortActionListener(subList, subModel))
 
-  //val playIcon = new StretchIcon(APPICON)
+  //val playIcon = new StretchIcon(APP-ICON)
   var playButton = new JButton("Play")
   var playIcon: ImageIcon = null
-  if (APPICON != null) {
-    playIcon = new ImageIcon(APPICON)
+  if (AppIconInit != null) {
+    playIcon = new ImageIcon(AppIconInit)
     playButton = new JButton("", playIcon)
   }
 
@@ -292,9 +253,9 @@ object Main extends App {
 
 
   val frame = new JFrame("AnimeTool")
-  if (APPICON != null) {frame.setIconImage(APPICON)}
+  if (AppIconInit != null) {frame.setIconImage(AppIconInit)}
   //frame.addListeners()
-  //mdlaf.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
+  //mdl-af.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
   frame.setSize(800, 600)
   frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
@@ -322,15 +283,15 @@ object Main extends App {
         val result = e.getKeyCode match {
           case KeyEvent.VK_DOWN => {
             selectAnyList(1)
-            true // block futher processing of events cuz we catched it
+            true /* block futher processing of events cuz we catched it */
           }
           case KeyEvent.VK_UP => {
             selectAnyList(-1)
-            true // block futher processing of events cuz we catched it
+            true /* block futher processing of events cuz we catched it */
           }
-          case KeyEvent.VK_SPACE => play
-          case KeyEvent.VK_ENTER => play
-          case _ => false // returning false so UI can process futher
+          case KeyEvent.VK_SPACE => play()
+          case KeyEvent.VK_ENTER => play()
+          case _ => false /* returning false so UI can process futher */
         }
         result
       } else {
@@ -360,7 +321,7 @@ object Main extends App {
 
   def checkMpv() = {
     try {
-      var args = ListBuffer[String]("mpv", "--version")
+      val args = ListBuffer[String]("mpv", "--version")
 
       val process = new ProcessBuilder(args.toSeq: _*).start()
 
@@ -377,19 +338,19 @@ object Main extends App {
               else {  "mpv" }
 
         }
-        catch { case _ => "mpv" }
+        catch { case _: Throwable => println("error 0x000002b :mpv")}
       }
       catch {
-        case _ => {
+        case _: Throwable => {
           val errortext = "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory ("+workingDirectory+") or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n"
           val title = "Fatal Error 0x000001"
-          if (APPICON != null) {
+          if (AppIconInit != null) {
             JOptionPane.showMessageDialog(
               frame,
               errortext,
               title,
               JOptionPane.ERROR_MESSAGE,
-              new ImageIcon(resize(APPICON, 128, 128))
+              new ImageIcon(resize(AppIconInit, 128, 128))
             )
           } else {
             JOptionPane.showMessageDialog(
@@ -406,48 +367,33 @@ object Main extends App {
   }
 
   def play() : Boolean = {
-
     if (videoList.getSelectedIndex < 0) {
       println("You havent selected any video file")
       return false
     }
 
-    var args = ListBuffer[String]("mpv", videoList.getSelectedValue.getAbsolutePath)
+    val args = ListBuffer[String]("mpv", videoList.getSelectedValue.getAbsolutePath)
 
-    if (audioList.getSelectedIndex >= 0)
-      args += "--audio-file=" + audioList.getSelectedValue.getAbsolutePath
-
-    if (subList.getSelectedIndex >= 0)
-      args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath
-
-    if (subList.getSelectedIndex >= 0)
-      args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath
-
-    if (!audioDelayText.getValue.toString.trim.isEmpty)
-      args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000
-
-    if (!subDelayText.getValue.toString.trim.isEmpty)
-      args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000
-
-    if (fullscreenOption.isSelected)
-      args += "--fs"
-
-    if (!subsVisible.isSelected)
-      args += "--no-sub-visibility"
-
-    if (fontsText.getText.trim.isEmpty)
-      clearFontsFolder()
-    else
-      if (!injectFonts(fontsText.getText.trim)) return false
+    if (audioList.getSelectedIndex >= 0) { args += "--audio-file=" + audioList.getSelectedValue.getAbsolutePath}
+    if (subList.getSelectedIndex >= 0) {args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath}
+    if (subList.getSelectedIndex >= 0) {args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath}
+    if (!audioDelayText.getValue.toString.trim.isEmpty) {args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000}
+    if (!subDelayText.getValue.toString.trim.isEmpty) {args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000}
+    if (fullscreenOption.isSelected){args += "--fs"}
+    if (!subsVisible.isSelected) {args += "--no-sub-visibility"}
+    if (fontsText.getText.trim.isEmpty) { clearFontsFolder() }
+    else { if (!injectFonts(fontsText.getText.trim)) {return false} }
 
     killPrevMpv
     println("Summoning your waifu... " + args.toString() + "\n")
 
     new Thread(new Runnable {
       override def run(): Unit = {
+        //example : val process = new ProcessBuilder("java", "-version").start
+        //val MpvProcessWorker = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+        //MpvProcessWorker.waitFor()
         mpvProc = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
         mpvProc.waitFor()
-        //mpvProc = null
         clearFontsFolder()
       }
     }).start()
@@ -459,9 +405,8 @@ object Main extends App {
     if (mpvProc != null) {
       try {
         mpvProc.destroy()
-      } catch {
-        case _ =>
       }
+      catch { case _: Throwable => println("error 0x000002d") }
     }
   }
 
@@ -495,27 +440,25 @@ object Main extends App {
 
   def getFontsFolder() = {
     val home = System.getProperty("user.home")
-    val fontspath = Paths.get(home, ".fonts", "animetool")
-    val fontsdir = new File(fontspath.toString)
-    if (!fontsdir.exists())
-      fontsdir.mkdirs
-    fontsdir.getAbsolutePath
+    val FontsPath = Paths.get(home, ".fonts", "animetool")
+    val FontsDir = new File(FontsPath.toString)
+    if (!FontsDir.exists())
+      { FontsDir.mkdirs }
+    FontsDir.getAbsolutePath
   }
 
   def clearFontsFolder() = {
     try {
-      val fontsdir = new File(getFontsFolder())
-      for (f <- fontsdir.listFiles()) {
+      val FontsDir = new File(getFontsFolder())
+      for (f <- FontsDir.listFiles()) {
         try {
           f.delete()
           println("Deleted old font " + f.getName)
-        } catch {
-          case _ =>
         }
+        catch { case _: Throwable => println("error 0x000002c") }
       }
-    } catch {
-      case _ =>
     }
+    catch { case _: Throwable => println("error 0x000002d") }
   }
 
   def injectFonts(path: String): Boolean = {
@@ -569,10 +512,10 @@ object Main extends App {
   }
 
   private def getNextBounds(height: Int, verticalPadding : Int, rectangle: Rectangle): Rectangle = {
-      val lastUnfuckMargin = 30
+      val lastMargin = 30
       val actualHeight =
         if (height < 0)
-          { (frame.getHeight - (rectangle.y + rectangle.height + verticalPadding)) - verticalPadding - lastUnfuckMargin }
+          { (frame.getHeight - (rectangle.y + rectangle.height + verticalPadding)) - verticalPadding - lastMargin }
         else
           { height }
       new Rectangle(rectangle.x, rectangle.y + rectangle.height + verticalPadding, rectangle.width, actualHeight )
@@ -589,7 +532,7 @@ object Main extends App {
     playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
 
     if (playIcon != null)
-      { playIcon.setImage(resize(APPICON, playRect.height*2/3, playRect.height*2/3)) }
+      { playIcon.setImage(resize(AppIconInit, playRect.height*2/3, playRect.height*2/3)) }
 
     panel.add(playButton)
 
@@ -883,14 +826,15 @@ object Main extends App {
           if (error){ stderr.print(b.toChar) }
           else { stdout.print(b.toChar) }
         }
-        catch { case _ =>}
+        catch { case _: Throwable => println("error 0x000002e")}
 
         try {
           textArea.append(String.valueOf(b.toChar))
           //textArea.setCaretPosition(textArea.getDocument.getLength)
           textArea.getCaret.setDot(Integer.MAX_VALUE)
         }
-        catch { case _ => }
+        catch { case _: Throwable => println("error 0x000002f")}
+
       }
   }
 
@@ -936,8 +880,6 @@ object Main extends App {
   }
 
   class EventJFrame(str: String) extends JFrame(str: String) with WindowListener with WindowFocusListener with WindowStateListener {
-    import java.awt.Frame
-    import java.awt.event.WindowEvent
     def displayStateMessage(prefix: String, e: WindowEvent): Unit = {
       val state = e.getNewState
       val oldState = e.getOldState
@@ -948,16 +890,16 @@ object Main extends App {
       addWindowListener(this)
       addWindowFocusListener(this)
       addWindowStateListener(this)
-      checkWM
+      checkWM()
     }
     def checkWM(): Unit = {
       val tk = frame.getToolkit
       if (!tk.isFrameStateSupported(Frame.ICONIFIED)) displayMessage("Your window manager doesn't support ICONIFIED.")
       else displayMessage("Your window manager supports ICONIFIED.")
-      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_VERT)) displayMessage("Your window manager doesn't support MAXIMIZED_VERT.")
-      else displayMessage("Your window manager supports MAXIMIZED_VERT.")
-      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_HORIZ)) displayMessage("Your window manager doesn't support MAXIMIZED_HORIZ.")
-      else displayMessage("Your window manager supports MAXIMIZED_HORIZ.")
+      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_VERT)) displayMessage("Your window manager doesn't support MAXIMIZED_HEIGHT.")
+      else displayMessage("Your window manager supports MAXIMIZED_HEIGHT.")
+      if (!tk.isFrameStateSupported(Frame.MAXIMIZED_HORIZ)) displayMessage("Your window manager doesn't support MAXIMIZED_WIDTH.")
+      else displayMessage("Your window manager supports MAXIMIZED_WIDTH.")
       if (!tk.isFrameStateSupported(Frame.MAXIMIZED_BOTH)) displayMessage("Your window manager doesn't support MAXIMIZED_BOTH.")
       else displayMessage("Your window manager supports MAXIMIZED_BOTH.")
     }
@@ -1028,8 +970,8 @@ object Main extends App {
       //we need to test for an exact match.
       if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) strState += "MAXIMIZED_BOTH"
       else {
-        if ((state & Frame.MAXIMIZED_VERT) != 0) strState += "MAXIMIZED_VERT"
-        if ((state & Frame.MAXIMIZED_HORIZ) != 0) strState += "MAXIMIZED_HORIZ"
+        if ((state & Frame.MAXIMIZED_VERT) != 0) strState += "MAXIMIZED_WIDTH"
+        if ((state & Frame.MAXIMIZED_HORIZ) != 0) strState += "MAXIMIZED_HEIGHT"
         if (" " == strState) strState = "UNKNOWN"
       }
       strState.trim
