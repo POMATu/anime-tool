@@ -11,9 +11,15 @@ AnimeTool is pending ressurection now with manual concept
 [Download latest Release From Here](https://github.com/POMATu/anime-tool/releases)
 
 UI in Windows:
-![PoC for this evening](img/windows.png)
+![windows](img/windows.png)
 
 _Yes mate,_ **another video used as audio**
+
+UI in Linux:
+![linux](img/linux.png)
+
+_Yes mate,_ sub fonts are injected temporarly so that **YoUr SyStEm FoNtS WoNt GeT FuNnY**
+
 
 # Whats working
 
