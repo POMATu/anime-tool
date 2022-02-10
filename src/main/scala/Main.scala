@@ -765,35 +765,70 @@ object Main extends App {
   }
 
   class FontsHandler extends TransferHandler {
-    override def canImport(support: TransferHandler.TransferSupport): Boolean = support.isDrop && support.isDataFlavorSupported(DataFlavor.stringFlavor)
+    override def canImport(support: TransferHandler.TransferSupport): Boolean = {
+      val result = support.isDrop && (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor) || support.isDataFlavorSupported(DataFlavor.stringFlavor) )
+      result
+    }
+
     override def importData(support: TransferHandler.TransferSupport): Boolean = canImport(support) && {
-        val transferable = support.getTransferable
-        transferable.getTransferData(DataFlavor.stringFlavor) match {
-          case line: String =>
-            //println(line)
-            val data = line.split("\n")
-            for (item <- data) {
-              if (item.trim.nonEmpty) {
-                val file = new File(new URI(item.trim))
-                if (file.exists) {
-                  fontsText.setText(file.getAbsolutePath)
-                  println("Added fonts dir: " + file.getAbsolutePath)
-                  return true
-                }
-              }
+      val transferable = support.getTransferable
+      val try_files = Try(transferable.getTransferData(DataFlavor.javaFileListFlavor))
+        .map {
+          case list: util.AbstractList[File] =>
+            println(list)
+            list.toArray( Array[File]() )
+        }
+      val try_strip = Try(transferable.getTransferData(DataFlavor.stringFlavor))
+        .map {
+          case text: String => {
+            text.split("\n").map(l => {
+              //println(l.trim)
+              val file = new File(l.trim.replaceFirst("file://",""))
+              if (file.exists())
+                file
+              else
+                throw new Exception("File " + file + " not exists")
             }
-            true
-          case _ => {
-            println("Error during import")
-            false
+            )
+            // println(text)
           }
         }
+
+      val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
+        .map {
+          case text: String => {
+            text.split("\n").map(l => {
+              //println(l.trim)
+              val uri = new URI(l.trim)
+              val file = new File(uri)
+              if (file.exists())
+                file
+              else
+                throw new Exception("URI " + uri + " not exists")
+            }
+            )
+            // println(text)
+          }
+        }
+      val file_list = try_files.orElse(try_strip).orElse(try_uris).getOrElse(
+        throw new Exception("Dragndrop failure")
+      )
+      for (item <- file_list) {
+        if (item.exists()) {
+          fontsText.setText(item.getAbsolutePath)
+          println("Added fonts dir: " + item.getAbsolutePath)
+        } else {
+          println("Error: Fonts dir doesnt exist: " + item.getAbsolutePath)
+        }
       }
+      true
+    }
   }
 
   case class ListHandler(model: SortableListModel[ShortFile]) extends TransferHandler {
     override def canImport(support: TransferHandler.TransferSupport): Boolean = {
-      support.isDrop && support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+      val result = support.isDrop && (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor) || support.isDataFlavorSupported(DataFlavor.stringFlavor) )
+      result
     }
 
     override def importData(support: TransferHandler.TransferSupport): Boolean = canImport(support) && {
@@ -804,12 +839,41 @@ object Main extends App {
               println(list)
               list.toArray( Array[File]() )
           }
-        val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
+        val try_strip = Try(transferable.getTransferData(DataFlavor.stringFlavor))
           .map {
-            case text: String =>
-              text.split("\n").map(l => new File(new URI(l)))
+            case text: String => {
+              text.split("\n").map(l => {
+                //println(l.trim)
+                  val file = new File(l.trim.replaceFirst("file://",""))
+                  if (file.exists())
+                    file
+                  else
+                    throw new Exception("File " + file + " not exists")
+              }
+              )
+             // println(text)
+            }
           }
-        val file_list = try_files.orElse(try_uris).getOrElse( throw new Exception("meh") )
+
+      val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
+        .map {
+          case text: String => {
+            text.split("\n").map(l => {
+              //println(l.trim)
+              val uri = new URI(l.trim)
+              val file = new File(uri)
+              if (file.exists())
+                file
+              else
+                throw new Exception("URI " + uri + " not exists")
+            }
+            )
+            // println(text)
+          }
+        }
+        val file_list = try_files.orElse(try_strip).orElse(try_uris).getOrElse(
+          throw new Exception("Dragndrop failure")
+        )
           for (item <- file_list) {
             if (item.toString.trim.nonEmpty) {
               val file = ShortFile(item.toURI)
