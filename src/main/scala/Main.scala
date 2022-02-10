@@ -107,7 +107,7 @@ object Main extends App {
 
   val fontsLabel = new JLabel("Fonts Folder",makeIcon(FontAwesome.FONT,classOf[JButton]),SwingConstants.LEFT)
   fontsLabel.setTransferHandler(new FontsHandler)
-  fontsText.setPreferredSize(new Dimension(Int.MaxValue,Int.MaxValue))
+  //fontsText.setPreferredSize(new Dimension(Int.MaxValue,Int.MaxValue))
   fontsPanel.add(fontsLabel)
 
   val test : Float = 3
@@ -483,8 +483,7 @@ object Main extends App {
         println("Injected font " + f.getName)
       }
       true
-    }
-    false
+    } else false
   }
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
