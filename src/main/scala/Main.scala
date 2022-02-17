@@ -36,11 +36,12 @@ object Main extends App {
   var AppIconInit : BufferedImage = null
   UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
   IconFontSwing.register(FontAwesome.getIconFont)
-  try
-  {
+  try {
     AppIconInit = ImageIO.read(ImageStream)
   }
-  catch {case _: Throwable => println("error 0x000002a") }
+  catch {
+    case _: Throwable => println("error 0x000002a")
+  }
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   audioDelayLayout.setGap(5)
@@ -115,9 +116,7 @@ object Main extends App {
 
   val fontsClear = new JButton(makeIcon(FontAwesome.TRASH,classOf[JButton]))
 
-  fontsClear.addActionListener(new ActionListener {
-    override def actionPerformed(actionEvent: ActionEvent): Unit = fontsText.setText("")
-  })
+  fontsClear.addActionListener((actionEvent: ActionEvent) => fontsText.setText(""))
 
   fontsPanel.add(fontsClear)
 
@@ -225,13 +224,8 @@ object Main extends App {
   val del3btn = new JButton(makeIcon(FontAwesome.SORT_ALPHA_ASC, classOf[JButton]))
   del3btn.addActionListener(SortActionListener(subList, subModel))
 
-  //val playIcon = new StretchIcon(APP-ICON)
-  var playButton = new JButton("Play")
-  var playIcon: ImageIcon = null
-  if (AppIconInit != null) {
-    playIcon = new ImageIcon(AppIconInit)
-    playButton = new JButton("", playIcon)
-  }
+  val playIcon: ImageIcon =  new ImageIcon(AppIconInit)
+  val playButton = new JButton("", playIcon)
 
   playButton.setFont(playButton.getFont.deriveFont(30: Float).deriveFont(Font.BOLD))
   //playButton.setFont(DEFAULT_FONT
@@ -253,7 +247,10 @@ object Main extends App {
 
 
   val frame = new JFrame("AnimeTool")
-  if (AppIconInit != null) {frame.setIconImage(AppIconInit)}
+  if (AppIconInit != null)
+  {
+    frame.setIconImage(AppIconInit)
+  }
   //frame.addListeners()
   //mdl-af.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
@@ -281,14 +278,12 @@ object Main extends App {
 
       if (e.getID == KeyEvent.KEY_PRESSED) {
         val result = e.getKeyCode match {
-          case KeyEvent.VK_DOWN => {
+          case KeyEvent.VK_DOWN =>
             selectAnyList(1)
             true /* block futher processing of events cuz we catched it */
-          }
-          case KeyEvent.VK_UP => {
+          case KeyEvent.VK_UP =>
             selectAnyList(-1)
             true /* block futher processing of events cuz we catched it */
-          }
           case KeyEvent.VK_SPACE => play()
           case KeyEvent.VK_ENTER => play()
           case _ => false /* returning false so UI can process futher */
@@ -341,7 +336,7 @@ object Main extends App {
         catch { case _: Throwable => println("error 0x000002b :mpv")}
       }
       catch {
-        case _: Throwable => {
+        case _: Throwable =>
           val errortext = "\nОшибка 0x000001! это же очевидно как ее решить!!!\nMPV cant be found in PATH\nPlease check if MPV is installed to working directory ("+workingDirectory+") or added to PATH\nYou cant watch your anime if you dont have a video player (obviously)\n"
           val title = "Fatal Error 0x000001"
           if (AppIconInit != null) {
@@ -363,7 +358,6 @@ object Main extends App {
           System.exit(1)
           ""
       }
-    }
   }
 
   def play() : Boolean = {
@@ -377,8 +371,8 @@ object Main extends App {
     if (audioList.getSelectedIndex >= 0) { args += "--audio-file=" + audioList.getSelectedValue.getAbsolutePath}
     if (subList.getSelectedIndex >= 0) {args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath}
     if (subList.getSelectedIndex >= 0) {args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath}
-    if (!audioDelayText.getValue.toString.trim.isEmpty) {args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000}
-    if (!subDelayText.getValue.toString.trim.isEmpty) {args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000}
+    if (audioDelayText.getValue.toString.trim.nonEmpty) {args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000}
+    if (subDelayText.getValue.toString.trim.nonEmpty) {args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000}
     if (fullscreenOption.isSelected){args += "--fs"}
     if (!subsVisible.isSelected) {args += "--no-sub-visibility"}
     if (fontsText.getText.trim.isEmpty) { clearFontsFolder() }
@@ -387,15 +381,13 @@ object Main extends App {
     killPrevMpv
     println("Summoning your waifu... " + args.toString() + "\n")
 
-    new Thread(new Runnable {
-      override def run(): Unit = {
-        //example : val process = new ProcessBuilder("java", "-version").start
-        //val MpvProcessWorker = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
-        //MpvProcessWorker.waitFor()
-        mpvProc = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
-        mpvProc.waitFor()
-        clearFontsFolder()
-      }
+    new Thread(() => {
+      //example : val process = new ProcessBuilder("java", "-version").start
+      //val MpvProcessWorker = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+      //MpvProcessWorker.waitFor()
+      mpvProc = new ProcessBuilder(args.toSeq: _*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+      mpvProc.waitFor()
+      clearFontsFolder()
     }).start()
 
     true
@@ -417,7 +409,10 @@ object Main extends App {
    * @return The converted BufferedImage
    */
   def toBufferedImage(img: Image): BufferedImage = {
-    if (img.isInstanceOf[BufferedImage]) return img.asInstanceOf[BufferedImage]
+    img match {
+      case image: BufferedImage => return image
+      case _ =>
+    }
     // Create a buffered image with transparency
     val bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB)
     // Draw the image on to the buffered image
@@ -780,7 +775,7 @@ object Main extends App {
         }
       val try_strip = Try(transferable.getTransferData(DataFlavor.stringFlavor))
         .map {
-          case text: String => {
+          case text: String =>
             text.split("\n").map(l => {
               //println(l.trim)
               val file = new File(l.trim.replaceFirst("file://",""))
@@ -791,12 +786,11 @@ object Main extends App {
             }
             )
             // println(text)
-          }
         }
 
       val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
         .map {
-          case text: String => {
+          case text: String =>
             text.split("\n").map(l => {
               //println(l.trim)
               val uri = new URI(l.trim)
@@ -808,7 +802,6 @@ object Main extends App {
             }
             )
             // println(text)
-          }
         }
       val file_list = try_files.orElse(try_strip).orElse(try_uris).getOrElse(
         throw new Exception("Dragndrop failure")
@@ -841,23 +834,23 @@ object Main extends App {
           }
         val try_strip = Try(transferable.getTransferData(DataFlavor.stringFlavor))
           .map {
-            case text: String => {
+            case text: String =>
               text.split("\n").map(l => {
                 //println(l.trim)
                   val file = new File(l.trim.replaceFirst("file://",""))
-                  if (file.exists())
+                  if (file.exists()) {
                     file
-                  else
+                  } else {
                     throw new Exception("File " + file + " not exists")
+                  }
               }
               )
-             // println(text)
-            }
+              // println(text)
           }
 
       val try_uris = Try(transferable.getTransferData(DataFlavor.stringFlavor))
         .map {
-          case text: String => {
+          case text: String =>
             text.split("\n").map(l => {
               //println(l.trim)
               val uri = new URI(l.trim)
@@ -869,7 +862,6 @@ object Main extends App {
             }
             )
             // println(text)
-          }
         }
         val file_list = try_files.orElse(try_strip).orElse(try_uris).getOrElse(
           throw new Exception("Dragndrop failure")
@@ -980,12 +972,12 @@ object Main extends App {
       displayMessage("WindowListener method called: windowClosing.")
       //A pause so user can see the message before
       //the window actually closes.
+      //val alreadyDisposed = false
       val task = new ActionListener() {
-        var alreadyDisposed = false
         override
         def actionPerformed(e: ActionEvent): Unit = {
           if (frame.isDisplayable) {
-            alreadyDisposed = true
+            //val alreadyDisposed = true
             frame.dispose
           }
         }
