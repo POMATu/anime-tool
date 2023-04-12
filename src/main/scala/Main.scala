@@ -266,10 +266,6 @@ object Main extends App {
   frame.addComponentListener(ResizeListener())
   placeComponents(panel)
 
-  if (!SystemUtils.IS_OS_LINUX) {
-    println("Font Injection not supported on your OS. If you wanna use this wonderful feature - install Linux")
-  }
-
   frame.setTitle("AnimeTool [" + checkMpv() + "]")
   println("AnimeTool init: " + workingDirectory)
 
@@ -381,8 +377,7 @@ object Main extends App {
     if (!subDelayText.getValue.toString.trim.isEmpty) {args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000}
     if (fullscreenOption.isSelected){args += "--fs"}
     if (!subsVisible.isSelected) {args += "--no-sub-visibility"}
-    if (fontsText.getText.trim.isEmpty) { clearFontsFolder() }
-    else { if (!injectFonts(fontsText.getText.trim)) {return false} }
+    if (!fontsText.getText.trim.isEmpty) { args += "--sub-fonts-dir=" + fontsText.getText.trim }
 
     killPrevMpv
     println("Summoning your waifu... " + args.toString() + "\n")
@@ -394,7 +389,6 @@ object Main extends App {
         //MpvProcessWorker.waitFor()
         mpvProc = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
         mpvProc.waitFor()
-        clearFontsFolder()
       }
     }).start()
 
@@ -436,54 +430,6 @@ object Main extends App {
     g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null)
     g2d.dispose()
     outputImage
-  }
-
-  def getFontsFolder() = {
-    val home = System.getProperty("user.home")
-    val FontsPath = Paths.get(home, ".fonts", "animetool")
-    val FontsDir = new File(FontsPath.toString)
-    if (!FontsDir.exists())
-      { FontsDir.mkdirs }
-    FontsDir.getAbsolutePath
-  }
-
-  def clearFontsFolder() = {
-    if (SystemUtils.IS_OS_LINUX) {
-      try {
-        val FontsDir = new File(getFontsFolder())
-        for (f <- FontsDir.listFiles()) {
-          try {
-            f.delete()
-            println("Deleted old font " + f.getName)
-          }
-          catch {
-            case _: Throwable => println("error 0x000002c")
-          }
-        }
-      }
-      catch {
-        case _: Throwable => println("error 0x000002d")
-      }
-    }
-  }
-
-  def injectFonts(path: String): Boolean = {
-    if (SystemUtils.IS_OS_LINUX) {
-      val source = new File(path)
-      if (!source.exists()) {
-        println("Fonts source " + path + " doesnt exists")
-        return false
-      }
-
-      println("Clearing old fonts")
-      clearFontsFolder()
-
-      for (f <- source.listFiles()) {
-        Files.copy(f.toPath, Paths.get(getFontsFolder(), f.getName), StandardCopyOption.REPLACE_EXISTING)
-        println("Injected font " + f.getName)
-      }
-      true
-    } else false
   }
 
   private def makeIcon(icon : FontAwesome, element: Any): Icon = {
@@ -568,14 +514,10 @@ object Main extends App {
    // panel.add(subDelayText)
 
     var buttonsRect : Rectangle = null
-    if (SystemUtils.IS_OS_LINUX) {
-      val cLabelsRect = getNextBounds(70, verticalPadding, playRect)
-      fontsPanel.setBounds(cLabelsRect)
-      panel.add(fontsPanel)
-      buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
-    } else {
-      buttonsRect = getNextBounds(40,verticalPadding,playRect)
-    }
+    val cLabelsRect = getNextBounds(70, verticalPadding, playRect)
+    fontsPanel.setBounds(cLabelsRect)
+    panel.add(fontsPanel)
+    buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
     //fontsPanel.replaceAll()
 
     val buttons1Rect = getBoundsInBounds(0, 3, genericPaddingLeft, buttonsRect)

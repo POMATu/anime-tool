@@ -1,5 +1,9 @@
 # Disclaimer
 
+**This variant works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
+
+---
+
 AnimeTool is pending ressurection now with manual concept
 
 **Took me 2 years of mpv console arguments butthurt to start this again**
@@ -18,13 +22,13 @@ _Yes mate,_ **another video used as audio**
 UI in Linux:
 ![linux](img/linux.png)
 
-_Yes mate,_ sub fonts are injected temporarly so that Yo*Ur* Sy*St*Em F*oN*tS W*o*N*t* G*eT* *Fu*N*n*Y
+_Yes mate,_ sub fonts are injected directly to playback so that Yo*Ur* Sy*St*Em F*oN*tS W*o*N*t* G*eT* *Fu*N*n*Y
 
 
 # Whats working
 
 * mpv exectuion with all annoying arguments
-* fonts injection before mpv execution and cleansing after mpv shutdown ***linux only***
+* fonts injection **works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
 * audio/sub delay per season
 * lists management and sorting
 * automatically start fullscreen option
@@ -33,7 +37,7 @@ _Yes mate,_ sub fonts are injected temporarly so that Yo*Ur* Sy*St*Em F*oN*tS W*
 # How to run
 ### Linux/OSX
 * Install Java with your package manager (openjdk/oracle-jre)
-* Install MPV with your package manager
+* Install MPV with your package manager **works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
 * Download a fat jar from [releases section](https://github.com/POMATu/anime-tool/releases)
 * Run fat jar with java -jar AnimeTool.jar
 
