@@ -18,8 +18,8 @@ import java.util
 import java.util.Collections
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
-import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
-import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JCheckBoxMenuItem, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
+import javax.swing.event.{ChangeEvent, ChangeListener, ListSelectionEvent, ListSelectionListener}
+import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JCheckBoxMenuItem, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerListModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
 import scala.collection.mutable.ListBuffer
 import scala.language.postfixOps
 import scala.util.Try
@@ -88,13 +88,13 @@ object Main extends App {
 
 
 
-
+  // BLOCK: audiodelay
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   audioDelayLayout.setGap(5)
   audioDelayLayout.setBorderGap(5)
 
   val audioDelayPanel = new JPanel(audioDelayLayout)
-  audioDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio Delay (ms)"))
+  audioDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"AudDelay(ms)"))
 
   //val audioDelayLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.MUSIC, classOf[JButton]),SwingConstants.RIGHT)
   //audioDelayLabel.setFont(theme.getButtonFont)
@@ -104,21 +104,67 @@ object Main extends App {
   audioDelayText.setAlignmentX(SwingConstants.RIGHT)
   audioDelayPanel.add(audioDelayText,3 : Float)
 
+  // BLOCK: subdelay
   val subDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   subDelayLayout.setGap(5)
   subDelayLayout.setBorderGap(5)
 
   val subDelayPanel = new JPanel(subDelayLayout)
-  subDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub Delay (ms)"))
+  subDelayPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"SubDelay(ms)"))
 
   val subDelayText = new JSpinner(new SpinnerNumberModel(0,Int.MinValue,Int.MaxValue,100))
   subDelayText.setAlignmentX(SwingConstants.RIGHT)
 
   subDelayPanel.add(subDelayText, 3 : Float)
 
-  val optionsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
-  optionsLayout.setGap(5)
-  optionsLayout.setBorderGap(5)
+  // generating list for subs and audio
+  val cidlist = new util.ArrayList[String]
+  cidlist.add("none")
+  cidlist.add("jap")
+  cidlist.add("eng")
+  cidlist.add("rus")
+  for (i <- 1 to 30) {
+    cidlist.add(i.toString)
+  }
+  val cidlist2 = new util.ArrayList[String]
+  cidlist2.add("none")
+  cidlist2.add("jp")
+  cidlist2.add("en")
+  cidlist2.add("ru")
+
+  // BLOCK: audio-cid
+  val audioCidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  audioCidLayout.setGap(5)
+  audioCidLayout.setBorderGap(5)
+  val audioCidPanel = new JPanel(audioCidLayout)
+  audioCidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio Cid"))
+  val audioCidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+  audioCidSpinner.setAlignmentX(SwingConstants.RIGHT)
+  audioCidPanel.add(audioCidSpinner, 3 : Float)
+
+  // BLOCK: sub1-cid
+  val sub1CidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  sub1CidLayout.setGap(5)
+  sub1CidLayout.setBorderGap(5)
+  val sub1CidPanel = new JPanel(sub1CidLayout)
+  sub1CidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub-1 Cid"))
+  val sub1CidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+  sub1CidSpinner.setAlignmentX(SwingConstants.RIGHT)
+  sub1CidPanel.add(sub1CidSpinner, 3 : Float)
+
+  // BLOCK: sub2-cid
+  val sub2CidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  sub2CidLayout.setGap(5)
+  sub2CidLayout.setBorderGap(5)
+  val sub2CidPanel = new JPanel(sub2CidLayout)
+  sub2CidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub-2 Cid"))
+  val sub2CidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+  sub2CidSpinner.setAlignmentX(SwingConstants.RIGHT)
+  sub2CidPanel.add(sub2CidSpinner, 3 : Float)
+
+//  val optionsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+//  optionsLayout.setGap(5)
+//  optionsLayout.setBorderGap(5)
 
   //val optionsPanel = new JPanel(optionsLayout)
   //optionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Convenience Options"))
@@ -536,15 +582,15 @@ object Main extends App {
 
     val playRect = getNextBounds(58,verticalPadding,startRect)
 
-    playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
+    playButton.setBounds(getBoundsInBounds(0,4,genericPaddingLeft,playRect))
 
     if (playIcon != null)
       { playIcon.setImage(resize(AppIconInit, playRect.height*2/3, playRect.height*2/3)) }
 
     panel.add(playButton)
 
-    val allDelayContainerRect = getBoundsInBounds(1,3,genericPaddingLeft,playRect)
-    val audioDelayContainerRect = getBoundsInBounds(0,2,0,allDelayContainerRect)
+    val allDelayContainerRect = new Rectangle(playRect.x + playButton.getWidth, playRect.y, playRect.width - playButton.getWidth, playRect.height)
+    val audioDelayContainerRect = getBoundsInBounds(0,5,0,allDelayContainerRect)
 
     audioDelayPanel.setBounds(audioDelayContainerRect)
     panel.add(audioDelayPanel)
@@ -560,9 +606,22 @@ object Main extends App {
     audioDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayText)*/
 
-    val subDelayContainerRect = getBoundsInBounds(1,2,0,allDelayContainerRect)
+    val subDelayContainerRect = getBoundsInBounds(1,5,0,allDelayContainerRect)
     subDelayPanel.setBounds(subDelayContainerRect)
     panel.add(subDelayPanel)
+
+    val audioCidContainerRect = getBoundsInBounds(2,5,0,allDelayContainerRect)
+    audioCidPanel.setBounds(audioCidContainerRect)
+    panel.add(audioCidPanel)
+
+    val sub1CidContainerRect = getBoundsInBounds(3,5,0,allDelayContainerRect)
+    sub1CidPanel.setBounds(sub1CidContainerRect)
+    panel.add(sub1CidPanel)
+
+
+    val sub2CidContainerRect = getBoundsInBounds(4,5,0,allDelayContainerRect)
+    sub2CidPanel.setBounds(sub2CidContainerRect)
+    panel.add(sub2CidPanel)
    // subDelayText.setBounds(getBoundsInBounds(1, 2,genericPaddingLeft,subDelayContainerRect))
    // panel.add(subDelayText)
 
