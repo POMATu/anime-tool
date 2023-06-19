@@ -57,7 +57,7 @@ _Yes mate,_ sub fonts are injected directly to playback so that Yo*Ur* Sy*St*Em 
 * Drop fonts folder to corresponding panel (if supplied with your *LICENSED ANIME RIP THAT YOU PURCHASED LEGALLY* and if needed). If you need fonts injection. Fonts will be removed after you finish watching the episode and reinjected again on next episode
 * if your audio/subs unsynced, after bruteforcing the value in mpv with hotkeys you can add that value to corresponding spinner field and this way it will apply for next episodes automatically
 
-BTW with mpv you can use video-as-audio, or probably video-as-subs too. Just drop another video to audio or subs list, mpv will take it from container automatically
+BTW with mpv you can use video-as-audio, or video-as-subs too. Just drop another video to audio or subs list, mpv will take it from container automatically
 
 Keep in mind it plays only selected fields, so if you deselected something - you need to select rows again 
 
