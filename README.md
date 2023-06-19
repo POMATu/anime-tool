@@ -37,7 +37,7 @@ _Yes mate,_ sub fonts are injected directly to playback so that Yo*Ur* Sy*St*Em 
 # How to run
 ### Linux/OSX
 * Install Java with your package manager (openjdk/oracle-jre)
-* Install MPV with your package manager **works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
+* Install MPV with your package manager **font injection works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
 * Download a fat jar from [releases section](https://github.com/POMATu/anime-tool/releases)
 * Run fat jar with java -jar AnimeTool.jar
 
