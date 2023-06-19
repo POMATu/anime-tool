@@ -1,6 +1,6 @@
 # Disclaimer
 
-**This variant works with self compiled ONLY (for macos use `brew install mpv --HEAD`)**
+**Font injection works only with self-compiled mpv from GIT or windows installers**  
 
 ---
 
