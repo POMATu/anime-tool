@@ -56,10 +56,17 @@ object Main extends App {
   UIManager.put("MenuBar.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
   UIManager.put("MenuItem.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
 
+  UIManager.put("Menu.font", theme.getButtonFont)
+
+  UIManager.put("MenuItem.font", theme.getButtonFont)
+
   val menuBar = new JMenuBar()
-  menuBar.setMargin(new Insets(0,0,0,0))
+  //menuBar.setPreferredSize(new Dimension(100, 80))
+ // menuBar.setMargin(new Insets(0,0,0,0))
   val fileMenu = new JMenu("File")
-  fileMenu.setMargin(new Insets(0,0,0,0))
+ // fileMenu.setFont()
+
+  //fileMenu.setMargin(new Insets(0,0,0,0))
   fileMenu.setMnemonic(KeyEvent.VK_F)
   val eMenuItem = new JMenuItem("Exit")
   eMenuItem.setMnemonic(KeyEvent.VK_E)
