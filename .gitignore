@@ -1,7 +1,6 @@
 project/**
 target/**
-.idea/**
 /out/**
 /Output/**
 .bsp
-**/META-INF/
+

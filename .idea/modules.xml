@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AnimeTool.iml" filepath="$PROJECT_DIR$/.idea/modules/AnimeTool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AnimeTool-build.iml" filepath="$PROJECT_DIR$/.idea/modules/AnimeTool-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/project.AnimeTool-build.iml" filepath="$PROJECT_DIR$/.idea/modules/project.AnimeTool-build.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,6 +1,6 @@
 name := "AnimeTool"
 
-version := "2.0"
+version := "2.1"
 
 scalaVersion := "2.13.6"
 
@@ -12,5 +12,6 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.0"
 
 libraryDependencies += "commons-io" % "commons-io" % "2.11.0"
 
-mainClass in Compile := Some("Main")
-// test commit2
+Compile / mainClass := Some("Main")
+
+
