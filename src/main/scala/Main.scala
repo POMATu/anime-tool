@@ -377,7 +377,7 @@ object Main extends App {
     println("Summoning your waifu... " + args.toString() + "\n")
 
 
-    new Thread(() => {
+    new Thread(new Runnable {
       override def run(): Unit = {
         //example : val process = new ProcessBuilder("java", "-version").start
         //val MpvProcessWorker = new ProcessBuilder(args.toSeq:_*).redirectOutput(ProcessBuilder.Redirect.INHERIT).redirectError(ProcessBuilder.Redirect.INHERIT).start()
