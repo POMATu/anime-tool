@@ -19,12 +19,10 @@ import java.util.Collections
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
 import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
-import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
+import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JCheckBoxMenuItem, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
 import scala.collection.mutable.ListBuffer
 import scala.language.postfixOps
 import scala.util.Try
-import javax.swing.BorderFactory
-import javax.swing.UIManager
 import java.awt.Color
 
 object Main extends App {
@@ -61,19 +59,35 @@ object Main extends App {
   UIManager.put("MenuItem.font", theme.getButtonFont)
 
   val menuBar = new JMenuBar()
-  //menuBar.setPreferredSize(new Dimension(100, 80))
- // menuBar.setMargin(new Insets(0,0,0,0))
+  // BLOCK: File
   val fileMenu = new JMenu("File")
- // fileMenu.setFont()
-
-  //fileMenu.setMargin(new Insets(0,0,0,0))
   fileMenu.setMnemonic(KeyEvent.VK_F)
+
   val eMenuItem = new JMenuItem("Exit")
   eMenuItem.setMnemonic(KeyEvent.VK_E)
   eMenuItem.setToolTipText("Exit application")
   eMenuItem.addActionListener((event) => System.exit(0))
   fileMenu.add(eMenuItem)
+
   menuBar.add(fileMenu)
+
+  // BLOCK: Convenience
+  val convMenu = new JMenu("Convenience")
+  convMenu.setMnemonic(KeyEvent.VK_C)
+
+  val fullscreen =  new JCheckBoxMenuItem("Fullscreen")
+  fullscreen.setState(true)
+  fullscreen.setToolTipText("Open all videos in fullscreen")
+  convMenu.add(fullscreen)
+
+  val subsvisible =  new JCheckBoxMenuItem("Subs visible")
+  subsvisible.setToolTipText("Subs will be visible by default")
+  convMenu.add(subsvisible)
+
+  menuBar.add(convMenu)
+
+
+
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   audioDelayLayout.setGap(5)
@@ -106,15 +120,15 @@ object Main extends App {
   optionsLayout.setGap(5)
   optionsLayout.setBorderGap(5)
 
-  val optionsPanel = new JPanel(optionsLayout)
-  optionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Convenience Options"))
+  //val optionsPanel = new JPanel(optionsLayout)
+  //optionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Convenience Options"))
 
-  val fullscreenOption = new JCheckBox("Fullscreen")
-  fullscreenOption.setSelected(true)
-  val subsVisible = new JCheckBox("Subs Visible")
-
-  optionsPanel.add(fullscreenOption)
-  optionsPanel.add(subsVisible)
+//  val fullscreenOption = new JCheckBox("Fullscreen")
+//  fullscreenOption.setSelected(true)
+//  val subsVisible = new JCheckBox("Subs Visible")
+//
+//  optionsPanel.add(fullscreenOption)
+//  optionsPanel.add(subsVisible)
 
   //val subDelayLabel = new JLabel("Sub Delay",makeIcon(FontAwesome.CC, classOf[JButton]),SwingConstants.LEFT)
   //subDelayLabel.setFont(theme.getButtonFont)
@@ -403,8 +417,8 @@ object Main extends App {
     if (subList.getSelectedIndex >= 0) {args += "--sub-file=" + subList.getSelectedValue.getAbsolutePath}
     if (audioDelayText.getValue.toString.trim.nonEmpty) {args += "--audio-delay=" + audioDelayText.getValue.toString.trim.toFloat / 1000}
     if (subDelayText.getValue.toString.trim.nonEmpty) {args += "--sub-delay=" + subDelayText.getValue.toString.trim.toFloat / 1000}
-    if (fullscreenOption.isSelected){args += "--fs"}
-    if (!subsVisible.isSelected) {args += "--no-sub-visibility"}
+    if (fullscreen.getState){args += "--fs"}
+    if (!subsvisible.getState) {args += "--no-sub-visibility"}
     if (!fontsText.getText.trim.isEmpty) { args += "--sub-fonts-dir=" + fontsText.getText.trim }
 
     killPrevMpv
@@ -535,9 +549,9 @@ object Main extends App {
     audioDelayPanel.setBounds(audioDelayContainerRect)
     panel.add(audioDelayPanel)
 
-    val optionsContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
-    optionsPanel.setBounds(optionsContainerRect)
-    panel.add(optionsPanel)
+//    val optionsContainerRect = getBoundsInBounds(2,3,genericPaddingLeft,playRect)
+//    optionsPanel.setBounds(optionsContainerRect)
+//    panel.add(optionsPanel)
 
     /*audioDelayLabel.setBounds(getBoundsInBounds(0, 2,genericPaddingLeft,audioDelayContainerRect))
     panel.add(audioDelayLabel)
@@ -862,7 +876,7 @@ object Main extends App {
                 worked = true;
               }
               if (worked && model.equals(subModel)) {
-                subsVisible.setSelected(true)
+                subsvisible.setSelected(true)
               }
             }
           }
