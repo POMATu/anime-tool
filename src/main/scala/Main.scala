@@ -6,9 +6,9 @@ import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.SystemUtils
 
 import java.awt.datatransfer.DataFlavor
-import java.awt.event.{WindowEvent, ActionEvent, ActionListener, MouseAdapter, ComponentAdapter, KeyEvent, ComponentEvent, MouseEvent, WindowListener, WindowFocusListener, WindowStateListener}
+import java.awt.event.{ActionEvent, ActionListener, ComponentAdapter, ComponentEvent, KeyEvent, MouseAdapter, MouseEvent, WindowEvent, WindowFocusListener, WindowListener, WindowStateListener}
 import java.awt.image.BufferedImage
-import java.awt.{Color, Dimension, Font, KeyboardFocusManager, KeyEventDispatcher, Image, Rectangle, Point, Component, Frame}
+import java.awt.{Color, Component, Dimension, Font, Frame, Image, Insets, KeyEventDispatcher, KeyboardFocusManager, Point, Rectangle}
 import java.io.{File, InputStream, OutputStream, PrintStream}
 import java.lang.ProcessBuilder
 import java.net.URI
@@ -19,10 +19,13 @@ import java.util.Collections
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
 import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
-import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JFrame, JLabel, JList, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
+import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
 import scala.collection.mutable.ListBuffer
 import scala.language.postfixOps
 import scala.util.Try
+import javax.swing.BorderFactory
+import javax.swing.UIManager
+import java.awt.Color
 
 object Main extends App {
 
@@ -34,7 +37,11 @@ object Main extends App {
   val workingDirectory = new java.io.File(".").getCanonicalPath
   val ImageStream: InputStream = getClass.getResourceAsStream("/icon.png")
   var AppIconInit : BufferedImage = null
-  UIManager.setLookAndFeel(new MaterialLookAndFeel(theme))
+
+
+
+  val lookandfeel = new MaterialLookAndFeel(theme)
+  UIManager.setLookAndFeel(lookandfeel)
   IconFontSwing.register(FontAwesome.getIconFont)
   try {
     AppIconInit = ImageIO.read(ImageStream)
@@ -42,6 +49,24 @@ object Main extends App {
   catch {
     case _: Throwable => println("error 0x000002a")
   }
+
+
+
+  UIManager.put("Menu.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
+  UIManager.put("MenuBar.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
+  UIManager.put("MenuItem.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
+
+  val menuBar = new JMenuBar()
+  menuBar.setMargin(new Insets(0,0,0,0))
+  val fileMenu = new JMenu("File")
+  fileMenu.setMargin(new Insets(0,0,0,0))
+  fileMenu.setMnemonic(KeyEvent.VK_F)
+  val eMenuItem = new JMenuItem("Exit")
+  eMenuItem.setMnemonic(KeyEvent.VK_E)
+  eMenuItem.setToolTipText("Exit application")
+  eMenuItem.addActionListener((event) => System.exit(0))
+  fileMenu.add(eMenuItem)
+  menuBar.add(fileMenu)
 
   val audioDelayLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   audioDelayLayout.setGap(5)
@@ -254,10 +279,12 @@ object Main extends App {
   //frame.addListeners()
   //mdl-af.MaterialLookAndFeel.changeTheme(new MaterialLiteTheme)
 
-  frame.setSize(800, 600)
+  frame.setSize(800, 800)
   frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 
+
   val panel = new JPanel
+  frame.setJMenuBar(menuBar)
   frame.add(panel)
   frame.setVisible(true)
   frame.addComponentListener(ResizeListener())
@@ -479,6 +506,13 @@ object Main extends App {
     val genericPaddingLeft = 5
     val verticalPadding = 5
     val startRect = new Rectangle(genericPaddingLeft, 0, panel.getWidth - genericPaddingLeft, 1)
+    //val menuBarRect = getNextBounds(40,verticalPadding,startRect)
+
+    //menuBar.setBounds(0,0,1,1)
+    //menuBar.setPreferredSize(new Dimension(menuBarRect.getSize()))
+    //menuBar.setBounds(menuBarRect)
+    //menuBar.setBackground(Color.BLUE)
+
     val playRect = getNextBounds(58,verticalPadding,startRect)
 
     playButton.setBounds(getBoundsInBounds(0,3,genericPaddingLeft,playRect))
@@ -560,7 +594,7 @@ object Main extends App {
     subSourceLabel.setBounds(subSourceLabelRect)
     panel.add(subSourceLabel)
 
-    val consoleHeight = 80
+    val consoleHeight = 120
     val listRect = getNextBounds(-1,verticalPadding,listLabelsRect)
 
     listRect.height -= (consoleHeight + verticalPadding)
