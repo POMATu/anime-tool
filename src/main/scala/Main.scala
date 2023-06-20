@@ -19,7 +19,7 @@ import java.util.Collections
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
 import javax.swing.event.{ChangeEvent, ChangeListener, ListSelectionEvent, ListSelectionListener}
-import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JCheckBoxMenuItem, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerListModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
+import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, DropMode, Icon, ImageIcon, JButton, JCheckBox, JCheckBoxMenuItem, JFrame, JLabel, JList, JMenu, JMenuBar, JMenuItem, JOptionPane, JPanel, JScrollPane, JSlider, JSpinner, JTextArea, JTextField, JToolBar, ListSelectionModel, SpinnerListModel, SpinnerNumberModel, SwingConstants, SwingUtilities, Timer, TransferHandler, UIManager, WindowConstants}
 import scala.collection.mutable.ListBuffer
 import scala.language.postfixOps
 import scala.util.Try
@@ -53,6 +53,7 @@ object Main extends App {
   UIManager.put("Menu.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
   UIManager.put("MenuBar.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
   UIManager.put("MenuItem.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
+  UIManager.put("Slider.border", BorderFactory.createLineBorder(theme.getMenuBackground, 1))
 
   UIManager.put("Menu.font", theme.getButtonFont)
 
@@ -162,6 +163,16 @@ object Main extends App {
   sub2CidSpinner.setAlignmentX(SwingConstants.RIGHT)
   sub2CidPanel.add(sub2CidSpinner, 3 : Float)
 
+  // BLOCK: sub-zoom
+  val subZoomLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  subZoomLayout.setGap(5)
+  subZoomLayout.setBorderGap(5)
+  val subZoomPanel = new JPanel(subZoomLayout)
+  subZoomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub Zoom"))
+  val subZoomSpinner = new JSpinner(new SpinnerNumberModel(0,-10,10,0.1))
+  subZoomSpinner.setAlignmentX(SwingConstants.RIGHT)
+  subZoomPanel.add(subZoomSpinner, 3 : Float)
+
 //  val optionsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
 //  optionsLayout.setGap(5)
 //  optionsLayout.setBorderGap(5)
@@ -187,6 +198,19 @@ object Main extends App {
   val label3 = new JLabel("")
   label3.setFont(theme.getButtonFont)
 
+  // BLOCK: volume
+  val volumeLayout = new RelativeLayout(RelativeLayout.X_AXIS)
+  volumeLayout.setGap(10)
+  volumeLayout.setBorderGap(10)
+
+  val volumePanel = new JPanel(volumeLayout)
+  volumePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Volume: "))
+  //val volumeLabel = new JLabel("Volume Control")
+  val volumeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 200,100)
+  //val volumeSpinner = new JSpinner(new SpinnerNumberModel(0,0,200,1))
+  volumePanel.add(volumeSlider)
+
+  // BLOCK: fonts
   val fontsLayout = new RelativeLayout(RelativeLayout.X_AXIS)
   fontsLayout.setGap(10)
   fontsLayout.setBorderGap(10)
@@ -198,7 +222,7 @@ object Main extends App {
   fontsText.setEditable(false)
   fontsText.setTransferHandler(new FontsHandler)
 
-  val fontsLabel = new JLabel("Fonts Folder",makeIcon(FontAwesome.FONT,classOf[JButton]),SwingConstants.LEFT)
+  val fontsLabel = new JLabel("",makeIcon(FontAwesome.FONT,classOf[JButton]),SwingConstants.LEFT)
   fontsLabel.setTransferHandler(new FontsHandler)
   //fontsText.setPreferredSize(new Dimension(Int.MaxValue,Int.MaxValue))
   fontsPanel.add(fontsLabel)
@@ -216,7 +240,7 @@ object Main extends App {
     Array(fontsLabel, fontsText),
     fontsText
   )*/
-  fontsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Fonts Inject"))
+  fontsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Fonts Inject (Drag fonts folder here)"))
 
   /*val audioDelaySpinnerLabel = new JLabel("Audio Delay",makeIcon(FontAwesome.CLOCK_O, new JButton),SwingConstants.RIGHT)
   audioDelayText.setForeground(theme.getButtonTextColor)
@@ -626,10 +650,30 @@ object Main extends App {
    // panel.add(subDelayText)
 
     var buttonsRect : Rectangle = null
-    val cLabelsRect = getNextBounds(70, verticalPadding, playRect)
-    fontsPanel.setBounds(cLabelsRect)
+
+    //val volumeRectLabel = getNextBounds(40, verticalPadding, playRect)
+    //volumeLabel.setBounds(volumeRectLabel)
+    //volumePanel.setBounds(volumeRect)
+    //panel.add(volumeLabel)
+
+    val volumeSliderRect = getNextBounds(70, verticalPadding, playRect)
+    //volumeSpinner.setBounds(getBoundsInBounds(0,12,4,volumeSliderRect))
+    //val volumeLeftRect = new Rectangle(volumeSliderRect.x + volumeSpinner.getWidth, volumeSliderRect.y, volumeSliderRect.width - volumeSpinner.getWidth, volumeSliderRect.height)
+    //volumeSlider.setBounds(getBoundsInBounds(0,3,4,volumeLeftRect))
+    //volumeSlider.setBounds(getBoundsInBounds(0,4,genericPaddingLeft,volumeSliderRect))
+    volumePanel.setBounds(getBoundsInBounds(0,4,genericPaddingLeft,volumeSliderRect))
+    volumeSlider.setPreferredSize(new Dimension(volumePanel.getBounds().width/7*6,volumeSliderRect.height / 2))
+    //panel.add(volumeSlider)
+    panel.add(volumePanel)
+
+    val subZoomContainerRect = new Rectangle(sub2CidPanel.getBounds().x, volumeSliderRect.y, sub2CidPanel.getBounds().width, volumeSliderRect.height)
+    subZoomPanel.setBounds(subZoomContainerRect)
+    panel.add(subZoomPanel)
+
+    val fontsPanelRect = new Rectangle(volumeSliderRect.x + volumePanel.getBounds().width, volumeSliderRect.y, volumeSliderRect.width - volumePanel.getBounds().getWidth.toInt - subZoomPanel.getBounds().getWidth.toInt, volumeSliderRect.height)
+    fontsPanel.setBounds(fontsPanelRect)
     panel.add(fontsPanel)
-    buttonsRect = getNextBounds(40,verticalPadding,cLabelsRect)
+    buttonsRect = getNextBounds(40,verticalPadding,volumeSliderRect)
     //fontsPanel.replaceAll()
 
     val buttons1Rect = getBoundsInBounds(0, 3, genericPaddingLeft, buttonsRect)
