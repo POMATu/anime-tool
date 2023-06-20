@@ -204,9 +204,14 @@ object Main extends App {
   volumeLayout.setBorderGap(10)
 
   val volumePanel = new JPanel(volumeLayout)
-  volumePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Volume: "))
-  //val volumeLabel = new JLabel("Volume Control")
   val volumeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 200,100)
+  volumePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Volume: " + volumeSlider.getValue))
+  //val volumeLabel = new JLabel("Volume Control")
+  volumeSlider.addChangeListener(new ChangeListener {
+    override def stateChanged(e: ChangeEvent): Unit = {
+      volumePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Volume: " + volumeSlider.getValue))
+    }
+  })
   //val volumeSpinner = new JSpinner(new SpinnerNumberModel(0,0,200,1))
   volumePanel.add(volumeSlider)
 
@@ -663,6 +668,7 @@ object Main extends App {
     //volumeSlider.setBounds(getBoundsInBounds(0,4,genericPaddingLeft,volumeSliderRect))
     volumePanel.setBounds(getBoundsInBounds(0,4,genericPaddingLeft,volumeSliderRect))
     volumeSlider.setPreferredSize(new Dimension(volumePanel.getBounds().width/7*6,volumeSliderRect.height / 2))
+
     //panel.add(volumeSlider)
     panel.add(volumePanel)
 
