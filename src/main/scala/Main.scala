@@ -119,12 +119,13 @@ object Main extends App {
   subDelayPanel.add(subDelayText, 3 : Float)
 
   // generating list for subs and audio
+  val cidmax = 30
   val cidlist = new util.ArrayList[String]
   cidlist.add("none")
   cidlist.add("jap")
   cidlist.add("eng")
   cidlist.add("rus")
-  for (i <- 1 to 30) {
+  for (i <- 1 to cidmax) {
     cidlist.add(i.toString)
   }
   val cidlist2 = new util.ArrayList[String]
@@ -132,6 +133,12 @@ object Main extends App {
   cidlist2.add("jp")
   cidlist2.add("en")
   cidlist2.add("ru")
+
+  val sub2list = new util.ArrayList[String]
+  sub2list.add("none")
+  for (i <- 1 to cidmax) {
+    sub2list.add(i.toString)
+  }
 
   // BLOCK: audio-cid
   val audioCidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
@@ -149,9 +156,14 @@ object Main extends App {
   sub1CidLayout.setBorderGap(5)
   val sub1CidPanel = new JPanel(sub1CidLayout)
   sub1CidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub-1 ID"))
-  val sub1CidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+  val sub1CidModel = new SpinnerListModel(cidlist)
+  val fakeCidlist = new util.ArrayList[String]
+  fakeCidlist.add("ext")
+  val fakeSub1CidModel = new SpinnerListModel(fakeCidlist)
+  val sub1CidSpinner = new JSpinner(sub1CidModel)
   sub1CidSpinner.setAlignmentX(SwingConstants.RIGHT)
   sub1CidPanel.add(sub1CidSpinner, 3 : Float)
+
 
   // BLOCK: sub2-cid
   val sub2CidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
@@ -159,7 +171,7 @@ object Main extends App {
   sub2CidLayout.setBorderGap(5)
   val sub2CidPanel = new JPanel(sub2CidLayout)
   sub2CidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub-2 ID"))
-  val sub2CidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+  val sub2CidSpinner = new JSpinner(new SpinnerListModel(sub2list))
   sub2CidSpinner.setAlignmentX(SwingConstants.RIGHT)
   sub2CidPanel.add(sub2CidSpinner, 3 : Float)
 
@@ -817,6 +829,9 @@ object Main extends App {
   case class ClearActionListener(model: SortableListModel[ShortFile]) extends ActionListener {
       override def actionPerformed(e: ActionEvent): Unit = {
         model.clear()
+        if (model == subModel) {
+          sub1CidSpinner.setModel(sub1CidModel)
+        }
       }
   }
 
@@ -986,6 +1001,9 @@ object Main extends App {
               }
               if (worked && model.equals(subModel)) {
                 subsvisible.setSelected(true)
+                sub1CidSpinner.setModel(fakeSub1CidModel)
+                //sub1CidSpinner.setValue("none")
+                //sub1CidSpinner.setVisible(false)
               }
             }
           }
