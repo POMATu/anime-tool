@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.SystemUtils
 
 import java.awt.datatransfer.DataFlavor
-import java.awt.event.{ActionEvent, ActionListener, ComponentAdapter, ComponentEvent, KeyEvent, MouseAdapter, MouseEvent, WindowEvent, WindowFocusListener, WindowListener, WindowStateListener}
+import java.awt.event.{ActionEvent, ActionListener, ComponentAdapter, ComponentEvent, ItemEvent, ItemListener, KeyEvent, MouseAdapter, MouseEvent, WindowEvent, WindowFocusListener, WindowListener, WindowStateListener}
 import java.awt.image.BufferedImage
 import java.awt.{Color, Component, Dimension, Font, Frame, Image, Insets, KeyEventDispatcher, KeyboardFocusManager, Point, Rectangle}
 import java.io.{File, InputStream, OutputStream, PrintStream}
@@ -83,11 +83,20 @@ object Main extends App {
 
   val subsvisible =  new JCheckBoxMenuItem("Subs visible")
   subsvisible.setToolTipText("Subs will be visible by default")
-  /*subsvisible.setAction(new ActionListener {
-    override def actionPerformed(e: ActionEvent): Unit = {
-
+  subsvisible.setState(true)
+  subsvisible.addItemListener(new ItemListener {
+    override def itemStateChanged(e: ItemEvent): Unit = {
+      if (subsvisible.getState) {
+        if (sub1CidSpinner.getValue == "none") {
+          sub1CidSpinner.setValue("any")
+          //println("Changed subs state to visible any")
+        }
+      } else {
+        sub1CidSpinner.setValue("none")
+        //println("Changed subs state to hidden")
+      }
     }
-  })*/
+  })
   convMenu.add(subsvisible)
 
   menuBar.add(convMenu)
@@ -154,6 +163,13 @@ object Main extends App {
   audioCidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio ID"))
   val audioCidSpinner = new JSpinner(new SpinnerListModel(cidlist))
   audioCidSpinner.setAlignmentX(SwingConstants.RIGHT)
+  audioCidSpinner.addChangeListener(new ChangeListener {
+    override def stateChanged(e: ChangeEvent): Unit = {
+      if (audioCidSpinner.getValue == "none") {
+        println("Audio is muted")
+      }
+    }
+  })
   audioCidPanel.add(audioCidSpinner, 3 : Float)
 
   // BLOCK: sub1-cid
@@ -173,9 +189,13 @@ object Main extends App {
   sub1CidSpinner.addChangeListener(new ChangeListener {
     override def stateChanged(e: ChangeEvent): Unit = {
       if (sub1CidSpinner.getValue.toString == "none") {
-        setSubState(false)
+        subsvisible.setState(false)
+        postSetSubState("none")
       } else {
-        setSubState(true)
+        if (!subsvisible.getState) {
+          subsvisible.setState(true)
+          postSetSubState("any")
+        }
       }
     }
   })
@@ -185,6 +205,7 @@ object Main extends App {
   sub2CidLayout.setGap(5)
   sub2CidLayout.setBorderGap(5)
   val sub2CidPanel = new JPanel(sub2CidLayout)
+  sub2CidPanel.setVisible(false)
   sub2CidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub-2 ID"))
   val sub2CidSpinner = new JSpinner(new SpinnerListModel(sub2list))
   sub2CidSpinner.setAlignmentX(SwingConstants.RIGHT)
@@ -541,7 +562,11 @@ object Main extends App {
       if (isNumeric(audioCidSpinner.getValue.toString)) {
         args += "--aid=" + audioCidSpinner.getValue.toString
       } else {
-        args += "--alang=" + convertLang(audioCidSpinner.getValue.toString)
+        if (audioCidSpinner.getValue.toString != "none") {
+          args += "--alang=" + convertLang(audioCidSpinner.getValue.toString)
+        } else {
+          args += "--mute=yes"
+        }
       }
     }
     if (sub1CidSpinner.getValue.toString != "any") {
@@ -551,7 +576,11 @@ object Main extends App {
         args += "--slang=" + convertLang(sub1CidSpinner.getValue.toString)
       }
     }
-    if (isNumeric(sub2CidSpinner.getValue.toString)) { args += "--secondary-sid=" + sub2CidSpinner.getValue.toString }
+    if (sub2CidPanel.isVisible) {
+      if (isNumeric(sub2CidSpinner.getValue.toString)) {
+        args += "--secondary-sid=" + sub2CidSpinner.getValue.toString
+      }
+    }
     if (isNumeric(subZoomSpinner.getValue.toString)) { args += "--sub-scale=" + subZoomSpinner.getValue.toString }
 
     // volume related tweaks (mandatory)
@@ -993,13 +1022,16 @@ object Main extends App {
     }
   }
 
-  def setSubState(value: Boolean) : Unit = {
-    val oldValue = subsvisible.getState
-    if (oldValue != value) {
-      subsvisible.setSelected(value)
-      println("Changed subs state to " + {
-        if (value) "visible" else "hidden"
-      })
+  def postSetSubState(value: String) : Unit = {
+      println("Subtitles are now " + { if (value == "none") "hidden" else "visible" })
+
+    if (isNumeric(sub1CidSpinner.getValue.toString)) {
+      if (!sub2CidPanel.isVisible) {
+        sub2CidPanel.setVisible(true) // this shit only works if we using ids and not langs
+        println("You can add second subs now!")
+      }
+    } else {
+      sub2CidPanel.setVisible(false)
     }
   }
 
@@ -1061,9 +1093,10 @@ object Main extends App {
                 worked = true;
               }
               if (worked && model.equals(subModel)) {
-                setSubState(true)
+                subsvisible.setState(true)
                 sub1CidSpinner.setModel(fakeSub1CidModel)
-                //sub1CidSpinner.setValue("none")
+                sub1CidSpinner.setValue("none")
+                postSetSubState("none")
                 //sub1CidSpinner.setVisible(false)
               }
             }
