@@ -23,6 +23,10 @@ import javax.swing.{BorderFactory, DefaultListModel, DefaultListSelectionModel, 
 import scala.collection.mutable.ListBuffer
 import scala.language.postfixOps
 import scala.util.Try
+import javax.swing._
+import javax.swing.text._
+import java.awt.event._
+import java.lang.reflect.Method
 import java.awt.Color
 
 object Main extends App {
@@ -99,6 +103,25 @@ object Main extends App {
   })
   convMenu.add(subsvisible)
 
+
+  val audiomuted =  new JCheckBoxMenuItem("Audio Muted")
+  audiomuted.setToolTipText("Audio will be muted by default")
+  audiomuted.setState(false)
+  audiomuted.addItemListener(new ItemListener {
+    override def itemStateChanged(e: ItemEvent): Unit = {
+      if (audiomuted.getState) {
+          audioCidSpinner.setValue("none")
+          println("Audio is muted")
+      } else {
+        if (audioCidSpinner.getValue == "none") {
+          audioCidSpinner.setValue("any")
+          println("Audio is unmuted")
+        }
+      }
+    }
+  })
+  convMenu.add(audiomuted)
+
   menuBar.add(convMenu)
 
 
@@ -133,7 +156,7 @@ object Main extends App {
   subDelayPanel.add(subDelayText, 3 : Float)
 
   // generating list for subs and audio
-  val cidmax = 30
+  val cidmax = 9
   val cidlist = new util.ArrayList[String]
   cidlist.add("any")
   cidlist.add("jap")
@@ -162,11 +185,51 @@ object Main extends App {
   val audioCidPanel = new JPanel(audioCidLayout)
   audioCidPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Audio ID"))
   val audioCidSpinner = new JSpinner(new SpinnerListModel(cidlist))
+
+  val audioCidSpinnerEditor = new CustomSpinnerEditor(audioCidSpinner, null)
+  audioCidSpinner.setEditor(audioCidSpinnerEditor)
+
+/*
+  textField.addKeyListener(new KeyListener {
+    override def keyPressed(e: KeyEvent): Unit = {}
+
+    override def keyReleased(e: KeyEvent): Unit = {}
+
+    override def keyTyped(e: KeyEvent): Unit = {
+      val typedChar = e.getKeyChar
+      if (typedChar == KeyEvent.VK_ENTER) {
+        try {
+          audioCidSpinner.commitEdit() // Commit any pending edits
+          println(textField.getValue)
+        } catch {
+          case ex: Exception =>
+            // Handle parse exception if necessary
+            println("Error parsing input: " + ex.getMessage)
+        }
+      }
+    }
+  }) */
+  /*
+  textField.addFocusListener(new java.awt.event.FocusAdapter() {
+    override def focusLost(e: java.awt.event.FocusEvent): Unit = {
+        audioCidSpinner.commitEdit()
+        println(textField.getValue)
+    }
+  })
+   */
+
+
   audioCidSpinner.setAlignmentX(SwingConstants.RIGHT)
   audioCidSpinner.addChangeListener(new ChangeListener {
     override def stateChanged(e: ChangeEvent): Unit = {
       if (audioCidSpinner.getValue == "none") {
-        println("Audio is muted")
+        //println("Audio is muted")
+        audiomuted.setState(true)
+      } else {
+        if (audiomuted.getState) {
+          audiomuted.setState(false)
+          println("Audio is unmuted")
+        }
       }
     }
   })
@@ -186,16 +249,20 @@ object Main extends App {
   sub1CidSpinner.setAlignmentX(SwingConstants.RIGHT)
   sub1CidPanel.add(sub1CidSpinner, 3 : Float)
 
+  val subCidSpinnerEditor = new CustomSpinnerEditor(sub1CidSpinner, postSetSubState)
+  sub1CidSpinner.setEditor(subCidSpinnerEditor)
+
+
   sub1CidSpinner.addChangeListener(new ChangeListener {
     override def stateChanged(e: ChangeEvent): Unit = {
       if (sub1CidSpinner.getValue.toString == "none") {
         subsvisible.setState(false)
         postSetSubState("none")
       } else {
-        if (!subsvisible.getState) {
+        //if (!subsvisible.getState) {
           subsvisible.setState(true)
           postSetSubState("any")
-        }
+        //}
       }
     }
   })
@@ -1023,7 +1090,8 @@ object Main extends App {
   }
 
   def postSetSubState(value: String) : Unit = {
-      println("Subtitles are now " + { if (value == "none") "hidden" else "visible" })
+
+      //println("Subtitles are now " + { if (value == "none") "hidden" else "visible" })
 
     if (isNumeric(sub1CidSpinner.getValue.toString)) {
       if (!sub2CidPanel.isVisible) {
@@ -1264,4 +1332,76 @@ object Main extends App {
     }
   }
 
+}
+
+import javax.swing._
+import javax.swing.text._
+import java.awt.event._
+import java.text.ParseException
+import javax.swing.event.{DocumentEvent, DocumentListener}
+
+
+class CustomSpinnerEditor(spinner: JSpinner, callback: String => Unit) extends JSpinner.DefaultEditor(spinner) {
+  private val textField: JFormattedTextField = super.getTextField.asInstanceOf[JFormattedTextField]
+  private var currentValue: AnyRef = spinner.getValue
+  textField.setEditable(true)
+
+  // Listen for changes to the text field's text
+  textField.getDocument.addDocumentListener(new DocumentListener {
+    override def insertUpdate(e: DocumentEvent): Unit = updateValue()
+    override def removeUpdate(e: DocumentEvent): Unit = updateValue()
+    override def changedUpdate(e: DocumentEvent): Unit = {}
+
+    private def updateValue(): Unit = {
+      currentValue = textField.getText
+    }
+  })
+/*
+  spinner.addChangeListener(new ChangeListener {
+    override def stateChanged(e: ChangeEvent): Unit = {
+      val value = spinner.getValue
+      val model = spinner.getModel.asInstanceOf[SpinnerListModel]
+      val list = model.getList.asInstanceOf[java.util.List[String]]
+
+      val currentIndex = list.indexOf(value)
+      if (currentIndex == list.size - 1) {
+        spinner.setValue(list.get(0))
+      } else if (currentIndex == 0) {
+        spinner.setValue(list.get(list.size - 1))
+      }
+    }
+  })
+*/
+
+  // Override to handle commit manually
+  /*textField.addKeyListener(new KeyAdapter {
+    override def keyPressed(e: KeyEvent): Unit = {
+      println(currentValue)
+    }
+  })*/
+  textField.addFocusListener(new java.awt.event.FocusAdapter() {
+    override def focusLost(e: java.awt.event.FocusEvent): Unit = {
+
+
+      val model = spinner.getModel.asInstanceOf[SpinnerListModel]
+      val currentList = model.getList.toArray(Array.empty[String]) // Get current list of values
+      if (!currentList.contains(currentValue.toString)) {
+        val updatedList = currentList :+ currentValue // Add the new value to the list
+        //val updatedList2 = updatedList ++ currentList
+        val newModel = new SpinnerListModel(updatedList) // Create a new model with the updated list
+        spinner.setModel(newModel) // Set the new model to the spinner
+        println("Set value to: " + currentValue)
+        spinner.setValue(currentValue)
+        try {
+          callback(currentValue.toString)
+        } catch {
+          case ex: Exception =>
+        }
+      }
+    }
+  })
+
+
+  // Override getTextField to return the already initialized text field
+  override def getTextField: JFormattedTextField = textField
 }
