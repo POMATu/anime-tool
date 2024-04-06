@@ -83,6 +83,11 @@ object Main extends App {
 
   val subsvisible =  new JCheckBoxMenuItem("Subs visible")
   subsvisible.setToolTipText("Subs will be visible by default")
+  /*subsvisible.setAction(new ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = {
+
+    }
+  })*/
   convMenu.add(subsvisible)
 
   menuBar.add(convMenu)
@@ -121,10 +126,11 @@ object Main extends App {
   // generating list for subs and audio
   val cidmax = 30
   val cidlist = new util.ArrayList[String]
-  cidlist.add("none")
+  cidlist.add("any")
   cidlist.add("jap")
   cidlist.add("eng")
   cidlist.add("rus")
+  cidlist.add("none")
   for (i <- 1 to cidmax) {
     cidlist.add(i.toString)
   }
@@ -164,6 +170,15 @@ object Main extends App {
   sub1CidSpinner.setAlignmentX(SwingConstants.RIGHT)
   sub1CidPanel.add(sub1CidSpinner, 3 : Float)
 
+  sub1CidSpinner.addChangeListener(new ChangeListener {
+    override def stateChanged(e: ChangeEvent): Unit = {
+      if (sub1CidSpinner.getValue.toString == "none") {
+        setSubState(false)
+      } else {
+        setSubState(true)
+      }
+    }
+  })
 
   // BLOCK: sub2-cid
   val sub2CidLayout = new RelativeLayout(RelativeLayout.X_AXIS)
@@ -181,7 +196,7 @@ object Main extends App {
   subZoomLayout.setBorderGap(5)
   val subZoomPanel = new JPanel(subZoomLayout)
   subZoomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sub Zoom"))
-  val subZoomSpinner = new JSpinner(new SpinnerNumberModel(0,-10,10,0.1))
+  val subZoomSpinner = new JSpinner(new SpinnerNumberModel(1,0,10,0.1))
   subZoomSpinner.setAlignmentX(SwingConstants.RIGHT)
   subZoomPanel.add(subZoomSpinner, 3 : Float)
 
@@ -491,9 +506,23 @@ object Main extends App {
       }
   }
 
+  def isNumeric(value: String): Boolean = {
+    val numericPattern = """^-?\d+(\.\d+)?$"""
+    value.matches(numericPattern)
+  }
+
+  def convertLang(value: String): String = {
+    value match {
+      case "jap"  => "jap,jpn,jp,japan,japanese,nippon"
+      case "eng"  => "eng,en,english"
+      case "rus"  => "rus,ru,russian,russia"
+      case _  => value
+    } // probably needs more shit here
+  }
+
   def play() : Boolean = {
     if (videoList.getSelectedIndex < 0) {
-      println("You havent selected any video file")
+      println("You havent selected any video file" + "\n")
       return false
     }
 
@@ -507,6 +536,27 @@ object Main extends App {
     if (fullscreen.getState){args += "--fs"}
     if (!subsvisible.getState) {args += "--no-sub-visibility"}
     if (!fontsText.getText.trim.isEmpty) { args += "--sub-fonts-dir=" + fontsText.getText.trim }
+
+    if (audioCidSpinner.getValue.toString != "any") {
+      if (isNumeric(audioCidSpinner.getValue.toString)) {
+        args += "--aid=" + audioCidSpinner.getValue.toString
+      } else {
+        args += "--alang=" + convertLang(audioCidSpinner.getValue.toString)
+      }
+    }
+    if (sub1CidSpinner.getValue.toString != "any") {
+      if (isNumeric(sub1CidSpinner.getValue.toString)) {
+        args += "--sid=" + sub1CidSpinner.getValue.toString
+      } else {
+        args += "--slang=" + convertLang(sub1CidSpinner.getValue.toString)
+      }
+    }
+    if (isNumeric(sub2CidSpinner.getValue.toString)) { args += "--secondary-sid=" + sub2CidSpinner.getValue.toString }
+    if (isNumeric(subZoomSpinner.getValue.toString)) { args += "--sub-scale=" + subZoomSpinner.getValue.toString }
+
+    // volume related tweaks (mandatory)
+    args += "--volume-max=" + volumeSlider.getMaximum
+    args += "--volume=" + volumeSlider.getValue
 
     killPrevMpv
     println("Summoning your waifu... " + args.toString() + "\n")
@@ -736,7 +786,7 @@ object Main extends App {
     subSourceLabel.setBounds(subSourceLabelRect)
     panel.add(subSourceLabel)
 
-    val consoleHeight = 120
+    val consoleHeight = 140
     val listRect = getNextBounds(-1,verticalPadding,listLabelsRect)
 
     listRect.height -= (consoleHeight + verticalPadding)
@@ -752,6 +802,7 @@ object Main extends App {
 
     val consoleRect = getNextBounds(-1, verticalPadding,listRect)
     consoleRect.width -= genericPaddingLeft
+    consoleRect.height -= 20 // fukin windows
     consoleScrollPane.setBounds(consoleRect)
     panel.add(consoleScrollPane)
 
@@ -942,6 +993,16 @@ object Main extends App {
     }
   }
 
+  def setSubState(value: Boolean) : Unit = {
+    val oldValue = subsvisible.getState
+    if (oldValue != value) {
+      subsvisible.setSelected(value)
+      println("Changed subs state to " + {
+        if (value) "visible" else "hidden"
+      })
+    }
+  }
+
   case class ListHandler(model: SortableListModel[ShortFile]) extends TransferHandler {
     override def canImport(support: TransferHandler.TransferSupport): Boolean = {
       val result = support.isDrop && (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor) || support.isDataFlavorSupported(DataFlavor.stringFlavor) )
@@ -1000,7 +1061,7 @@ object Main extends App {
                 worked = true;
               }
               if (worked && model.equals(subModel)) {
-                subsvisible.setSelected(true)
+                setSubState(true)
                 sub1CidSpinner.setModel(fakeSub1CidModel)
                 //sub1CidSpinner.setValue("none")
                 //sub1CidSpinner.setVisible(false)
