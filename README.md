@@ -92,3 +92,5 @@ After you bruteforce audio/sub delays you can put exact ms value displayed on sc
 * if you experienced and issue - create the issue on github
 * you can modify whatever and make pull request just be sure you tested it yourself. If it doesnt work properly for me - I wont accept pull request
 
+# Traffic counter
+![:POMATu.anime-tool](https://services.webestools.com/cpt_global/59701-1.png)<img src="https://count.getloli.com/get/@:POMATu.anime-tool" height="200" />
