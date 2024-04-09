@@ -94,5 +94,6 @@ After you bruteforce audio/sub delays you can put exact ms value displayed on sc
 
 # Traffic counter
 ![:POMATu.anime-tool](https://services.webestools.com/cpt_global/59701-1.png)<img src="https://count.getloli.com/get/@:POMATu.anime-tool" height="200" />
+
 Green counter gets cached by browser so it sorta counts unique devices of unique users
 Moe counter just counts hits which can probably provide some input too but can be just search engines or me hitting f5
