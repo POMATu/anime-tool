@@ -1163,7 +1163,11 @@ object Main extends App {
               if (worked && model.equals(subModel)) {
                 subsvisible.setState(true)
                 sub1CidSpinner.setModel(fakeSub1CidModel)
-                sub1CidSpinner.setValue("none")
+                try {
+                  sub1CidSpinner.setValue("none")
+                } catch {
+                  case ex: Exception => //println(ex.toString)
+                }
                 postSetSubState("none")
                 //sub1CidSpinner.setVisible(false)
               }
